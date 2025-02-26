@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SzakdogaFitness</string>
+    <string name="some_error_message">watafak</string>
+    <string name="success_login">Successful login</string>
+    <string name="success_registration">Registration successful</string>
+    <string name="success_logout">Successfully signed out</string>
+    <string name="success_recovery_email">Recovery email successfully sent</string>
+</resources>
