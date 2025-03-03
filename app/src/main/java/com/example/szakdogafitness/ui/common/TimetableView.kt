@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.ui.common
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -142,13 +143,15 @@ fun TraineeTimetableView(
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             items(9) { index ->
                 val hour = index + 8
-                val isAvailable = availableHours[selectedDay]?.contains(hour) == true
-                val isSelected = selectedHours[selectedDay]?.contains(hour) == true
+                val isAvailable = availableHours[selectedDay]?.contains(index) == true
+                Log.d("TimetableView", "isAvailable: ${isAvailable} selectedDay: ${selectedDay} - ${availableHours[selectedDay]}")
+                val isSelected = selectedHours[selectedDay]?.contains(index) == true
+                Log.d("TimetableView", "isSelected: ${selectedHours[selectedDay]}")
 
                 TimeChip(
                     time = "$hour:00",
                     isSelected = isSelected,
-                    onClick = { if (isAvailable) onHourSelected(selectedDay, hour) },
+                    onClick = { if (isAvailable) onHourSelected(selectedDay, index) },
                     enabled = isAvailable
                 )
             }

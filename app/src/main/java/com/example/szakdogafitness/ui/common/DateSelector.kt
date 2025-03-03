@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.ui.common
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -88,6 +89,18 @@ fun DateSelector(
             }
         )
         Spacer(modifier = Modifier.width(8.dp))
+        /*InfiniteCircularList(
+            width = width,
+            itemHeight = itemHeight,
+            items = (1900..2100).toList(),
+            initialItem = currentYear.intValue,
+            textStyle = textStyle,
+            textColor = textColor,
+            selectedTextColor = selectedTextColor,
+            onItemSelected = { _, year ->
+                currentYear.intValue = year
+            }
+        )*/
         InfiniteCircularList(
             width = width,
             itemHeight = itemHeight,
@@ -97,6 +110,7 @@ fun DateSelector(
             textColor = textColor,
             selectedTextColor = selectedTextColor,
             onItemSelected = { _, year ->
+                Log.d("DateSelector", "onItemSelected: year: $year")
                 currentYear.intValue = year
             }
         )

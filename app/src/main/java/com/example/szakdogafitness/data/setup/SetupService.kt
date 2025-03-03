@@ -14,6 +14,7 @@ class SetupService @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val userIdUseCase: CurrentUserIdUseCase
 ) : ISetupService {
+
     override fun nextScreen(currentScreen: Int, role: Int, navHostController: NavHostController) {
         val nextScreen = when (currentScreen) {
             0 -> if (role == 1) SetupScreenRoute.TrainerOne.route else SetupScreenRoute.TraineeOne.route

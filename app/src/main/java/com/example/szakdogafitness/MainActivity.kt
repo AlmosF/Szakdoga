@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.material3.Scaffold
@@ -24,9 +25,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.szakdogafitness.feature.auth.AuthenticateScreen
 import com.example.szakdogafitness.feature.nutrition.NutritionScreen
+import com.example.szakdogafitness.feature.nutrition.SearchNutritionScreen
 import com.example.szakdogafitness.feature.setup.SetupScreenBox
+import com.example.szakdogafitness.feature.trainer.TrainerDetailsScreen
 import com.example.szakdogafitness.presentation.navigation.root.RootNavigation
+import com.example.szakdogafitness.ui.common.TrainerDemo
+import com.example.szakdogafitness.ui.common.lifestyle.DailyCaloriesBlock
 import com.example.szakdogafitness.ui.common.nutrition.TargetKcalBlock
+import com.example.szakdogafitness.ui.common.nutrition.logblock.LogBlock
 import com.example.szakdogafitness.ui.theme.SzakdogaFitnessTheme
 import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,7 +48,7 @@ class MainActivity : ComponentActivity() {
                     contentWindowInsets = WindowInsets.systemBars.union(WindowInsets.displayCutout),
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 30.dp)
+                        .safeDrawingPadding()
                 ) { innerPadding ->
                     //SetupScreen(innerPadding)
                     //TraineeOne(innerPadding)
@@ -53,6 +59,16 @@ class MainActivity : ComponentActivity() {
                     //### WORKING SETUP ###
                     //SetupScreenBox(innerPadding)
                     //### WORKING SETUP ###
+
+
+                    //### MEALLOGBLOCK ###
+                    LogBlock(
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                    //### MEALLOGBLOCK ###
+
+
+
 
                     //### NUTRITIONSCREEN ###
                     /*Column (
@@ -86,12 +102,29 @@ class MainActivity : ComponentActivity() {
 
                         )
                     }*/
+
                     /*NutritionScreen(
                         modifier = Modifier.padding(innerPadding)
                     )*/
                     //### NUTRITIONSCREEN ###
 
 
+                    /*SearchNutritionScreen(
+                        modifier = Modifier.padding(innerPadding)
+                    )*/
+
+
+                    //### WORKING ROOT NAV ###
+                    /*val navController = rememberNavController()
+                    RootNavigation(
+                        modifier = Modifier.padding(innerPadding),
+                        navController = navController,
+                    )*/
+                    //### WORKING ROOT NAV ###
+
+
+
+                    //DailyCaloriesBlock()
 
                     /*AuthenticateScreen(
                         modifier = Modifier.padding(innerPadding)
@@ -103,7 +136,7 @@ class MainActivity : ComponentActivity() {
                         rootNavController = rootNavHostController,
                         authViewModel = authenticationViewModel
                     )*/
-                    SetupScreenBox(innerPadding)
+                    //SetupScreenBox(innerPadding)
                     //#### TrainerCard
 
                     /*LazyColumn (

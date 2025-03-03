@@ -1,11 +1,13 @@
 package com.example.szakdogafitness.ui.common.lifestyle
 
+import android.R.attr.top
 import android.content.Context
 import android.graphics.Typeface
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -40,12 +43,18 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
 
 @Composable
-fun DailyCaloriesBlock() {val pagerState = rememberPagerState(
-    initialPage = 0,
-    pageCount = {2}
-)
+fun DailyCaloriesBlock(
+    modifier: Modifier = Modifier
+) {
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = {2}
+    )
 
-    Column {
+    Column (
+        modifier = modifier
+            .padding(top = 8.dp, bottom = 8.dp)
+    ) {
         HorizontalPager(
             state = pagerState,
         ) { page ->
@@ -63,6 +72,7 @@ fun DailyCaloriesBlock() {val pagerState = rememberPagerState(
 
         Row(
             modifier = Modifier
+                .padding(top = 16.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
@@ -105,7 +115,7 @@ fun DailyCaloriesFirstPage(
     Column (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            //.padding(8.dp)
             .heightIn(290.dp)
             .background(Color.LightGray, shape = RoundedCornerShape(16.dp))
     ) {
@@ -143,7 +153,7 @@ fun DailyCaloriesFirstPage(
             }
             Column (
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(2f)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -215,7 +225,7 @@ fun PieChartComp(
     Column (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            //.padding(8.dp)
             .background(Color.LightGray, shape = RoundedCornerShape(16.dp))
             .heightIn(290.dp)
             //.size(240.dp)
@@ -237,7 +247,8 @@ fun PieChartComp(
             )
         }
         Row (
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             Crossfade(
@@ -285,7 +296,7 @@ fun PieChartComp(
             }
             Column (
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(2f)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

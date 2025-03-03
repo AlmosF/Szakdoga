@@ -7,7 +7,10 @@ import android.R.attr.fontWeight
 import android.R.attr.onClick
 import android.R.attr.phoneNumber
 import android.R.attr.top
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,16 +24,21 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Female
 import androidx.compose.material.icons.filled.Male
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -38,7 +46,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -47,14 +57,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.szakdogafitness.ui.common.DateSelector
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.ProgressBar
+import com.example.szakdogafitness.ui.components.DateTransformation
 import com.example.szakdogafitness.ui.components.PhoneNumberVisualTransformation
 import com.example.szakdogafitness.ui.components.countryCodeToFlagEmoji
 import com.example.szakdogafitness.ui.components.extractRegionCode
 import com.example.szakdogafitness.viewmodel.SetupEvent
 import com.example.szakdogafitness.viewmodel.SetupViewModel
+import com.google.firebase.Timestamp
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -160,6 +175,7 @@ fun SetupScreen(
                 disabledContainerColor = MaterialTheme.colorScheme.surface,
             ),
         )
+        var testDOB by remember { mutableStateOf("") }
         NormalTextField(
             modifier = textFieldModifier
                 .clickable(onClick = { isDateOfBirthVisible = true })
@@ -169,11 +185,15 @@ fun SetupScreen(
                     end.linkTo(endGuideline95)
                 },
             label = "Date of Birth",
-            onValueChange = {},
-            value = state.dateOfBirth.toString(),
+            onValueChange = {
+                if (it.length <= 8) testDOB = it
+            },
+            value = state.dateOfBirth?.toTriple().toString(),
+            //value = testDOB,
             singleLine = true,
             enabled = false,
             readOnly = true,
+            //visualTransformation = DateTransformation(),
             onDone = {},
             leadingIcon = null,
             trailingIcon = null,
@@ -314,6 +334,41 @@ fun SetupScreen(
             ) {
                 Text(text = "Trainee")
             }
+        }
+        if (isDateOfBirthVisible){
+            DatePick(
+                date = state.dateOfBirth?.toMillis() ?: System.currentTimeMillis(),
+                selectRange = Timestamp.now().toMillis(),
+                onDateSelected = {
+                    setupViewModel.onEvent(SetupEvent.DateOfBirthChanged(it!!.toTimestamp()))
+                },
+            ) {
+                isDateOfBirthVisible = false
+            }
+            /*Dialog(
+                onDismissRequest = { isDateOfBirthVisible = false },
+            ) {
+                Column (
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color.White)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    DateSelector(
+                        width = 75.dp,
+                        itemHeight = 50.dp,
+                        textStyle = MaterialTheme.typography.bodyLarge,
+                        textColor = Color.Gray,
+                        selectedTextColor = Color.Black,
+                        date = state.dateOfBirth?.toMillis() ?: System.currentTimeMillis()
+                    ) { day, month, year ->
+                        val timestamp = Triple(day, month, year).toTimestamp()
+                        setupViewModel.onEvent(SetupEvent.DateOfBirthChanged(timestamp))
+                    }
+                }
+            }*/
         }
         /*OutlinedButton(
             onClick = {},
@@ -597,3 +652,79 @@ fun SetupScreenPreview(){
         )
     )*/
 }
+
+fun Long.toTimestamp(): Timestamp {
+    val calendar = Calendar.getInstance().apply { timeInMillis = this@toTimestamp }
+    return Timestamp(calendar.time)
+}
+
+fun Timestamp.toMillis() = this.toDate().time
+
+fun Triple<Int, Int, Int>.toTimestamp(): Timestamp {
+    val calendar = Calendar.getInstance().apply {
+        set(Calendar.YEAR, third)
+        set(Calendar.MONTH, second - 1)
+        set(Calendar.DAY_OF_MONTH, first)
+    }
+    return Timestamp(calendar.time)
+}
+
+fun Timestamp.toTriple(): Triple<Int, Int, Int> {
+    val calendar = Calendar.getInstance().apply { time = this@toTriple.toDate() }
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH) + 1
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+    return Triple(day, month, year)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DatePick(
+    date: Long,
+    selectRange: Long,
+    onDateSelected: (Long?) -> Unit,
+    onDismiss: () -> Unit
+) {
+
+    val year = selectRange.toTimestamp().toTriple().third + 1
+
+
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = date,
+        yearRange = (1900 until year),
+        selectableDates = object : SelectableDates{
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return utcTimeMillis <= selectRange
+            }
+        }
+    )
+
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onDateSelected(datePickerState.selectedDateMillis)
+                    onDismiss()
+                }
+            ) {
+                Text("Ok")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss
+            ) {
+                Text("Cancel")
+            }
+        }
+
+    ) {
+        DatePicker(
+            state = datePickerState,
+        )
+    }
+}
+
+
+

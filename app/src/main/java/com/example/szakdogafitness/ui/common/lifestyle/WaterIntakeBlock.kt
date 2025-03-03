@@ -1,6 +1,7 @@
 package com.example.szakdogafitness.ui.common.lifestyle
 
 import android.R.attr.fontWeight
+import android.R.attr.top
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,9 +36,8 @@ fun WaterIntakeBlock(
     goalWater: Double
 ) {
     Column (
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
+        modifier = modifier
+            .padding(top = 16.dp, bottom = 16.dp)
             .background(Color.LightGray, shape = RoundedCornerShape(16.dp))
     ) {
         Row (

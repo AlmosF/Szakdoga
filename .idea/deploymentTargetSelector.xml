@@ -13,19 +13,19 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="CalorieTrackerScreenPreview">
+      <SelectionState runConfigName="LifeStyleScreenPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="DailyCaloriesBlockPreview">
+      <SelectionState runConfigName="TrainerCardPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="WaterIntakeBlockPreview">
+      <SelectionState runConfigName="NutritionScreenPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="WeightControlBlockPreview">
+      <SelectionState runConfigName="LogBlockRowPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="StepsBlockPreview">
+      <SelectionState runConfigName="LogBlockPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

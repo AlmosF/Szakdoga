@@ -47,6 +47,10 @@ android {
 }
 dependencies {
 
+    //CoilImage
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     //Chart
     //implementation("com.github.fracassi-marco:JetChart:1.4.1")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")

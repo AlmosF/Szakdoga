@@ -47,6 +47,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AuthenticateScreen(
     modifier : Modifier = Modifier,
+    //snackbarHostState: SnackbarHostState, //nem kell feltetlen
     viewModel: AuthenticationViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -83,20 +84,20 @@ fun AuthenticateScreen(
             .fillMaxSize()
             .safeDrawingPadding()
     ) { padding ->
-        if (state.isLoggedIn){
+        if (state.isLoggedIn && false){
             OutlinedButton(
                 onClick = {
                     viewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
                 }
             ) {
                 Text(
-                    text = "Logout"
+                    text = "Logout!!!"
                 )
             }
         } else {
             Column (
                 modifier = Modifier
-                    .padding(padding)
+                    //.padding(padding)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally

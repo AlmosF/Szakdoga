@@ -323,7 +323,7 @@ data class SetupProfileState(
     var fcmToken: String = "",
     var profileImageUrl: String = "",
     var location: GeoPoint? = null,
-    //trianer
+    //trainer
     var certifications: List<Int> = emptyList(),
     var areasOfExperties: List<Int> = emptyList(),
     var trainingStyles: List<Int> = emptyList(),

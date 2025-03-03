@@ -40,6 +40,7 @@ fun NormalTextField(
     enabled: Boolean = true,
     readOnly: Boolean = false,
     isError: Boolean = false,
+    shape: RoundedCornerShape = RoundedCornerShape(8.dp),
     onDone: (KeyboardActionScope.() -> Unit)?,
     leadingIcon: @Composable() (() -> Unit)?,
     trailingIcon: @Composable() (() -> Unit)?,
@@ -91,7 +92,7 @@ fun NormalTextField(
             onDone = onDone
         ),
         colors = colors,
-        shape = RoundedCornerShape(8.dp),
+        shape = shape,
         visualTransformation = visualTransformation,
         textStyle = textStyle,
     )

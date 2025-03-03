@@ -1,5 +1,7 @@
 package com.example.szakdogafitness.ui.common
 
+import android.R.attr.fontWeight
+import android.R.attr.text
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,9 +15,11 @@ import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.R
 
 
@@ -41,13 +47,18 @@ data class TrainerDemo (
     val price: Int,
     val distance : Float,
     val gender : String,
-    val specializations : List<String>
+    val bio : String = "",
+    val specializations : List<String>,
+    val socialMediaLinks : Map<String, String> = mapOf(),
+    val appointments : Map<String, List<Int>> = mapOf()
 )
 
 @Composable
 fun TrainerCard(
     data : TrainerDemo
 ) {
+    val painter = rememberAsyncImagePainter(data.image)
+    val painterState = painter.state.collectAsState()
     Card (
         modifier = Modifier
             .fillMaxWidth()
@@ -60,18 +71,56 @@ fun TrainerCard(
         ){
             val (image, name, rating, price, distance, gender, specializations) = createRefs()
 
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = "Trainer Image",
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(80.dp)
-                    .constrainAs(image) {
-                        top.linkTo(parent.top, margin = 8.dp)
-                        start.linkTo(parent.start, margin = 8.dp)
-                    },
-                contentScale = ContentScale.Crop
-            )
+            when (painterState.value) {
+                AsyncImagePainter.State.Empty -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(80.dp)
+                            .constrainAs(image) {
+                                top.linkTo(parent.top, margin = 8.dp)
+                                start.linkTo(parent.start, margin = 8.dp)
+                            }
+                    )
+                }
+                is AsyncImagePainter.State.Error -> {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_launcher_background),
+                        contentDescription = "Trainer Image",
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(80.dp)
+                            .constrainAs(image) {
+                                top.linkTo(parent.top, margin = 8.dp)
+                                start.linkTo(parent.start, margin = 8.dp)
+                            },
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                is AsyncImagePainter.State.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(80.dp)
+                            .constrainAs(image) {
+                                top.linkTo(parent.top, margin = 8.dp)
+                                start.linkTo(parent.start, margin = 8.dp)
+                            }
+                    )
+                }
+                is AsyncImagePainter.State.Success -> {
+                    Image(
+                        painter = painter,
+                        contentDescription = "Trainer Image",
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(80.dp)
+                            .constrainAs(image) {
+                                top.linkTo(parent.top, margin = 8.dp)
+                                start.linkTo(parent.start, margin = 8.dp)
+                            },
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
             Text(
                 text = "${data.Fname} ${data.Lname}",
                 modifier = Modifier
@@ -112,6 +161,7 @@ fun TrainerCard(
             ) {
                 RatingStars(
                     modifier = Modifier
+                        .padding(8.dp)
                         .weight(1f),
                     rating = data.rating
                 )
@@ -154,7 +204,7 @@ fun RatingStars(
 ){
     Row (
         modifier = modifier
-            .padding(8.dp)
+            //.padding(8.dp)
         ,
         verticalAlignment = Alignment.CenterVertically,
     ) {

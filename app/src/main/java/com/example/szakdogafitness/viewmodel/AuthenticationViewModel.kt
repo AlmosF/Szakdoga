@@ -196,9 +196,6 @@ class AuthenticationViewModel @Inject constructor(
 
     fun checkSignInState() = _state.update { it.copy(isLoggedIn = authentication.hasUser() ) }
 
-
-
-
 }
 
 data class AuthenticationState(
