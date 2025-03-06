@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val allMainUseCases: AllMainUseCases
+
 ) : ViewModel(){
 
     private val _state = MutableStateFlow(MainState())
