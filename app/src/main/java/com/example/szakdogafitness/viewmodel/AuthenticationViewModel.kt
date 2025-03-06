@@ -2,6 +2,7 @@ package com.example.szakdogafitness.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.example.szakdogafitness.domain.usecases.IsEmailValidUseCase
 import com.example.szakdogafitness.ui.model.UiText
 import com.example.szakdogafitness.util.UiEvent
@@ -17,6 +18,7 @@ import javax.inject.Inject
 import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.usecases.PasswordsMatchUseCase
 import com.example.szakdogafitness.domain.usecases.auth.AllAuthenticationUseCases
+import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
 import com.example.szakdogafitness.ui.model.toUiText
 
 @HiltViewModel
@@ -52,6 +54,9 @@ class AuthenticationViewModel @Inject constructor(
                 val newConfirmPassword = event.password.trim()
                 _state.update { it.copy(confirmPassword = newConfirmPassword) }
             }
+            is AuthenticationEvent.NavigateToProfile -> {
+                event.navGraph.navigate(RootScreenRoute.Authentication.route)
+            }
             AuthenticationEvent.PasswordVisibilityChanged -> {
                 _state.update { it.copy(passwordVisibility = !state.value.passwordVisibility) }
             }
@@ -74,6 +79,7 @@ class AuthenticationViewModel @Inject constructor(
             AuthenticationEvent.ForgotPasswordButtonClicked -> {
                 onForgotPassword()
             }
+
         }
     }
 
@@ -212,6 +218,7 @@ sealed class AuthenticationEvent {
     data class EmailChanged(val email: String) : AuthenticationEvent()
     data class PasswordChanged(val password: String) : AuthenticationEvent()
     data class ConfirmPasswordChanged(val password: String) : AuthenticationEvent()
+    data class NavigateToProfile(val navGraph: NavHostController): AuthenticationEvent()
     object PasswordVisibilityChanged : AuthenticationEvent()
     object ConfirmPasswordVisibilityChanged : AuthenticationEvent()
     object AuthenticationButtonClicked : AuthenticationEvent()

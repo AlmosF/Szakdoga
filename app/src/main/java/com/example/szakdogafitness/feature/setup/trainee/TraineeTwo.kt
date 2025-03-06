@@ -30,6 +30,7 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +44,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.szakdogafitness.ui.common.LargeDropdownMenu
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.ProgressBar
+import com.example.szakdogafitness.viewmodel.SetupEvent
 import com.example.szakdogafitness.viewmodel.SetupViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,7 +56,8 @@ fun TraineeTwo(
     val textFieldModifier = Modifier
         .fillMaxWidth(0.9f)
         .padding(top = 8.dp, bottom = 8.dp)
-    var pref by remember { mutableStateOf(0) }
+    //var pref by remember { mutableStateOf(0) }
+    val state by setupViewModel.state.collectAsState()
 
     ConstraintLayout(
         modifier = Modifier
@@ -107,10 +110,17 @@ fun TraineeTwo(
                 }
         ) {
             SegmentedButton(
-                selected = pref == 1,
+                //selected = pref == 1,
+                selected = state.user.trainee.trainingPreference == 1,
                 onClick = {
-                    pref = if (pref == 1) 0
-                    else 1
+                    /*pref = if (pref == 1) 0
+                    else 1*/
+                    setupViewModel.onEvent(
+                        SetupEvent.TrainingPreferenceChanged(
+                            if (state.user.trainee.trainingPreference == 1) 0
+                            else 1
+                        )
+                    )
                 },
                 shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
                 icon = {
@@ -128,10 +138,17 @@ fun TraineeTwo(
             }
             Spacer(modifier = Modifier.width(48.dp))
             SegmentedButton(
-                selected = pref == 2,
+                //selected = pref == 2,
+                selected = state.user.trainee.trainingPreference == 2,
                 onClick = {
-                    pref = if (pref == 2) 0
-                    else 2
+                    /*pref = if (pref == 2) 0
+                    else 2*/
+                    setupViewModel.onEvent(
+                        SetupEvent.TrainingPreferenceChanged(
+                            if (state.user.trainee.trainingPreference == 2) 0
+                            else 2
+                        )
+                    )
                 },
                 shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
                 icon = {
@@ -149,7 +166,7 @@ fun TraineeTwo(
             }
         }
 
-        var currentHInfIndices by remember { mutableStateOf(listOf<Int>()) }
+        //var currentHInfIndices by remember { mutableStateOf(listOf<Int>()) }
         var healthInformation = listOf("Healthy", "Cardiovascular Disease", "Respiratory Conditions", "Musculoskeletal Issues", "Endocrine Disorders", "Neurological Conditions", "Digestive Disorders", "Mental Health Conditions", "Allergies", "Autoimmune Diseases", "Back Pain", "Knee Problems", "Shoulder Pain", "Neck Pain", "Plantar Fasciitis", "Carpal Tunnel Syndrome", "Pregnancy", "Postpartum", "History of Injuries", "Surgeries", "Medications", "Smoking Status", "Alcohol Consumption")
 
         LargeDropdownMenu(
@@ -161,18 +178,28 @@ fun TraineeTwo(
                 },
             label = "Health Information",
             items = healthInformation,
-            selectedIndices = currentHInfIndices,
+            //selectedIndices = currentHInfIndices,
+            selectedIndices = state.user.trainee.healthInformation,
             multiSelect = true,
             onItemsSelected = { index, item ->
-                currentHInfIndices = if (currentHInfIndices.contains(index)) {
+                /*currentHInfIndices = if (currentHInfIndices.contains(index)) {
                     currentHInfIndices - index
                 } else {
                     currentHInfIndices + index
-                }
+                }*/
+                setupViewModel.onEvent(
+                    SetupEvent.HealthInformationChanged(
+                        if (state.user.trainee.healthInformation.contains(index)){
+                            state.user.trainee.healthInformation.filter { it != index }
+                        } else {
+                            state.user.trainee.healthInformation + index
+                        }
+                    )
+                )
             },
         )
 
-        var currentDietIndices by remember { mutableStateOf(listOf<Int>()) }
+        //var currentDietIndices by remember { mutableStateOf(listOf<Int>()) }
         var dietInf = listOf("None", "Vegetarian", "Vegan", "Gluten-Free", "Dairy-Free", "Lactose Intolerant", "Nut Allergy", "Peanut Allergy", "Tree Nut Allergy", "Soy Allergy", "Egg Allergy", "Shellfish Allergy", "Fish Allergy", "Wheat Allergy", "Other Allergies", "Low-Carb", "Ketogenic (Keto)", "Paleo", "Whole30", "Low-Sodium", "Low-Sugar", "High-Protein", "Kosher", "Halal", "Weight Watchers", "Other Restrictions", "Prefer Not to Say")
 
         LargeDropdownMenu(
@@ -184,17 +211,27 @@ fun TraineeTwo(
                 },
             label = "Dietary Information / Restrictions",
             items = dietInf,
-            selectedIndices = currentDietIndices,
+            //selectedIndices = currentDietIndices,
+            selectedIndices = state.user.trainee.dietaryPreferences,
             multiSelect = true,
             onItemsSelected = { index, item ->
-                currentDietIndices = if (currentDietIndices.contains(index)) {
+                /*currentDietIndices = if (currentDietIndices.contains(index)) {
                     currentDietIndices - index
                 } else {
                     currentDietIndices + index
-                }
+                }*/
+                setupViewModel.onEvent(
+                    SetupEvent.DietaryPreferencesChanged(
+                        if (state.user.trainee.dietaryPreferences.contains(index)){
+                            state.user.trainee.dietaryPreferences.filter { it != index }
+                        } else {
+                            state.user.trainee.dietaryPreferences + index
+                        }
+                    )
+                )
             },
         )
-        var bioText by remember { mutableStateOf("") }
+        //var bioText by remember { mutableStateOf("") }
 
         NormalTextField(
             modifier = textFieldModifier
@@ -204,8 +241,10 @@ fun TraineeTwo(
                     end.linkTo(endGuideline95)
                 },
             label = "Bio / Profile",
-            value = bioText,
-            onValueChange = { bioText = it },
+            value = state.user.bio,
+            onValueChange = {
+                setupViewModel.onEvent(SetupEvent.BioChanged(it))
+            },
             singleLine = false,
             onDone = {},
             leadingIcon = null,
@@ -218,7 +257,7 @@ fun TraineeTwo(
             maxLines = 5
         )
 
-        var currentEquIndices by remember { mutableStateOf(listOf<Int>()) }
+        //var currentEquIndices by remember { mutableStateOf(listOf<Int>()) }
         var equipment = listOf("None", "Dumbbells", "Kettlebells", "Barbell", "Bench", "Pull-Up Bar", "Resistance Bands", "Medicine Ball", "Stability Ball", "Yoga Mat", "Foam Roller", "TRX", "Box", "Bosu Ball", "Plyo Box", "Jump Rope", "Treadmill", "Stationary Bike", "Rowing Machine", "Elliptical", "Stair Climber", "Other Cardio Equipment", "Other Strength Equipment", "Other")
 
         LargeDropdownMenu(
@@ -230,14 +269,24 @@ fun TraineeTwo(
                 },
             label = "Equipment Available",
             items = equipment,
-            selectedIndices = currentEquIndices,
+            //selectedIndices = currentEquIndices,
+            selectedIndices = state.user.trainee.availableEquipment,
             multiSelect = true,
             onItemsSelected = { index, item ->
-                currentEquIndices = if (currentEquIndices.contains(index)) {
+                /*currentEquIndices = if (currentEquIndices.contains(index)) {
                     currentEquIndices - index
                 } else {
                     currentEquIndices + index
-                }
+                }*/
+                setupViewModel.onEvent(
+                    SetupEvent.AvailableEquipmentChanged(
+                        if (state.user.trainee.availableEquipment.contains(index)){
+                            state.user.trainee.availableEquipment.filter { it != index }
+                        } else {
+                            state.user.trainee.availableEquipment + index
+                        }
+                    )
+                )
             },
         )
 

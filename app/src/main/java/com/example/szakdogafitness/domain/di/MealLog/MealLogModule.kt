@@ -1,4 +1,4 @@
-package com.example.szakdogafitness.domain.di
+package com.example.szakdogafitness.domain.di.MealLog
 
 import com.example.szakdogafitness.data.mealLog.IMealLog
 import com.example.szakdogafitness.data.mealLog.MealLog

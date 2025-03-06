@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.szakdogafitness.ui.common.HeightSelector
 import com.example.szakdogafitness.ui.common.LargeDropdownMenu
 import com.example.szakdogafitness.ui.common.NormalTextField
@@ -62,7 +63,8 @@ fun TraineeOne(
         .fillMaxWidth(0.9f)
         .padding(top = 8.dp, bottom = 8.dp)
     var unit by remember { mutableStateOf(0) }
-    val state = setupViewModel.state.collectAsState().value
+    //val state = setupViewModel.state.collectAsState().value
+    val state by setupViewModel.state.collectAsState()
 
     ConstraintLayout (
         modifier = Modifier
@@ -106,7 +108,8 @@ fun TraineeOne(
                 }
         ) {
             SegmentedButton(
-                selected = state.unit == 1,
+                //selected = state.unit == 1,
+                selected = state.user.trainee.unit == 1,
                 onClick = {
                     //unit = 1
                     setupViewModel.onEvent(SetupEvent.UnitChanged(1))
@@ -117,7 +120,7 @@ fun TraineeOne(
             }
             Spacer(modifier = Modifier.width(48.dp))
             SegmentedButton(
-                selected = state.unit == 2,
+                selected = state.user.trainee.unit == 2,
                 onClick = {
                     //unit = 2
                     setupViewModel.onEvent(SetupEvent.UnitChanged(2))
@@ -129,7 +132,7 @@ fun TraineeOne(
         }
         var heightOpened by remember { mutableStateOf(false) }
         var selectedHeight by remember { mutableStateOf(120) }
-        var unit by remember { mutableStateOf(state.unit == 1) }
+        var unit by remember { mutableStateOf(state.user.trainee.unit == 1) }
         NormalTextField(
             modifier = textFieldModifier
                 .clickable(onClick = {
@@ -142,12 +145,12 @@ fun TraineeOne(
                 },
             label = "Height",
             onValueChange = {},
-            value = if (state.height == 0)
+            value = if (state.user.trainee.height == 0)
                 ""
-            else if (state.unit == 1)
-                "${state.height} cm"
-            else if (state.unit == 2) {
-                val totalInches = (state.height / 2.54).toInt()
+            else if (state.user.trainee.unit == 1)
+                "${state.user.trainee.height} cm"
+            else if (state.user.trainee.unit == 2) {
+                val totalInches = (state.user.trainee.height / 2.54).toInt()
                 val feet = totalInches / 12
                 val inches = totalInches % 12 + 1
                 "$feet ft $inches in"
@@ -173,7 +176,7 @@ fun TraineeOne(
             )
         )
         if (heightOpened){
-            var heightDialogCm by remember { mutableStateOf(state.height) }
+            var heightDialogCm by remember { mutableStateOf(state.user.trainee.height) }
             Dialog(
                 onDismissRequest = { heightOpened = false },
             ) {
@@ -191,7 +194,7 @@ fun TraineeOne(
                         textStyle = MaterialTheme.typography.bodyLarge,
                         textColor = Color.Gray,
                         selectedTextColor = Color.Black,
-                        unit = state.unit == 1,
+                        unit = state.user.trainee.unit == 1,
                         onHeightSelected = { cm ->
                             setupViewModel.onEvent(SetupEvent.HeightChanged(cm))
                             Log.d("HeightSelectorVM", "selectedHeight: $cm, unit: $unit")
@@ -200,7 +203,7 @@ fun TraineeOne(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(200.dp),
-                        heightCm = state.height
+                        heightCm = state.user.trainee.height
                     )
                     Row (
                         modifier = Modifier.fillMaxWidth(),
@@ -240,12 +243,12 @@ fun TraineeOne(
                 },
             label = "Weight",
             onValueChange = {},
-            value = if (state.weight == 0.0)
+            value = if (state.user.trainee.weight == 0.0)
                 ""
             else if (unit)
-                "${state.weight} kg"
+                "${state.user.trainee.weight} kg"
             else {
-                val pounds = state.weight * 2.20462
+                val pounds = state.user.trainee.weight * 2.20462
                 "$pounds lb"
             },
             singleLine = true,
@@ -266,7 +269,7 @@ fun TraineeOne(
             )
         )
         if (weightOpened){ //EZ HIBÁS MÉG ///TODO
-            var weightDialog by remember { mutableStateOf(state.weight) }
+            var weightDialog by remember { mutableStateOf(state.user.trainee.weight) }
             Dialog(
                 onDismissRequest = { weightOpened = false },
             ) {
@@ -284,7 +287,7 @@ fun TraineeOne(
                         textStyle = MaterialTheme.typography.bodyLarge,
                         textColor = Color.Gray,
                         unit = unit,
-                        weight = state.weight,
+                        weight = state.user.trainee.weight,
                         onWeightSelected = {
                             weightDialog = it
                         }
@@ -327,7 +330,7 @@ fun TraineeOne(
                 },
             label = "Training / Week",
             items = trainingItems,
-            selectedIndices = state.trainings.let { if (it == -1) emptyList() else listOf(it) },
+            selectedIndices = state.user.trainee.trainings.let { if (it == -1) emptyList() else listOf(it) },
             onItemSelected = { index, items ->
                 //selectedTriningIndices = listOf(index)
                 setupViewModel.onEvent(
@@ -348,7 +351,7 @@ fun TraineeOne(
             label = "Fitness Goals",
             multiSelect = true,
             items = fitnessGoalItems,
-            selectedIndices = state.fitnessGoals,
+            selectedIndices = state.user.trainee.fitnessGoals,
             onItemsSelected = { index, item ->
                 /*selectedFitnessGoalIndices = if (selectedFitnessGoalIndices.contains(index)) {
                     selectedFitnessGoalIndices - index
@@ -357,10 +360,10 @@ fun TraineeOne(
                 }*/
                 setupViewModel.onEvent(
                     SetupEvent.FitnessGoalsChanged(
-                        if (state.fitnessGoals.contains(index)){
-                            state.fitnessGoals - index
+                        if (state.user.trainee.fitnessGoals.contains(index)){
+                            state.user.trainee.fitnessGoals - index
                         } else {
-                            state.fitnessGoals + index
+                            state.user.trainee.fitnessGoals + index
                         }
                     )
                 )
@@ -378,7 +381,7 @@ fun TraineeOne(
                 },
             label = "Current Fitness Level",
             items = currentFitnessLevelItems,
-            selectedIndices = state.currentFitnessLevel.let { if (it == -1) emptyList() else listOf(it) },
+            selectedIndices = state.user.trainee.currentFitnessLevel.let { if (it == -1) emptyList() else listOf(it) },
             onItemSelected = { index, items ->
                 //currentFitnessLevelIndices = listOf(index)
                 setupViewModel.onEvent(

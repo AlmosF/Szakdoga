@@ -1,4 +1,4 @@
-package com.example.szakdogafitness.domain.di
+package com.example.szakdogafitness.domain.di.Authentication
 
 import com.example.szakdogafitness.data.auth.AuthService
 import com.example.szakdogafitness.domain.usecases.auth.AllAuthenticationUseCases

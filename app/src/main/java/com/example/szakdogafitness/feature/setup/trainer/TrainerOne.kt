@@ -89,7 +89,7 @@ fun TrainerOne(
             fontWeight = Bold
         )*/
 
-        var selectedCertificationsIndices by remember { mutableStateOf((state.certifications)) }
+        var selectedCertificationsIndices by remember { mutableStateOf((state.user.trainer.certifications)) }
         var certifications = listOf("None", "ACE Certified Personal Trainer (CPT)", "NASM Certified Personal Trainer (CPT)", "ISSA Certified Personal Trainer", "ACSM Certified Personal Trainer", "NSCA Certified Personal Trainer", "AFPA Certified Personal Trainer", "NESTA Certified Personal Trainer", "AFAA Certified Personal Fitness Instructor", "NPTI Certified Personal Trainer", "CrossFit Level 1 Trainer", "CrossFit Level 2 Trainer", "Certified Strength and Conditioning Specialist (CSCS)", "National Strength and Conditioning Association (NSCA)", "USA Weightlifting Level 1 Coach", "USA Weightlifting Level 2 Coach", "Precision Nutrition Level 1", "Precision Nutrition Level 2", "Certified Sports Nutritionist (CSN)", "Registered Dietitian (RD)", "Yoga Alliance Certified Teacher (RYT)", "Pilates Certification", "Group Fitness Instructor Certification", "CPR/AED Certified", "First Aid Certified", "Other Certifications", "Prefer Not to Say")
 
         LargeDropdownMenu(
@@ -102,7 +102,7 @@ fun TrainerOne(
                 },
             label = "Certifications / Qualifications",
             items = certifications,
-            selectedIndices = state.certifications,
+            selectedIndices = state.user.trainer.certifications,
             multiSelect = true,
             onItemsSelected = {  index, item ->
                 /*selectedCertificationsIndices = if (selectedCertificationsIndices.contains(index)) {
@@ -115,10 +115,10 @@ fun TrainerOne(
                 )*/
                 setupViewModel.onEvent(
                     SetupEvent.CertificationsChanged(
-                        if (state.certifications.contains(index)) {
-                            state.certifications.filter { it != index }
+                        if (state.user.trainer.certifications.contains(index)) {
+                            state.user.trainer.certifications.filter { it != index }
                         } else {
-                            state.certifications + index
+                            state.user.trainer.certifications + index
                         }
                     )
                 )
@@ -137,7 +137,7 @@ fun TrainerOne(
                 },
             label = "Areas of Expertise",
             items = areasList,
-            selectedIndices = state.areasOfExperties,
+            selectedIndices = state.user.trainer.areasOfExperties,
             multiSelect = true,
             onItemsSelected = {  index, item ->
                 /*selectedAreasIndices = if (selectedAreasIndices.contains(index)) {
@@ -147,10 +147,10 @@ fun TrainerOne(
                 }*/
                 setupViewModel.onEvent(
                     SetupEvent.AreasOfExpertiesChanged(
-                        if (state.areasOfExperties.contains(index)) {
-                            state.areasOfExperties.filter { it != index }
+                        if (state.user.trainer.areasOfExperties.contains(index)) {
+                            state.user.trainer.areasOfExperties.filter { it != index }
                         } else {
-                            state.areasOfExperties + index
+                            state.user.trainer.areasOfExperties + index
                         }
                     )
                 )
@@ -169,7 +169,7 @@ fun TrainerOne(
                 },
             label = "Training Style / Philosophy",
             items = stylesList,
-            selectedIndices = state.trainingStyles,
+            selectedIndices = state.user.trainer.trainingStyles,
             multiSelect = true,
             onItemsSelected = {  index, item ->
                 /*selectedStylesIndices = if (selectedStylesIndices.contains(index)) {
@@ -179,10 +179,10 @@ fun TrainerOne(
                 }*/
                 setupViewModel.onEvent(
                     SetupEvent.TrainingStylesChanged(
-                        if (state.trainingStyles.contains(index)) {
-                            state.trainingStyles.filter { it != index }
+                        if (state.user.trainer.trainingStyles.contains(index)) {
+                            state.user.trainer.trainingStyles.filter { it != index }
                         } else {
-                            state.trainingStyles + index
+                            state.user.trainer.trainingStyles + index
                         }
                     )
                 )
@@ -200,8 +200,8 @@ fun TrainerOne(
                 },
             label = "Experience (Since when)",
             range = experienceRangeYear,
-            selectedYear = state.experience,
-            initialYear = if (state.experience == 0) 2024 else state.experience,
+            selectedYear = state.user.trainer.experience,
+            initialYear = if (state.user.trainer.experience == 0) 2024 else state.user.trainer.experience,
             textStyle = TextStyle(fontSize = 16.sp),
             textColor = Color.Black,
             selectedTextColor = Color.Black,
@@ -220,9 +220,9 @@ fun TrainerOne(
                     start.linkTo(startGuideline5)
                     end.linkTo(endGuideline95)
                 },
-            selectedHours = state.availability,
+            selectedHours = state.user.trainer.availability,
             onHourSelected = { day, hour ->
-                val selectedHours = state.availability.toMutableMap().apply {
+                val selectedHours = state.user.trainer.availability.toMutableMap().apply {
                     val hours = getOrDefault(day, emptyList()).toMutableList()
                     if (hours.contains(hour)) {
                         hours.remove(hour)

@@ -1,25 +1,13 @@
 package com.example.szakdogafitness.feature.setup
 
-import android.R.attr.bottom
-import android.R.attr.button
-import android.R.attr.end
-import android.R.attr.fontWeight
-import android.R.attr.onClick
-import android.R.attr.phoneNumber
-import android.R.attr.top
-import androidx.compose.foundation.background
+import android.R.attr.singleLine
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Female
@@ -29,7 +17,6 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SelectableDates
@@ -40,16 +27,12 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
@@ -57,12 +40,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.szakdogafitness.ui.common.DateSelector
+import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.ui.common.NormalTextField
-import com.example.szakdogafitness.ui.common.ProgressBar
-import com.example.szakdogafitness.ui.components.DateTransformation
 import com.example.szakdogafitness.ui.components.PhoneNumberVisualTransformation
 import com.example.szakdogafitness.ui.components.countryCodeToFlagEmoji
 import com.example.szakdogafitness.ui.components.extractRegionCode
@@ -91,6 +71,12 @@ fun SetupScreen(
     //var role by remember {mutableStateOf(0)}
     //var phoneNumber by remember { mutableStateOf("") }
     val state by setupViewModel.state.collectAsState()
+
+    /*var user by mutableStateOf(
+        User(
+
+        )
+    )*/
 
 
 
@@ -141,8 +127,10 @@ fun SetupScreen(
             label = "First name",
             onValueChange = {
                 setupViewModel.onEvent(SetupEvent.FirstNameChanged(it))
+                //firstname = it
             },
-            value = state.firstName,
+            //value = state.firstName,
+            value = state.user.firstName,
             singleLine = true,
             onDone = {},
             leadingIcon = null,
@@ -164,7 +152,8 @@ fun SetupScreen(
             onValueChange = {
                 setupViewModel.onEvent(SetupEvent.LastNameChanged(it))
             },
-            value = state.lastName,
+            //value = state.lastName,
+            value = state.user.lastName,
             singleLine = true,
             onDone = {},
             leadingIcon = null,
@@ -188,7 +177,8 @@ fun SetupScreen(
             onValueChange = {
                 if (it.length <= 8) testDOB = it
             },
-            value = state.dateOfBirth?.toTriple().toString(),
+            //value = state.dateOfBirth?.toTriple().toString(),
+            value = state.user.dateOfBirth?.toTriple().toString(),
             //value = testDOB,
             singleLine = true,
             enabled = false,
@@ -217,7 +207,8 @@ fun SetupScreen(
                 }
         ) {
             SegmentedButton(
-                selected = state.gender == 1,
+                //selected = state.gender == 1,
+                selected = state.user.gender == 1,
                 onClick = {
                     //gender = 1
                     setupViewModel.onEvent(SetupEvent.GenderChanged(1))
@@ -238,7 +229,8 @@ fun SetupScreen(
             }
             Spacer(modifier = Modifier.width(48.dp))
             SegmentedButton(
-                selected = state.gender == 2,
+                //selected = state.gender == 2,
+                selected = state.user.gender == 2,
                 onClick = {
                     //gender = 2
                     setupViewModel.onEvent(SetupEvent.GenderChanged(2))
@@ -258,12 +250,14 @@ fun SetupScreen(
                 Text(text = "Female")
             }
         }
-        val countryCode = extractRegionCode(state.phoneNumber)
+        //val countryCode = extractRegionCode(state.phoneNumber)
+        val countryCode = extractRegionCode(state.user.phoneNumber)
         val flagEmoji = countryCode?.let { countryCodeToFlagEmoji(it) }
         NormalTextField(
             label = "Phone number",
             singleLine = true,
-            value = state.phoneNumber,
+            //value = state.phoneNumber,
+            value = state.user.phoneNumber,
             onValueChange = {
                 setupViewModel.onEvent(SetupEvent.PhoneNumberChanged(it))
             },
@@ -306,7 +300,8 @@ fun SetupScreen(
                 }
         ) {
             SegmentedButton(
-                selected = state.role == 1,
+                //selected = state.role == 1,
+                selected = state.user.role == 1,
                 onClick = {
                     //role = 1
                     setupViewModel.onEvent(SetupEvent.RoleChanged(1))
@@ -321,7 +316,8 @@ fun SetupScreen(
             }
             Spacer(modifier = Modifier.width(48.dp))
             SegmentedButton(
-                selected = state.role == 2,
+                //selected = state.role == 2,
+                selected = state.user.role == 2,
                 onClick = {
                     //role = 2
                     setupViewModel.onEvent(SetupEvent.RoleChanged(2))
@@ -337,7 +333,8 @@ fun SetupScreen(
         }
         if (isDateOfBirthVisible){
             DatePick(
-                date = state.dateOfBirth?.toMillis() ?: System.currentTimeMillis(),
+                //date = state.dateOfBirth?.toMillis() ?: System.currentTimeMillis(),
+                date = state.user.dateOfBirth?.toMillis() ?: System.currentTimeMillis(),
                 selectRange = Timestamp.now().toMillis(),
                 onDateSelected = {
                     setupViewModel.onEvent(SetupEvent.DateOfBirthChanged(it!!.toTimestamp()))

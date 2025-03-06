@@ -1,6 +1,8 @@
 package com.example.szakdogafitness.feature.auth
 
+import android.R.attr.text
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -31,29 +34,45 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
 import com.example.szakdogafitness.ui.common.EmailTextField
 import com.example.szakdogafitness.ui.common.PasswordTextField
 import com.example.szakdogafitness.util.UiEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
+import com.example.szakdogafitness.viewmodel.ProfileEvent
+import com.example.szakdogafitness.viewmodel.ProfileState
+import com.example.szakdogafitness.viewmodel.ProfileViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun AuthenticateScreen(
     modifier : Modifier = Modifier,
     //snackbarHostState: SnackbarHostState, //nem kell feltetlen
-    viewModel: AuthenticationViewModel = viewModel()
+    viewModel: AuthenticationViewModel = viewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    navController : NavHostController
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    val profileState by profileViewModel.state.collectAsStateWithLifecycle()
+
     val scope = rememberCoroutineScope()
     val snackbarHostState = SnackbarHostState()
     val context = LocalContext.current
+
+    LaunchedEffect(state.isLoggedIn == true) {
+        profileViewModel.onEvent(ProfileEvent.GetUser)
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.checkSignInState()
@@ -84,8 +103,15 @@ fun AuthenticateScreen(
             .fillMaxSize()
             .safeDrawingPadding()
     ) { padding ->
-        if (state.isLoggedIn && false){
-            OutlinedButton(
+        if (state.isLoggedIn){
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .clickable{
+                        viewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
+                    },
+                color = Color.Red
+            )
+            /*OutlinedButton(
                 onClick = {
                     viewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
                 }
@@ -94,6 +120,9 @@ fun AuthenticateScreen(
                     text = "Logout!!!"
                 )
             }
+            Text(
+                text = profileState.user.firstName
+            )*/
         } else {
             Column (
                 modifier = Modifier

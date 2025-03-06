@@ -1,4 +1,4 @@
-package com.example.szakdogafitness.domain.di
+package com.example.szakdogafitness.domain.di.Setup
 
 //import com.example.szakdogafitness.domain.usecases.setup.SetupButtonsUseCase
 import com.example.szakdogafitness.data.setup.ISetupService
@@ -12,7 +12,6 @@ import com.example.szakdogafitness.domain.usecases.setup.PreviousScreenUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 

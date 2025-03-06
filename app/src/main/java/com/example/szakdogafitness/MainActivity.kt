@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.szakdogafitness.feature.auth.AuthenticateScreen
+import com.example.szakdogafitness.feature.lifestyle.LifeStyleScreen
 import com.example.szakdogafitness.feature.nutrition.NutritionScreen
 import com.example.szakdogafitness.feature.nutrition.SearchNutritionScreen
 import com.example.szakdogafitness.feature.setup.SetupScreenBox
@@ -56,15 +57,22 @@ class MainActivity : ComponentActivity() {
                     //TrainerOne(innerPadding)
                     //TrainerTwo(innerPadding)
 
+
+
+                    //### WORKING SETUP ###
+                    //LifeStyleScreen()
+                    //### WORKING SETUP ###
+
+
                     //### WORKING SETUP ###
                     //SetupScreenBox(innerPadding)
                     //### WORKING SETUP ###
 
 
                     //### MEALLOGBLOCK ###
-                    LogBlock(
+                    /*LogBlock(
                         modifier = Modifier.padding(innerPadding)
-                    )
+                    )*/
                     //### MEALLOGBLOCK ###
 
 
@@ -115,11 +123,11 @@ class MainActivity : ComponentActivity() {
 
 
                     //### WORKING ROOT NAV ###
-                    /*val navController = rememberNavController()
+                    val navController = rememberNavController()
                     RootNavigation(
                         modifier = Modifier.padding(innerPadding),
                         navController = navController,
-                    )*/
+                    )
                     //### WORKING ROOT NAV ###
 
 

@@ -18,25 +18,6 @@ import com.google.firebase.firestore.GeoPoint
  * @param fcmToken: String (Firebase Cloud Messaging token of the user)
  * @param profileImageUrl: String (URL of the profile image of the user)
  * @param location: GeoPoint? (Location of the user)
- * @param certifications: List<String> (Certifications of the trainer)
- * @param areasOfExperties: List<String> (Areas of experties of the trainer)
- * @param trainingStyles: List<String> (Training styles of the trainer)
- * @param experience: Int (Experience of the trainer)
- * @param availability: Map<String, List<Int>> (Availability of the trainer)
- * @param pricing: Int (Pricing of the trainer)
- * @param rating: Float (Rating of the trainer)
- * @param specializations: List<String> (Specializations of the trainer)
- * @param socialMediaLinks: Map<String, String> (Social media links of the trainer)
- * @param unit: String (Unit of the trainee: Metric, Imperial)
- * @param height: Double (Height of the trainee)
- * @param weight: Double (Weight of the trainee)
- * @param trainings: Int (Number of trainings of the trainee)
- * @param fitnessGoals: List<String> (Fitness goals of the trainee)
- * @param currentFitnessLevel: String (Current fitness level of the trainee)
- * @param trainingPreference: Int (Training preference of the trainee)
- * @param healthInformation: List<String> (Health information of the trainee)
- * @param dietaryPreferences: List<String> (Dietary preferences of the trainee)
- * @param availableEquipment: List<String> (Available equipment of the trainee)
  * @param isSetupDone: Boolean (Is the setup done for the user)
  */
 
@@ -53,7 +34,50 @@ data class User(
     val fcmToken: String = "",
     val profileImageUrl: String = "",
     val location: GeoPoint? = null,
-    //trianer
+    val trainer: Trainer = Trainer(),
+
+    //Trainer
+    /*val certifications: List<Int> = emptyList(), //Külön dataclass trainer-trainee
+    val areasOfExperties: List<Int> = emptyList(),
+    val trainingStyles: List<Int> = emptyList(),
+    val experience: Int = 0,
+    val availability: Map<String, List<Int>> = emptyMap(),
+    val pricing: Int = 0,
+    val rating: Float = 0f,
+    val specializations: List<Int> = emptyList(),
+    val socialMediaLinks: Map<String, String> = emptyMap(),*/
+
+    //trainee
+    /*val unit: Int = 0,
+    val height: Int = 0,
+    val weight: Double = 0.0,
+    val trainings: Int = 0,
+    val fitnessGoals: List<Int> = emptyList(),
+    val currentFitnessLevel: Int = 0, //Vagy int?
+    val trainingPreference: Int = 0,
+    val healthInformation: List<String> = emptyList(),
+    val dietaryPreferences: List<String> = emptyList(),
+    val availableEquipment: List<String> = emptyList(),*/
+
+    val trainee: Trainee = Trainee(),
+
+    val isSetupDone: Boolean = false
+)
+
+/**
+ * @param certifications: List<String> (Certifications of the trainer)
+ * @param areasOfExperties: List<String> (Areas of experties of the trainer)
+ * @param trainingStyles: List<String> (Training styles of the trainer)
+ * @param experience: Int (Experience of the trainer)
+ * @param availability: Map<String, List<Int>> (Availability of the trainer)
+ * @param pricing: Int (Pricing of the trainer)
+ * @param rating: Float (Rating of the trainer)
+ * @param specializations: List<String> (Specializations of the trainer)
+ * @param socialMediaLinks: Map<String, String> (Social media links of the trainer)
+ * @param pendingRequests: List<String> (Pending requests of the trainer)
+ * @param acceptedRequests: List<String> (Accepted requests of the trainer)
+ */
+data class Trainer(
     val certifications: List<Int> = emptyList(),
     val areasOfExperties: List<Int> = emptyList(),
     val trainingStyles: List<Int> = emptyList(),
@@ -63,7 +87,25 @@ data class User(
     val rating: Float = 0f,
     val specializations: List<Int> = emptyList(),
     val socialMediaLinks: Map<String, String> = emptyMap(),
-    //trainee
+    val pendingRequests: List<String> = emptyList(),
+    val acceptedRequests: List<String> = emptyList(),
+)
+
+/**
+ * @param unit: String (Unit of the trainee: Metric, Imperial)
+ * @param height: Double (Height of the trainee)
+ * @param weight: Double (Weight of the trainee)
+ * @param trainings: Int (Number of trainings of the trainee)
+ * @param fitnessGoals: List<String> (Fitness goals of the trainee)
+ * @param currentFitnessLevel: String (Current fitness level of the trainee)
+ * @param trainingPreference: Int (Training preference of the trainee)
+ * @param healthInformation: List<String> (Health information of the trainee)
+ * @param dietaryPreferences: List<String> (Dietary preferences of the trainee)
+ * @param availableEquipment: List<String> (Available equipment of the trainee)
+ * @param activeTrainers: List<String> (Active trainers of the trainee)
+ */
+
+data class Trainee(
     val unit: Int = 0,
     val height: Int = 0,
     val weight: Double = 0.0,
@@ -71,8 +113,8 @@ data class User(
     val fitnessGoals: List<Int> = emptyList(),
     val currentFitnessLevel: Int = 0, //Vagy int?
     val trainingPreference: Int = 0,
-    val healthInformation: List<String> = emptyList(),
-    val dietaryPreferences: List<String> = emptyList(),
-    val availableEquipment: List<String> = emptyList(),
-    val isSetupDone: Boolean = false
+    val healthInformation: List<Int> = emptyList(),
+    val dietaryPreferences: List<Int> = emptyList(),
+    val availableEquipment: List<Int> = emptyList(),
+    val activeTrainers: List<String> = emptyList(),
 )

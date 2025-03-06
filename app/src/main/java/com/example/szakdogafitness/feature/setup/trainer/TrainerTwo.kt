@@ -86,7 +86,7 @@ fun TrainerTwo(
 
         var pricing by remember {mutableStateOf(0)}
         NormalTextField(
-            value = state.pricing.toString(),
+            value = state.user.trainer.pricing.toString(),
             onValueChange = {
                 //state.pricing = it.toIntOrNull() ?: 0
                 setupViewModel.onEvent(SetupEvent.PricingChanged(it.toIntOrNull() ?: 0))
@@ -122,7 +122,7 @@ fun TrainerTwo(
         LargeDropdownMenu(
             label = "Specializations (Optional)",
             items = specializations,
-            selectedIndices = state.specializations,
+            selectedIndices = state.user.trainer.specializations,
             multiSelect = true,
             onItemsSelected = { index, items ->
                 /*selectedSpecializationsIndices = if (selectedSpecializationsIndices.contains(index)) {
@@ -132,10 +132,10 @@ fun TrainerTwo(
                 }*/
                 setupViewModel.onEvent(
                     SetupEvent.SpecializationsChanged(
-                        if (state.specializations.contains(index)){
-                            state.specializations - index
+                        if (state.user.trainer.specializations.contains(index)){
+                            state.user.trainer.specializations - index
                         } else {
-                            state.specializations + index
+                            state.user.trainer.specializations + index
                         }
                     )
                 )
@@ -157,7 +157,7 @@ fun TrainerTwo(
                     end.linkTo(endGuideline95)
                 },
             label = "Bio / Profile",
-            value = state.bio,
+            value = state.user.bio,
             onValueChange = {
                 //bioText = it
                 setupViewModel.onEvent(SetupEvent.BioChanged(it))
