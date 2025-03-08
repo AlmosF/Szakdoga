@@ -77,13 +77,13 @@ fun DailyCaloriesBlock(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            repeat(2) { index ->
+            repeat(pagerState.pageCount) { index ->
                 Box(
                     modifier = Modifier
                         .padding(1.dp)
                         .size(10.dp)
                         .background(
-                            if (pagerState.currentPage == index) Color.Cyan else Color.Gray,
+                            if (pagerState.currentPage == index)  Color(0xFF3ECAE3) else Color(0xFFE8E8E8),
                             shape = CircleShape
                         )
 
@@ -117,7 +117,7 @@ fun DailyCaloriesFirstPage(
             .fillMaxWidth()
             //.padding(8.dp)
             .heightIn(290.dp)
-            .background(Color.LightGray, shape = RoundedCornerShape(16.dp))
+            .background(Color(0xFFE8E8E8), shape = RoundedCornerShape(16.dp))
     ) {
         Row (
             modifier = Modifier
@@ -145,7 +145,7 @@ fun DailyCaloriesFirstPage(
                     number = targetCalories,
                     fontSize = 30.sp,
                     radius = 100.dp,
-                    color = Color.Green,
+                    color = Color(0xFF3ECAE3),
                     strokeWidth = 16.dp,
                     animDuration = 1000,
                     animDelay = 0
@@ -226,7 +226,7 @@ fun PieChartComp(
         modifier = Modifier
             .fillMaxWidth()
             //.padding(8.dp)
-            .background(Color.LightGray, shape = RoundedCornerShape(16.dp))
+            .background(Color(0xFFE8E8E8), shape = RoundedCornerShape(16.dp))
             .heightIn(290.dp)
             //.size(240.dp)
         ,
@@ -275,7 +275,7 @@ fun PieChartComp(
                             //this.setUsePercentValues(true)
 
 
-                            //this.setDrawSliceText(false)
+                            this.setDrawSliceText(false)
 
 
                             this.legend.horizontalAlignment =

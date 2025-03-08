@@ -4,7 +4,15 @@ import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
 
 sealed class MainScreenRoute(val route: String){
     object LifeStyle : MainScreenRoute("lifestyle")
-    object Nutrition : MainScreenRoute("nutrition")
+    /*object Nutrition : MainScreenRoute("nutrition") {
+
+        object Search : MainScreenRoute("nutrition/search")
+    }*/
+    object NutritionGraph : MainScreenRoute("nutrition_graph") {
+        object Nutrition: MainScreenRoute("nutrition_graph/nutrition")
+        object Search : MainScreenRoute("nutrition_graph/search")
+    }
+
     object Profile : MainScreenRoute("profile")
     //Trainee
     object Search: MainScreenRoute("search")

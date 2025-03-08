@@ -513,7 +513,7 @@ sealed class SetupEvent{
     data class ExperienceChanged(val experience: Int) : SetupEvent()
     data class AvailabilityChanged(val availability: Map<String, List<Int>>) : SetupEvent()
     data class PricingChanged(val pricing: Int) : SetupEvent()
-    data class RatingChanged(val rating: Float) : SetupEvent()
+    data class RatingChanged(val rating: Int) : SetupEvent()
     data class SpecializationsChanged(val specializations: List<Int>) : SetupEvent()
     data class SocialMediaLinksChanged(val socialMediaLinks: Map<String, String>) : SetupEvent()
     //trainee

@@ -34,7 +34,7 @@ fun AddNutrientsBlock(
 ) {
     Column(
         modifier = modifier
-            .background(Color.Companion.LightGray, shape = RoundedCornerShape(16.dp))
+            .background(Color(0xFFE8E8E8), shape = RoundedCornerShape(16.dp))
             .padding(8.dp),
         horizontalAlignment = Alignment.Companion.CenterHorizontally
     ) {
@@ -80,7 +80,7 @@ fun NutritionIcons(
     Column(
         modifier = modifier
             .background(
-                Color.Companion.DarkGray.copy(0.5f),
+                Color(0xFFBDBDBD).copy(0.5f),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
             )
             .sizeIn(maxWidth = 100.dp, maxHeight = 100.dp)

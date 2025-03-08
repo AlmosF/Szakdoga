@@ -1,0 +1,7 @@
+package com.example.szakdogafitness.domain.usecases.profile
+
+import com.example.szakdogafitness.data.profile.IProfileService
+
+class GetProfileByIdUseCase(private val repository: IProfileService){
+    suspend operator fun invoke(id: String) = repository.getUserById(id)
+}

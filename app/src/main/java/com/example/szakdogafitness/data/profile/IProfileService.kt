@@ -5,5 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface IProfileService{
     suspend fun getUser() : Flow<User?>
+    suspend fun getUserById(id: String) : Flow<User?>
     suspend fun editUser()
 }

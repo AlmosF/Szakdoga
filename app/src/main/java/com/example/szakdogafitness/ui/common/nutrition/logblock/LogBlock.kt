@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.szakdogafitness.domain.model.Nutrition
@@ -45,7 +46,8 @@ enum class BlockState {
 fun LogBlock(
     modifier: Modifier = Modifier,
     //data: Map<String, List<Nutrition>>,
-    viewModel: MealLogViewModel = viewModel(),
+    //viewModel: MealLogViewModel = viewModel(),
+    viewModel: MealLogViewModel = hiltViewModel(),
     onRemove: (String, Int) -> Unit = { _, _ -> }
 ) {
     //val titles = listOf("Breakfast", "Lunch", "Dinner", "Morning Snack", "Afternoon Snack", "Evening Snack")
@@ -106,9 +108,9 @@ fun LogBlock(
     //var currentBlockState by remember { mutableStateOf(BlockState.Closed) }
     Column (
         modifier = modifier
-            .fillMaxWidth(0.95f)
-            .padding(8.dp)
-            .background(Color.LightGray.copy(0.5f), shape = RoundedCornerShape(16.dp))
+            .fillMaxWidth(0.9f)
+            .padding(top = 16.dp)
+            .background(Color(0xFFE8E8E8), shape = RoundedCornerShape(16.dp))
         ,
         horizontalAlignment = Alignment.Start
     ) {

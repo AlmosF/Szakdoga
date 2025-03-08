@@ -2,6 +2,7 @@ package com.example.szakdogafitness.domain.di.Profile
 
 import com.example.szakdogafitness.data.profile.IProfileService
 import com.example.szakdogafitness.domain.usecases.profile.AllProfileUseCases
+import com.example.szakdogafitness.domain.usecases.profile.GetProfileByIdUseCase
 import com.example.szakdogafitness.domain.usecases.profile.GetProfileUseCase
 import dagger.Module
 import dagger.Provides
@@ -21,12 +22,19 @@ object AllProfileUseCasesModule{
 
     @Provides
     @Singleton
+    fun provideGetProfileByIdUseCase(repository: IProfileService): GetProfileByIdUseCase =
+        GetProfileByIdUseCase(repository)
+
+    @Provides
+    @Singleton
     fun provideAllProfileUseCases(
         repository: IProfileService,
-        getProfileUseCase: GetProfileUseCase
+        getProfileUseCase: GetProfileUseCase,
+        getProfileByIdUseCase: GetProfileByIdUseCase
     ) : AllProfileUseCases = AllProfileUseCases(
         repository,
-        getProfileUseCase
+        getProfileUseCase,
+        getProfileByIdUseCase
     )
 
 }

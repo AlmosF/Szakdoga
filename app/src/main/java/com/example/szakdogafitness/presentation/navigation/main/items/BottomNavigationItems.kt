@@ -29,7 +29,8 @@ sealed class BottomNavigationItems (
     //Second
     data object NutritionItem : BottomNavigationItems(
         title = "Nutrition",
-        route = MainScreenRoute.Nutrition.route,
+        //route = MainScreenRoute.Nutrition.route,
+        route = MainScreenRoute.NutritionGraph.Nutrition.route,
         icon = Icons.Default.Fastfood
     )
     //Third

@@ -163,7 +163,8 @@ fun RootNavigation(
             }
 
             composable(RootScreenRoute.SetupScreen.route){
-                SetupScreenBox(){
+                SetupScreenBox(
+                ){
                     //authViewModel.onEvent(AuthenticationEvent.NavigateToProfile(navGraph = navController))
                 }
             }

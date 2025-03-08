@@ -56,10 +56,20 @@ class ProfileService @Inject constructor(
             .map { list ->
                 list.firstOrNull()?.toUser(FirestoreTrainer())
             }
-            /*.map { list -> //ez jo volt
-                val fireStoreUser = list.firstOrNull()
-                fireStoreUser?.toUser(FirestoreTrainer()) ?: User()
-            }*/
+
+    override suspend fun getUserById(id: String): Flow<User?> {
+        return firestore.collection("users")
+            .whereEqualTo("uid", id)
+            .limit(1)
+            .dataObjects<FirestoreUser>()
+            .map { list ->
+                list.firstOrNull()?.toUser(FirestoreTrainer())
+            }
+    }
+    /*.map { list -> //ez jo volt
+        val fireStoreUser = list.firstOrNull()
+        fireStoreUser?.toUser(FirestoreTrainer()) ?: User()
+    }*/
             /*.map { querySnapshot ->
                 val fireStoreUser = querySnapshot.documents.firstOrNull()?.toObject(FirestoreUser::class.java)
                 fireStoreUser?.toUser(FirestoreTrainer()) ?: User()

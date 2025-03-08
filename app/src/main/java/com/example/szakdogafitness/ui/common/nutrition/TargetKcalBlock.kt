@@ -59,7 +59,7 @@ fun TargetKcalBlock(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.LightGray, shape = RoundedCornerShape(16.dp))
+            .background(Color(0xFFE8E8E8), shape = RoundedCornerShape(16.dp))
             .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
         ,
         horizontalAlignment = Alignment.CenterHorizontally

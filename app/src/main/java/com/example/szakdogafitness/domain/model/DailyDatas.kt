@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp
 
 
 data class DailyDatas(
-    val userId: String = "",
+    val uid: String = "",
     val dailyData: List<DailyData> = listOf()
 )
 
@@ -16,5 +16,5 @@ data class DailyData(
     val targetSteps: Int = 0,
     val foodIntake: Map<String, List<Nutrition>> = mapOf(),
     val targetKcal: Int = 0,
-    val manualFoodIntake: Map<String, List<Nutrition>> = mapOf(),
+    //val manualFoodIntake: Map<String, List<Nutrition>> = mapOf(),
 )

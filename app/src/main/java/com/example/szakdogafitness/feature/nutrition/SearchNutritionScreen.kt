@@ -173,6 +173,7 @@ fun SearchNutritionScreen(
 ) {
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    var search by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -191,8 +192,10 @@ fun SearchNutritionScreen(
                         NormalTextField(
                             modifier = Modifier
                                 .fillMaxWidth(0.95f),
-                            value = "",
-                            onValueChange = {},
+                            value = search,
+                            onValueChange = {
+                                search = it
+                            },
                             onDone = {},
                             label = "Search",
                             leadingIcon = {
@@ -219,7 +222,6 @@ fun SearchNutritionScreen(
                                 disabledContainerColor = MaterialTheme.colorScheme.surface,
                             )
                         )
-
                     }
                 },
                 scrollBehavior = scrollBehavior,
@@ -230,6 +232,9 @@ fun SearchNutritionScreen(
             .safeDrawingPadding()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { padding ->
+        var filteredSearch = list.filter {
+            it.foodName.contains(search, ignoreCase = true)
+        }
         Column (
             modifier = Modifier
                 .padding(padding)
@@ -243,9 +248,9 @@ fun SearchNutritionScreen(
                     .fillMaxWidth(0.95f),
                 horizontalArrangement = Arrangement.Center
             ) {
-                items(list.size) {
+                items(filteredSearch.size) {
                     SearchNutritionCard(
-                        data = list[it],
+                        data = filteredSearch[it],
                     ) {
 
                     }

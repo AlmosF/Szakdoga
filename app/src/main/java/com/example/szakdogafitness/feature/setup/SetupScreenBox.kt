@@ -33,8 +33,16 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.szakdogafitness.feature.setup.trainee.TraineeTwo
+import com.example.szakdogafitness.feature.setup.trainer.TrainerOne
+import com.example.szakdogafitness.feature.setup.trainer.TrainerTwo
 import com.example.szakdogafitness.presentation.navigation.setup.SetupNavGraph
+import com.example.szakdogafitness.presentation.navigation.setup.SetupScreenRoute
 import com.example.szakdogafitness.ui.common.ProgressBar
 import com.example.szakdogafitness.viewmodel.ProfileEvent
 import com.example.szakdogafitness.viewmodel.ProfileViewModel
@@ -147,6 +155,8 @@ fun SetupScreenBox(
                 }
                 .fillMaxSize()
         )*/
+
+            /** ##TESTING##*/
             SetupNavGraph(
                 modifier = Modifier
                     .constrainAs(setupScreen) {
@@ -157,6 +167,8 @@ fun SetupScreenBox(
                 navController = navHostController,
                 setupViewModel = setupViewModel
             )
+            /**##TESTING##*/
+
             /*TrainerOne(
             paddingValues = paddingValues,
             modifier = Modifier
@@ -302,4 +314,9 @@ fun SetupScreenBox(
         }
 
     }
+}
+
+@Composable
+fun TraineeOne(setupViewModel: SetupViewModel) {
+    TODO("Not yet implemented")
 }

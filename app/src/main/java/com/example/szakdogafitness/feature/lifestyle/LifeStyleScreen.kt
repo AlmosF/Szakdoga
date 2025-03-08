@@ -1,9 +1,11 @@
 package com.example.szakdogafitness.feature.lifestyle
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.szakdogafitness.ui.common.lifestyle.DailyCaloriesBlock
@@ -19,6 +21,7 @@ fun LifeStyleScreen(
     ConstraintLayout (
         modifier = modifier
             .fillMaxSize()
+            .background(Color(0xFFF2F7FB))
     ){
         val (caloryBlock, waterBlock, weightBlock, stepsBlock) = createRefs()
 

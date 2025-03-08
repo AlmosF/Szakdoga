@@ -5,4 +5,5 @@ import com.example.szakdogafitness.data.profile.IProfileService
 class AllProfileUseCases (
     val repository: IProfileService,
     val getUser: GetProfileUseCase,
+    val getUserById: GetProfileByIdUseCase,
 )
