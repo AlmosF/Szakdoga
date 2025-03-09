@@ -48,5 +48,6 @@ sealed class ProfileEvent{
 
 
 data class ProfileState(
-    var user: User? = null
+    var isLoading: Boolean = false,
+    var user: User? = null,
 )

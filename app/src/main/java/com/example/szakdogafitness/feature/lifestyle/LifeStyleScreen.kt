@@ -28,7 +28,7 @@ fun LifeStyleScreen(
     modifier: Modifier = Modifier,
     //VMs
 ){
-    Scaffold (
+    /*Scaffold (
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopBar(
@@ -37,20 +37,25 @@ fun LifeStyleScreen(
                         title = "DAYA",
                         onPreviousDayClick = {
                             Log.d("RootNavigation", "onPreviousDayClick")
-                        }
-                    ) {
+                        },
+                        onNextDayClick = {
 
-                    }
+                        }
+                    )
 
                 },
                 navigationIcon = {
-                    LifeStyleAction {  }
+                    LifeStyleAction (
+                        image = "https://th.bing.com/th/id/R.714e3da50d7cbbdc01a4cfa6d6db7749?rik=WLlLJErQ5mSgQA&pid=ImgRaw&r=0"
+                    ) {
+
+                    }
                 },
             )
         }
-    ){ innerPadding ->
+    ){ innerPadding ->*/
         ConstraintLayout (
-            modifier = modifier.padding(innerPadding)
+            modifier = modifier//.padding(innerPadding)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ){
@@ -99,7 +104,7 @@ fun LifeStyleScreen(
 
 
         }
-    }
+    //}
 }
 
 @Composable

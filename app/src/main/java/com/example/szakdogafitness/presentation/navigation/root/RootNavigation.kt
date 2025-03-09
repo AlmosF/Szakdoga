@@ -1,6 +1,13 @@
 package com.example.szakdogafitness.presentation.navigation.root
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -45,6 +53,8 @@ import com.example.szakdogafitness.viewmodel.AppBarEvent
 import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
+import com.example.szakdogafitness.viewmodel.MainEvent
+import com.example.szakdogafitness.viewmodel.MainViewModel
 import com.example.szakdogafitness.viewmodel.ProfileEvent
 import com.example.szakdogafitness.viewmodel.ProfileViewModel
 import com.example.szakdogafitness.viewmodel.RootNavEvent
@@ -59,7 +69,8 @@ fun RootNavigation(
     authViewModel: AuthenticationViewModel = viewModel(),
     profileViewModel: ProfileViewModel = hiltViewModel(),
     rootNavViewModel: RootNavViewModel = hiltViewModel(),
-    appBarViewModel: AppBarViewModel = hiltViewModel() //Not fix yet
+    appBarViewModel: AppBarViewModel = hiltViewModel(), //Not fix yet
+    mainViewModel: MainViewModel = hiltViewModel()
 ){
 
     val state by authViewModel.state.collectAsStateWithLifecycle()
@@ -67,6 +78,8 @@ fun RootNavigation(
     val profileState by profileViewModel.state.collectAsStateWithLifecycle()
 
     val appBarState by appBarViewModel.state.collectAsStateWithLifecycle()
+
+    val mainState by mainViewModel.state.collectAsStateWithLifecycle()
 
 
     val scope = rememberCoroutineScope()
@@ -178,11 +191,20 @@ fun RootNavigation(
 
     }
 
+    LaunchedEffect(mainState.currentDailyData) {
+        Log.d("RootNavigationXAXA", "mainState.currentDailyData: ${mainState.currentDailyData.date.toDate().toString().substring(4,10)}")
+    }
+
 
     Scaffold (
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         modifier = modifier,
-        topBar = { if (appBarState.topBarVisibility) appBarState.topBarComposable.invoke() },
+        topBar = {
+                AnimatedVisibility(visible = appBarState.topBarVisibility) {
+                    appBarState.topBarComposable.invoke()
+                }
+            //if (appBarState.topBarVisibility) appBarState.topBarComposable.invoke()
+                 },
         bottomBar = {
             if (appBarState.bottomBarVisibility/*state.isLoggedIn && profileState.user != null*/){
                 NavigationBar {
@@ -224,7 +246,19 @@ fun RootNavigation(
         NavHost(
             modifier = modifier.padding(innerPadding),
             startDestination = RootScreenRoute.Authentication.route,
-            navController = navController
+            navController = navController,
+            enterTransition = {
+                fadeIn(animationSpec = tween(500))
+            },
+            exitTransition = {
+                fadeOut(animationSpec = tween(100))
+            },
+            popEnterTransition = {
+                fadeIn(animationSpec = tween(500))
+            },
+            popExitTransition = {
+                fadeOut(animationSpec = tween(100))
+            }
         ) {
             composable(RootScreenRoute.Authentication.route) {
                 AuthenticateScreen(
@@ -249,38 +283,33 @@ fun RootNavigation(
             }*/
             //##
             composable(RootScreenRoute.LifeStyle.route){
-                /*appBarViewModel.onEvent(
+                appBarViewModel.onEvent(
                     AppBarEvent.TopBarComposableChanged(
                         {
                             TopBar(
                                 title = {
                                     LifeStyleTitle(
-                                        title = "DAY",
+                                        title = mainState.lifeStyleTitle,
+                                        previousButtonEnabled = mainState.isPreviousDayAvailable,
                                         onPreviousDayClick = {
                                             Log.d("RootNavigation", "onPreviousDayClick")
-                                            authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
+                                            mainViewModel.onEvent(MainEvent.PreviousDayDailyData)
+                                            //authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
+                                        },
+                                        nextButtonEnabled = mainState.isNextDayAvailable,
+                                        onNextDayClick = {
+                                            Log.d("RootNavigation", "onNextDayClick")
+                                            mainViewModel.onEvent(MainEvent.NextDayDailyData)
                                         }
-                                    ) {
-                                        navController.navigate(RootScreenRoute.SearchDetail.createRoute("ID"))
-                                    }
-
-                                },
-                                navigationIcon = {
-                                    LifeStyleAction {  }
+                                    )
                                 },
                             )
                         }
                     )
-                )*/
-                Text(
-                    text = "LifeStyleH",
-                    modifier = Modifier
-                        .clickable{
-                            authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
-                        }
                 )
                 LifeStyleScreen()
             }
+
             composable(RootScreenRoute.Nutrition.route){
                 appBarViewModel.onEvent(
                     AppBarEvent.TopBarComposableChanged(
@@ -288,9 +317,19 @@ fun RootNavigation(
                             TopBar(
                                 title = {
                                     LifeStyleTitle(
-                                        title = "DAY",
-                                        onPreviousDayClick = {}
-                                    ) { }
+                                        title = mainState.lifeStyleTitle,
+                                        previousButtonEnabled = mainState.isPreviousDayAvailable,
+                                        onPreviousDayClick = {
+                                            Log.d("RootNavigation", "onPreviousDayClick")
+                                            mainViewModel.onEvent(MainEvent.PreviousDayDailyData)
+                                            //authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
+                                        },
+                                        nextButtonEnabled = mainState.isNextDayAvailable,
+                                        onNextDayClick = {
+                                            Log.d("RootNavigation", "onNextDayClick")
+                                            mainViewModel.onEvent(MainEvent.NextDayDailyData)
+                                        }
+                                    )
                                 },
                             )
                         }

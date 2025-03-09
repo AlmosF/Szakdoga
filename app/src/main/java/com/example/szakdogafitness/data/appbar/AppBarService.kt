@@ -19,7 +19,8 @@ class AppBarService @Inject constructor(
                 return Pair(false, false)
             }
             RootScreenRoute.LifeStyle.route -> {
-                return Pair(false, true)
+                //return Pair(false, true)
+                return Pair(true, true)
             }
             RootScreenRoute.Nutrition.route -> {
                 return Pair(true, true)
