@@ -11,6 +11,8 @@ class FirebaseAuthService @Inject constructor(
 ) : AuthService {
     override fun currentUserId(): String? = firebaseAuth.currentUser?.uid
 
+    override fun currentUserEmail(): String? = firebaseAuth.currentUser?.email
+
     override fun currentUser(): User? {
         return currentUserId()?.let { User(it) }
     }

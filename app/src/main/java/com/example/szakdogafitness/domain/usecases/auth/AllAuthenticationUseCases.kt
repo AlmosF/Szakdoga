@@ -12,4 +12,5 @@ class AllAuthenticationUseCases(
     val sendRecoveryEmail : SendRecoveryEmailUseCase,
     val deleteAccount : DeleteAccountUseCase,
     val signOut : SignOutUseCase,
+    val currentUserEmail : CurrentUserEmailUseCase
 )

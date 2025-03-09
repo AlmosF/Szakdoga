@@ -30,7 +30,10 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun AddNutrientsBlock(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onAINavigate: () -> Unit,
+    onSearchNavigate: () -> Unit,
+    onBarcodeNavigate: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -54,17 +57,23 @@ fun AddNutrientsBlock(
                 modifier = Modifier.Companion,
                 icon = Icons.Default.CameraAlt,
                 title = "AI"
-            ) {}
+            ) {
+                onAINavigate()
+            }
             NutritionIcons(
                 modifier = Modifier.Companion,
                 icon = Icons.Default.Fastfood,
                 title = "Search"
-            ) {}
+            ) {
+                onSearchNavigate()
+            }
             NutritionIcons(
                 modifier = Modifier.Companion,
                 icon = Icons.Default.QrCode,
                 title = "Barcode"
-            ) {}
+            ) {
+                onBarcodeNavigate()
+            }
 
         }
     }
@@ -118,5 +127,9 @@ fun NutritionIconsPreview() {
 @Composable
 @Preview
 fun AddNutrientsBlockPreview() {
-    AddNutrientsBlock()
+    AddNutrientsBlock(
+        onAINavigate = {},
+        onSearchNavigate = {},
+        onBarcodeNavigate = {}
+    )
 }

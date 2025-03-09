@@ -28,7 +28,7 @@ data class FirestoreTrainer(
     val experience: Int = 0,
     val availability: Map<String, List<Int>> = emptyMap(),
     val pricing: Int = 0,
-    val rating: Float = 0f,
+    val rating: Int = 0,
     val specializations: List<Int> = emptyList(),
     val socialMediaLinks: Map<String, String> = emptyMap(),
     val pendingRequests: List<String> = emptyList(),

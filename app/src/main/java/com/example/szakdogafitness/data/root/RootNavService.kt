@@ -17,7 +17,8 @@ class RootNavService @Inject constructor(
         when(isLoggedIn){
             true -> {
                 if (isSetupDone && !isUserNull){
-                    navHostController.navigate(RootScreenRoute.MainScreen.route) {
+                    //navHostController.navigate(RootScreenRoute.MainScreen.route) {
+                    navHostController.navigate(RootScreenRoute.LifeStyle.route) {
                         popUpTo(0) {
                             inclusive = true
                         }

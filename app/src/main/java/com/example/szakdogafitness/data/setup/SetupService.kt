@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import com.example.szakdogafitness.domain.model.FirestoreTrainee
 import com.example.szakdogafitness.domain.model.FirestoreTrainer
 import com.example.szakdogafitness.domain.model.FirestoreUser
+import com.example.szakdogafitness.domain.usecases.auth.CurrentUserEmailUseCase
 import com.example.szakdogafitness.domain.usecases.auth.CurrentUserIdUseCase
 import com.example.szakdogafitness.presentation.navigation.setup.SetupScreenRoute
 import com.example.szakdogafitness.viewmodel.SetupProfileState
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 class SetupService @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val userIdUseCase: CurrentUserIdUseCase
+    private val userIdUseCase: CurrentUserIdUseCase,
+    private val currentUserEmail: CurrentUserEmailUseCase
 ) : ISetupService {
 
     override fun nextScreen(currentScreen: Int, role: Int, navHostController: NavHostController) {
@@ -126,6 +128,7 @@ class SetupService @Inject constructor(
                     fcmToken = state.user.fcmToken,
                     profileImageUrl = state.user.profileImageUrl,
                     location = state.user.location,
+                    email = currentUserEmail() ?: "",
                     setupDone = true
                 )
             ).await()

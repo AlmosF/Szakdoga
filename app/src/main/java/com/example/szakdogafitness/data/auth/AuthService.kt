@@ -6,6 +6,8 @@ import com.example.szakdogafitness.domain.model.User
 interface AuthService {
     fun currentUserId(): String?
 
+    fun currentUserEmail(): String?
+
     fun currentUser(): User?
 
     fun hasUser(): Boolean

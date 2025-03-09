@@ -2,6 +2,7 @@ package com.example.szakdogafitness.domain.di.Authentication
 
 import com.example.szakdogafitness.data.auth.AuthService
 import com.example.szakdogafitness.domain.usecases.auth.AllAuthenticationUseCases
+import com.example.szakdogafitness.domain.usecases.auth.CurrentUserEmailUseCase
 import com.example.szakdogafitness.domain.usecases.auth.CurrentUserIdUseCase
 import com.example.szakdogafitness.domain.usecases.auth.CurrentUserUseCase
 import com.example.szakdogafitness.domain.usecases.auth.DeleteAccountUseCase
@@ -62,6 +63,11 @@ object AllAuthenticationUseCasesModule {
 
     @Provides
     @Singleton
+    fun provideCurrentUserEmailUseCase(repository: AuthService): CurrentUserEmailUseCase =
+        CurrentUserEmailUseCase(repository)
+
+    @Provides
+    @Singleton
     fun provideAuthenticationUseCases(
         repository: AuthService,
         currentUserIdUseCase: CurrentUserIdUseCase,
@@ -71,7 +77,8 @@ object AllAuthenticationUseCasesModule {
         signInUseCase: SignInUseCase,
         sendRecoveryEmailUseCase: SendRecoveryEmailUseCase,
         deleteAccountUseCase: DeleteAccountUseCase,
-        signOutUseCase: SignOutUseCase
+        signOutUseCase: SignOutUseCase,
+        currentUserEmailUseCase: CurrentUserEmailUseCase
     ): AllAuthenticationUseCases = AllAuthenticationUseCases(
         repository,
         currentUserIdUseCase,
@@ -81,7 +88,8 @@ object AllAuthenticationUseCasesModule {
         signInUseCase,
         sendRecoveryEmailUseCase,
         deleteAccountUseCase,
-        signOutUseCase
+        signOutUseCase,
+        currentUserEmailUseCase
     )
 
 

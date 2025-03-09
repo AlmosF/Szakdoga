@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -158,17 +159,17 @@ fun RowValue(
     Column (
         modifier = Modifier
             .background(color = Color.LightGray, shape = CircleShape)
-            .padding(8.dp)
-            .then(Modifier.size(40.dp))
+            .padding(4.dp)
+            .then(Modifier.size(50.dp))
         ,
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = value.toString()
         )
         Text(
-            text = "kcal"
+            text = "kcal",
         )
     }
 }
