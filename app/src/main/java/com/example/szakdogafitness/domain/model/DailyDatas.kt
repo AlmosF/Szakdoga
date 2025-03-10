@@ -1,5 +1,7 @@
 package com.example.szakdogafitness.domain.model
 
+import com.example.szakdogafitness.viewmodel.getDecember11FirebaseTimestamp
+import com.example.szakdogafitness.viewmodel.getYesterdayFirebaseTimestamp
 import com.google.firebase.Timestamp
 
 
@@ -9,7 +11,7 @@ data class DailyDatas(
 )
 
 data class DailyData(
-    val date: Timestamp = Timestamp.now(),
+    val date: Timestamp = getDecember11FirebaseTimestamp(),
     val waterIntake: Double = 0.0,
     val targetWater: Double = 0.0,
     val steps: Int = 0,

@@ -4,18 +4,24 @@ import android.R.attr.data
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.DailyData
 import com.example.szakdogafitness.domain.model.DailyDatas
+import com.example.szakdogafitness.domain.model.User
+import com.example.szakdogafitness.domain.usecases.main.AllMainUseCases
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-
+    private val allMainUseCases: AllMainUseCases
 ) : ViewModel(){
 
     private val _state = MutableStateFlow(MainState())
@@ -23,7 +29,7 @@ class MainViewModel @Inject constructor(
 
 
     init {
-        _state.value = _state.value.copy(lifeStyleTitle = state.value.currentDailyData.date.toDate().toString().substring(4, 10))
+        //initLifestyleTitle()
         buttonsAreAvailable()
     }
 
@@ -44,6 +50,7 @@ class MainViewModel @Inject constructor(
                     val nextDailyData = state.value.dailyDatas.dailyData[state.value.dailyDatas.dailyData.indexOf(state.value.currentDailyData) + 1]
                     _state.value = _state.value.copy(lifeStyleTitle = nextDailyData.date.toDate().toString().substring(4, 10))
                     _state.value = _state.value.copy(currentDailyData = nextDailyData)
+
                 }
             }
             MainEvent.PreviousDayDailyData -> {
@@ -51,10 +58,36 @@ class MainViewModel @Inject constructor(
                     val previousDailyData = state.value.dailyDatas.dailyData[state.value.dailyDatas.dailyData.indexOf(state.value.currentDailyData) - 1]
                     _state.value = _state.value.copy(lifeStyleTitle = previousDailyData.date.toDate().toString().substring(4, 10))
                     _state.value = _state.value.copy(currentDailyData = previousDailyData)
+
                 }
             }
+
+            MainEvent.FetchUser -> {
+                fetchUser()
+            }
+
+            MainEvent.UpdateLifestyleTitle -> {
+                //initLifestyleTitle()
+            }
+
+            MainEvent.GenerateNewDailyData -> {
+                generateNewDailyData()
+            }
         }
+        //initLifestyleTitle()
         buttonsAreAvailable()
+    }
+
+    private fun initLifestyleTitle(){
+        _state.value = _state.value.copy(lifeStyleTitle = if(state.value.currentDailyData.date.toYYYYMMDD() == Timestamp.now().toYYYYMMDD()) {
+            state.value.currentDailyData.date.toDate().toString().substring(4, 10)+", Today"
+        } else
+            state.value.currentDailyData.date.toDate().toString().substring(4, 10)
+        )
+    }
+
+    private fun generateNewDailyData(){
+
     }
 
     private fun buttonsAreAvailable(){
@@ -66,17 +99,58 @@ class MainViewModel @Inject constructor(
         _state.value = _state.value.copy(isNextDayAvailable = isNextDayAvailable, isPreviousDayAvailable = isPreviousDayAvailable)
     }
 
+    private fun fetchUser(){
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                allMainUseCases.fetchUserUseCase().collect{
+                    val user = it
+                    _state.update { it.copy(user = user, isLoading = false) }
+                }
+            } catch (e: Exception){
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
+    }
 
     private fun fetchDailyData(){
-
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                allMainUseCases.fetchUsersDailyDatasUseCase().collect { dailyDatas ->
+                    if (dailyDatas != null && dailyDatas.dailyData.isNotEmpty()){
+                        val latestDailyDate = dailyDatas.dailyData.last()
+                        val latestDate = latestDailyDate.date.toDate().toString().substring(4, 10)
+                        buttonsAreAvailable()
+                        _state.update { it.copy(
+                            dailyDatas = dailyDatas,
+                            currentDailyData = latestDailyDate,
+                            lifeStyleTitle = latestDate,
+                            isLoading = false
+                        ) }
+                    } else {
+                        _state.update { it.copy(isLoading = false) }
+                    }
+                }
+            } catch (e: Exception){
+                Log.e("MainService", "Error getting daily data: ${e.message}", e)
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
     }
+
 }
 fun getYesterdayFirebaseTimestamp(): Timestamp {
     val calendar = Calendar.getInstance()
     calendar.add(Calendar.DAY_OF_YEAR, -1) // Subtract 1 day
     return Timestamp(calendar.time)
 }
-
+fun getDecember11FirebaseTimestamp(): Timestamp {
+    val calendar = Calendar.getInstance()
+    calendar.set(Calendar.MONTH, Calendar.DECEMBER)
+    calendar.set(Calendar.DAY_OF_MONTH, 11)
+    return Timestamp(calendar.time)
+}
 fun getTomorrowFirebaseTimestamp(): Timestamp {
     val calendar = Calendar.getInstance()
     calendar.add(Calendar.DAY_OF_YEAR, 1) // Add 1 day
@@ -102,8 +176,9 @@ val testMainStateDailyDatas = DailyDatas(
 data class MainState(
     val isLoading: Boolean = false,
     val titleComposable: @Composable () -> Unit = {},
-    val dailyDatas: DailyDatas = testMainStateDailyDatas,
-    //val dailyDatas: DailyDatas = DailyDatas(),
+    val user: User? = User(),
+    //val dailyDatas: DailyDatas = testMainStateDailyDatas,
+    val dailyDatas: DailyDatas = DailyDatas(),
     val currentDailyData: DailyData = dailyDatas.dailyData.lastOrNull() ?: DailyData(),
     val isNextDayAvailable: Boolean = false,
     val isPreviousDayAvailable: Boolean = false,
@@ -115,7 +190,21 @@ sealed class MainEvent{
     data class ScreenNavigation(val route: String): MainEvent()
     data class TitleComposableChanged(val titleComposable: @Composable () -> Unit): MainEvent()
     object FetchDailyData: MainEvent()
+    object FetchUser: MainEvent()
+    object UpdateLifestyleTitle: MainEvent()
     object PreviousDayDailyData: MainEvent()
     object NextDayDailyData: MainEvent()
+    object GenerateNewDailyData: MainEvent()
+}
+
+fun Timestamp.toYYYYMMDD(): Triple<Int, Int, Int> {
+    val date = this.toDate()
+    val calendar = Calendar.getInstance()
+    calendar.time = date
+    return Triple(
+        calendar.get(Calendar.YEAR),
+        calendar.get(Calendar.MONTH) + 1,
+        calendar.get(Calendar.DAY_OF_MONTH)
+    )
 }
 

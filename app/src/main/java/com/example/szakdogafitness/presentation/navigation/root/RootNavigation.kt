@@ -103,6 +103,16 @@ fun RootNavigation(
         }
     }
 
+    LaunchedEffect(state.isLoggedIn) {
+        mainViewModel.onEvent(MainEvent.FetchUser) //Fetch User
+    }
+
+    LaunchedEffect(state.isLoggedIn, mainState.user) {
+        Log.d("RootNavigation", "User: ${mainState.dailyDatas}")
+        mainViewModel.onEvent(MainEvent.FetchDailyData)
+    }
+
+
     /*LaunchedEffect(state.isLoggedIn) {
         when(state.isLoggedIn){
             true -> {
@@ -191,19 +201,15 @@ fun RootNavigation(
 
     }
 
-    LaunchedEffect(mainState.currentDailyData) {
-        Log.d("RootNavigationXAXA", "mainState.currentDailyData: ${mainState.currentDailyData.date.toDate().toString().substring(4,10)}")
-    }
-
 
     Scaffold (
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         modifier = modifier,
         topBar = {
-                AnimatedVisibility(visible = appBarState.topBarVisibility) {
+                /*AnimatedVisibility(visible = appBarState.topBarVisibility) {
                     appBarState.topBarComposable.invoke()
-                }
-            //if (appBarState.topBarVisibility) appBarState.topBarComposable.invoke()
+                }*/
+            if (appBarState.topBarVisibility) appBarState.topBarComposable.invoke()
                  },
         bottomBar = {
             if (appBarState.bottomBarVisibility/*state.isLoggedIn && profileState.user != null*/){
@@ -307,7 +313,13 @@ fun RootNavigation(
                         }
                     )
                 )
-                LifeStyleScreen()
+                LifeStyleScreen(
+                    modifier = Modifier
+                        .clickable{
+                            authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
+                        },
+                    mainViewModel = mainViewModel
+                )
             }
 
             composable(RootScreenRoute.Nutrition.route){

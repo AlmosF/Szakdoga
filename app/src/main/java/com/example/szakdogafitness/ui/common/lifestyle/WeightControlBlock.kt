@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun WeightControlBlock(
     modifier: Modifier = Modifier,
+    weight: Double = 80.0
 ) {
     Column (
         modifier = modifier
@@ -93,7 +94,7 @@ fun WeightControlBlock(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "80 kg",
+                    text = "$weight kg",
                     fontSize = 30.sp,
                 )
             }

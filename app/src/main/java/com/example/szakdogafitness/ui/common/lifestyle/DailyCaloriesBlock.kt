@@ -3,6 +3,7 @@ package com.example.szakdogafitness.ui.common.lifestyle
 import android.R.attr.top
 import android.content.Context
 import android.graphics.Typeface
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.compose.animation.Crossfade
@@ -35,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.example.szakdogafitness.domain.model.DailyData
+import com.example.szakdogafitness.domain.model.Nutrition
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
@@ -44,12 +47,16 @@ import com.github.mikephil.charting.formatter.DefaultValueFormatter
 
 @Composable
 fun DailyCaloriesBlock(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    dailyData : DailyData
 ) {
     val pagerState = rememberPagerState(
         initialPage = 0,
         pageCount = {2}
     )
+
+    val totalCalories = dailyData.foodIntake.values.sumOf { it.sumOf { it.calories} }
+    val targetCalories = dailyData.targetKcal
 
     Column (
         modifier = modifier
@@ -60,12 +67,16 @@ fun DailyCaloriesBlock(
         ) { page ->
             when (page) {
                 0 -> DailyCaloriesFirstPage(
-                    totalCalories = 1390,
-                    targetCalories = 2200
+                    totalCalories = totalCalories,
+                    targetCalories = targetCalories
                 )
                 1 -> PieChartComp(
-                    totalCalories = 1390,
-                    targetCalories = 2200
+                    totalCalories = totalCalories,
+                    targetCalories = targetCalories,
+                    totalServings = dailyData.foodIntake.values.sumOf { it.sumOf {it.servingSize} },
+                    totalProt = dailyData.foodIntake.values.sumOf { it.sumOf {it.protein} },
+                    totalCarbs = dailyData.foodIntake.values.sumOf { it.sumOf {it.carbs} },
+                    totalFat = dailyData.foodIntake.values.sumOf { it.sumOf {it.fat} }
                 )
             }
         }
@@ -103,7 +114,9 @@ fun DailyCaloriesBlockPreview() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        DailyCaloriesBlock()
+        DailyCaloriesBlock(
+            dailyData = DailyData()
+        )
     }
 }
 
@@ -219,8 +232,26 @@ val getPieChartData = listOf(
 @Composable
 fun PieChartComp(
     totalCalories: Int = 1390,
-    targetCalories: Int = 2200
+    targetCalories: Int = 2200,
+    totalServings: Int = 0,
+    totalProt: Int = 0,
+    totalCarbs: Int = 0,
+    totalFat: Int = 0
 ){
+
+    val fat = totalFat.toFloat() / totalServings.toFloat() * 100
+    val carbs = totalCarbs.toFloat() / totalServings.toFloat() * 100
+    val prot = totalProt.toFloat() / totalServings.toFloat() * 100
+
+    Log.d("PieChartComp", "fat: $fat, carbs: $carbs, prot: $prot")
+
+    val pieChartData = listOf(
+        PieChartData("Fat", fat),
+        PieChartData("Carb", carbs),
+        PieChartData("Prot", prot),
+        PieChartData("Other", (100 - (fat + carbs + prot)) )
+    )
+
     val context = LocalContext.current
     Column (
         modifier = Modifier
@@ -255,7 +286,8 @@ fun PieChartComp(
                 modifier = Modifier
                     .weight(3f)
                     .size(240.dp),
-                targetState = getPieChartData
+                //targetState = getPieChartData
+                targetState = pieChartData
             ) { pieChartData ->
                 AndroidView(
                     factory = { context ->
@@ -275,7 +307,7 @@ fun PieChartComp(
                             //this.setUsePercentValues(true)
 
 
-                            //this.setDrawSliceText(false)
+                            this.setDrawSliceText(false)
 
 
                             this.legend.horizontalAlignment =
@@ -354,6 +386,7 @@ fun updatePieChartWithData(
         ContextCompat.getColor(chart.context, android.R.color.holo_red_light),
         ContextCompat.getColor(chart.context, android.R.color.holo_blue_light),
         ContextCompat.getColor(chart.context, android.R.color.holo_green_light),
+        ContextCompat.getColor(chart.context, android.R.color.holo_orange_light)
     )
     ds.yValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
 
