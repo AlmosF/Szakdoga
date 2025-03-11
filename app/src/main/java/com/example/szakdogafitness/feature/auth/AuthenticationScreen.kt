@@ -111,6 +111,7 @@ fun AuthenticateScreen(
                     },
                 color = Color.Red
             )
+            Text("AuthIF")
             /*OutlinedButton(
                 onClick = {
                     viewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)

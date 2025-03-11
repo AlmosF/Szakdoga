@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -23,6 +24,10 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val allMainUseCases: AllMainUseCases
 ) : ViewModel(){
+
+    companion object {
+        private const val TAG = "MainViewModel"
+    }
 
     private val _state = MutableStateFlow(MainState())
     val state = _state.asStateFlow()
@@ -73,6 +78,10 @@ class MainViewModel @Inject constructor(
             MainEvent.GenerateNewDailyData -> {
                 generateNewDailyData()
             }
+
+            MainEvent.ClearState -> {
+                _state.value = MainState()
+            }
         }
         //initLifestyleTitle()
         buttonsAreAvailable()
@@ -87,11 +96,22 @@ class MainViewModel @Inject constructor(
     }
 
     private fun generateNewDailyData(){
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                allMainUseCases.generateNewDailyDataUseCase(state.value.dailyDatas)
+                _state.update { it.copy(isLoading = false) }
+            } catch (e: Exception){
+                _state.update { it.copy(isLoading = false) }
+                Log.e(TAG, "Error generating new daily data: ${e.message}", e)
+            } finally {
 
+            }
+        }
     }
 
     private fun buttonsAreAvailable(){
-        Log.d("RootNavigationXAXA", "${state.value.dailyDatas.dailyData.size}")
+        Log.d(TAG, "${state.value.dailyDatas.dailyData.size}")
         val dailyDatas = state.value.dailyDatas
         val currentDailyData = state.value.currentDailyData
         val isNextDayAvailable = dailyDatas.dailyData.indexOf(currentDailyData) < dailyDatas.dailyData.size - 1
@@ -108,10 +128,28 @@ class MainViewModel @Inject constructor(
                     _state.update { it.copy(user = user, isLoading = false) }
                 }
             } catch (e: Exception){
+                Log.e(TAG, "Error getting user: ${e.message}", e)
                 _state.update { it.copy(isLoading = false) }
+            } finally {
+
             }
         }
     }
+    /*private fun fetchUser(){
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                val user = allMainUseCases.fetchUserUseCase().first()
+                Log.d("RootNavigation:::", "User fetched: $user")
+                _state.update { it.copy(user = user, isLoading = false) }
+            } catch (e: Exception){
+                _state.update { it.copy(isLoading = false) }
+            } finally {
+                Log.d("RootNavigation:::", "FetchUser Setting isLoading to false")
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
+    }*/
 
     private fun fetchDailyData(){
         viewModelScope.launch {
@@ -130,14 +168,41 @@ class MainViewModel @Inject constructor(
                         ) }
                     } else {
                         _state.update { it.copy(isLoading = false) }
+                        Log.d("RootNavigation:::", "Daily data fetched: ${state.value.isLoading}")
                     }
                 }
             } catch (e: Exception){
-                Log.e("MainService", "Error getting daily data: ${e.message}", e)
+                Log.e(TAG, "Error getting daily data: ${e.message}", e)
                 _state.update { it.copy(isLoading = false) }
+            } finally {
+
             }
         }
     }
+    /*private fun fetchDailyData(){
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                val dailyDatas = allMainUseCases.fetchUsersDailyDatasUseCase().first() // ⬅️ Use first() instead of collect
+                if (dailyDatas != null && dailyDatas.dailyData.isNotEmpty()) {
+                    val latestDailyDate = dailyDatas.dailyData.last()
+                    val latestDate = latestDailyDate.date.toDate().toString().substring(4, 10)
+                    buttonsAreAvailable()
+                    _state.update { it.copy(
+                        dailyDatas = dailyDatas,
+                        currentDailyData = latestDailyDate,
+                        lifeStyleTitle = latestDate
+                    ) }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error getting daily data: ${e.message}", e)
+            } finally {
+                Log.d("RootNavigation:::", "FetchDailyData Setting isLoading to false")
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
+    }*/
+
 
 }
 fun getYesterdayFirebaseTimestamp(): Timestamp {
@@ -175,8 +240,10 @@ val testMainStateDailyDatas = DailyDatas(
 
 data class MainState(
     val isLoading: Boolean = false,
+    //val loadingCount: Int = 0,
     val titleComposable: @Composable () -> Unit = {},
-    val user: User? = User(),
+    //val user: User? = User(),
+    val user: User? = null,
     //val dailyDatas: DailyDatas = testMainStateDailyDatas,
     val dailyDatas: DailyDatas = DailyDatas(),
     val currentDailyData: DailyData = dailyDatas.dailyData.lastOrNull() ?: DailyData(),
@@ -195,6 +262,7 @@ sealed class MainEvent{
     object PreviousDayDailyData: MainEvent()
     object NextDayDailyData: MainEvent()
     object GenerateNewDailyData: MainEvent()
+    object ClearState: MainEvent()
 }
 
 fun Timestamp.toYYYYMMDD(): Triple<Int, Int, Int> {

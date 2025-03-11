@@ -4,6 +4,7 @@ import com.example.szakdogafitness.data.main.IMainService
 import com.example.szakdogafitness.domain.usecases.main.AllMainUseCases
 import com.example.szakdogafitness.domain.usecases.main.FetchUserUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasUseCase
+import com.example.szakdogafitness.domain.usecases.main.GenerateNewDailyDataUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,17 +26,23 @@ object AllMainUseCasesModule {
     fun provideFetchUsersDailyDatasUseCase(repository: IMainService): FetchUsersDailyDatasUseCase =
         FetchUsersDailyDatasUseCase(repository)
 
+    @Provides
+    @Singleton
+    fun provideGenerateNewDailyDataUseCase(repository: IMainService): GenerateNewDailyDataUseCase =
+        GenerateNewDailyDataUseCase(repository)
 
     @Provides
     @Singleton
     fun provideMainUseCases(
         repository: IMainService,
         fetchUserUseCase: FetchUserUseCase,
-        fetchUsersDailyDatasUseCase: FetchUsersDailyDatasUseCase
+        fetchUsersDailyDatasUseCase: FetchUsersDailyDatasUseCase,
+        generateNewDailyDataUseCase: GenerateNewDailyDataUseCase
     ): AllMainUseCases = AllMainUseCases(
         repository,
         fetchUserUseCase,
-        fetchUsersDailyDatasUseCase
+        fetchUsersDailyDatasUseCase,
+        generateNewDailyDataUseCase
     )
 
 

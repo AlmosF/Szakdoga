@@ -2,6 +2,8 @@ package com.example.szakdogafitness.data.setup
 
 import android.util.Log
 import androidx.navigation.NavHostController
+import com.example.szakdogafitness.domain.model.DailyData
+import com.example.szakdogafitness.domain.model.DailyDatas
 import com.example.szakdogafitness.domain.model.FirestoreTrainee
 import com.example.szakdogafitness.domain.model.FirestoreTrainer
 import com.example.szakdogafitness.domain.model.FirestoreUser
@@ -9,6 +11,7 @@ import com.example.szakdogafitness.domain.usecases.auth.CurrentUserEmailUseCase
 import com.example.szakdogafitness.domain.usecases.auth.CurrentUserIdUseCase
 import com.example.szakdogafitness.presentation.navigation.setup.SetupScreenRoute
 import com.example.szakdogafitness.viewmodel.SetupProfileState
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -170,6 +173,16 @@ class SetupService @Inject constructor(
                     ).await()
                 }
             }
+            firestore.collection("dailyDatas").add(
+                DailyDatas(
+                    uid = userId,
+                    dailyData = listOf(
+                        DailyData(
+                            date = Timestamp.now()
+                        )
+                    )
+                )
+            )
         } else {
             Log.d("SetupService", "User id is null")
         }

@@ -72,11 +72,11 @@ fun SetupScreenBox(
         profileViewModel.onEvent(ProfileEvent.GetUser)
     }
 
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) {
         isLoading = true
         delay(1000)
         isLoading = false
-    }
+    }*/
 
     LaunchedEffect(
         state.value.currentScreen

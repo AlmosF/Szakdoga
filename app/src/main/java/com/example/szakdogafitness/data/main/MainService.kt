@@ -1,26 +1,26 @@
 package com.example.szakdogafitness.data.main
 
 import android.util.Log
+import android.util.Log.e
+import com.example.szakdogafitness.domain.model.DailyData
 import com.example.szakdogafitness.domain.model.DailyDatas
 import com.example.szakdogafitness.domain.model.FirestoreTrainee
 import com.example.szakdogafitness.domain.model.FirestoreTrainer
 import com.example.szakdogafitness.domain.model.FirestoreUser
-import com.example.szakdogafitness.domain.model.Trainee
-import com.example.szakdogafitness.domain.model.Trainer
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.model.toUser
 import com.example.szakdogafitness.domain.usecases.auth.CurrentUserIdUseCase
+import com.example.szakdogafitness.viewmodel.toYYYYMMDD
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.dataObjects
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -68,6 +68,41 @@ class MainService @Inject constructor(
                 result
             }
             .flowOn(Dispatchers.IO)
+
+
+    override suspend fun generateNewDailyData(dailyDatas: DailyDatas) {
+        val userId = userIdUseCase()
+        val todayDate = Timestamp.now().toYYYYMMDD()
+
+        val query = firestore.collection("dailyDatas")
+            .whereEqualTo("uid", userId)
+            .limit(1)
+
+        try {
+            val snapshot = query.get().await()
+            val existingDailyDatas = snapshot.toObjects(DailyDatas::class.java).first()
+            val hasTodayData = existingDailyDatas.dailyData.any{ it.date.toYYYYMMDD() == todayDate}
+
+            if (!hasTodayData){
+                val newDailyData = DailyData(date = Timestamp.now())
+                val updatedDailyDataList = existingDailyDatas.dailyData + newDailyData
+
+                firestore.collection("dailyDatas")
+                    .document(snapshot.documents.first().id)
+                    .update("dailyData", updatedDailyDataList)
+                    .await()
+
+                Log.d("MainService", "Updated daily data for user: $userId")
+            }
+
+        } catch (e: Exception) {
+            Log.e("MainService", "Error generating new daily data: ${e.message}", e)
+        }
+
+    }
+
+
+
     /*override suspend fun getUsersDailyDatas(): Flow<DailyDatas?> {
         val userId = userIdUseCase()
         Log.d("MainServiceOverride", "userId: $userId")

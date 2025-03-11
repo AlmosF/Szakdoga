@@ -1,5 +1,8 @@
 package com.example.szakdogafitness.presentation.navigation.root
 
+import android.net.http.SslCertificate.restoreState
+import android.net.http.SslCertificate.saveState
+import android.nfc.Tag
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -59,6 +62,7 @@ import com.example.szakdogafitness.viewmodel.ProfileEvent
 import com.example.szakdogafitness.viewmodel.ProfileViewModel
 import com.example.szakdogafitness.viewmodel.RootNavEvent
 import com.example.szakdogafitness.viewmodel.RootNavViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,15 +71,19 @@ fun RootNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     authViewModel: AuthenticationViewModel = viewModel(),
-    profileViewModel: ProfileViewModel = hiltViewModel(),
+    //profileViewModel: ProfileViewModel = hiltViewModel(),
     rootNavViewModel: RootNavViewModel = hiltViewModel(),
     appBarViewModel: AppBarViewModel = hiltViewModel(), //Not fix yet
-    mainViewModel: MainViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel() // FIXME: After logging out, the VM is keeping it's state, and wont reINIT. Signout -> Sign in = Old profile's state
 ){
+
+    object {
+        private val TAG = "RootNavigation"
+    }
 
     val state by authViewModel.state.collectAsStateWithLifecycle()
 
-    val profileState by profileViewModel.state.collectAsStateWithLifecycle()
+    //val profileState by profileViewModel.state.collectAsStateWithLifecycle()
 
     val appBarState by appBarViewModel.state.collectAsStateWithLifecycle()
 
@@ -87,30 +95,41 @@ fun RootNavigation(
     val context = LocalContext.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
+
+
     LaunchedEffect(Unit, navBackStackEntry) { //NavHostController initialization
         rootNavViewModel.onEvent(RootNavEvent.NavController(navController))
         appBarViewModel.onEvent(AppBarEvent.CurrentNavControllerChanged(navController))
         Log.d("RootNavigation-LE", "NavController Changed: ${navBackStackEntry?.destination?.route}")
     }
 
-    LaunchedEffect(state.isLoggedIn) {
+    LaunchedEffect(state.isLoggedIn, mainState.user?.isSetupDone, mainState.user) {
         when(state.isLoggedIn){ //Change it to If
             true -> {
-                profileViewModel.onEvent(ProfileEvent.GetUser)
+                //profileViewModel.onEvent(ProfileEvent.GetUser)
+                Log.d("RootNavigation", "Fetching User")
+                mainViewModel.onEvent(MainEvent.FetchUser) //fixme: If this is here instead of the above one it navigates to the setup nmw - Fixed (?)
+                mainViewModel.onEvent(MainEvent.FetchDailyData)
+                mainViewModel.onEvent(MainEvent.GenerateNewDailyData)
             }
-
-            false -> {}
+            false -> {
+                Log.d("RootNavigation", "Clearing State")
+                mainViewModel.onEvent(MainEvent.ClearState)
+                Log.d("RootNavigation", "Clearing User Done: ${mainState.user}")
+            }
         }
     }
 
-    LaunchedEffect(state.isLoggedIn) {
+    /*LaunchedEffect(state.isLoggedIn) {
         mainViewModel.onEvent(MainEvent.FetchUser) //Fetch User
-    }
+    }*/
 
-    LaunchedEffect(state.isLoggedIn, mainState.user) {
-        Log.d("RootNavigation", "User: ${mainState.dailyDatas}")
-        mainViewModel.onEvent(MainEvent.FetchDailyData)
-    }
+    /*LaunchedEffect(state.isLoggedIn, mainState.user?.isSetupDone == true, mainState.user/*, mainState.user != null*/) {
+        if (state.isLoggedIn){
+            mainViewModel.onEvent(MainEvent.FetchDailyData)
+            mainViewModel.onEvent(MainEvent.GenerateNewDailyData)
+        }
+    }*/
 
 
     /*LaunchedEffect(state.isLoggedIn) {
@@ -132,7 +151,8 @@ fun RootNavigation(
         }
     }*/
 
-    LaunchedEffect(state.isLoggedIn == true, profileState.user?.isSetupDone) {
+
+    /*LaunchedEffect(state.isLoggedIn == true, profileState.user?.isSetupDone) {
 
         Log.d("RootNavigation-LE", "isLoggedIn: ${state.isLoggedIn}")
         Log.d("RootNavigation-LE", "isSetupDone: ${profileState.user?.isSetupDone}")
@@ -169,6 +189,47 @@ fun RootNavigation(
                 }
             }
         }*/
+    }*/
+    /*LaunchedEffect(state.isLoggedIn == true, mainState.user?.isSetupDone) {
+
+        Log.d("RootNavigation-LE", "isLoggedIn: ${state.isLoggedIn}")
+        Log.d("RootNavigation-LE", "isSetupDone: ${mainState.user?.isSetupDone}")
+        Log.d("RootNavigation-LE", "state: ${mainState.user}")
+        Log.d("RootNavigation-LE", "loading: ${mainState.isLoading}")
+        if (!mainState.isLoading){
+            rootNavViewModel.onEvent(
+                RootNavEvent.Navigate(
+                    isLoggedIn = state.isLoggedIn,
+                    isSetupDone = mainState.user?.isSetupDone == true,
+                    isProfileNull = mainState.user == null
+                )
+            )
+        } //Bit buggy
+    }*/
+
+    LaunchedEffect(state.isLoggedIn, mainState.user, mainState.isLoading) {
+        Log.d("RootNavigation-LE", "isLoggedIn: ${state.isLoggedIn}")
+        Log.d("RootNavigation-LE", "isSetupDone: ${mainState.user?.isSetupDone}")
+        Log.d("RootNavigation-LE", "state: ${mainState.user}")
+        //Log.d("RootNavigation-LE", "loading: ${mainState.isLoading}")
+        if (state.isLoggedIn == false) {
+            rootNavViewModel.onEvent(
+                RootNavEvent.Navigate(isLoggedIn = false, isSetupDone = false, isProfileNull = true)
+            )
+        } else {
+            if (mainState.isLoading == false) {
+                if (mainState.user?.isSetupDone == true) {
+                    rootNavViewModel.onEvent(
+                        RootNavEvent.Navigate(isLoggedIn = true, isSetupDone = true, isProfileNull = false)
+                    )
+                } else {
+                    delay(300)
+                    rootNavViewModel.onEvent(
+                        RootNavEvent.Navigate(isLoggedIn = true, isSetupDone = false, isProfileNull = false)
+                    )
+                }
+            }
+        }
     }
 
 
@@ -197,8 +258,6 @@ fun RootNavigation(
 
     LaunchedEffect(navBackStackEntry?.destination?.route) { //AppBarVisibility - Settings
         appBarViewModel.onEvent(AppBarEvent.AppBarVisibility(navBackStackEntry?.destination?.route ?: ""))
-
-
     }
 
 
@@ -216,7 +275,7 @@ fun RootNavigation(
                 NavigationBar {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentDestination = navBackStackEntry?.destination
-                    val items = when (profileState.user?.role) {
+                    val items = when (mainState.user?.role) {
                         1 -> BottomNavigationItems.trainerItems
                         2 -> BottomNavigationItems.trianeeItems
                         else -> emptyList()
@@ -249,224 +308,240 @@ fun RootNavigation(
             }
         }
     ) { innerPadding ->
-        NavHost(
-            modifier = modifier.padding(innerPadding),
-            startDestination = RootScreenRoute.Authentication.route,
-            navController = navController,
-            enterTransition = {
-                fadeIn(animationSpec = tween(500))
-            },
-            exitTransition = {
-                fadeOut(animationSpec = tween(100))
-            },
-            popEnterTransition = {
-                fadeIn(animationSpec = tween(500))
-            },
-            popExitTransition = {
-                fadeOut(animationSpec = tween(100))
-            }
-        ) {
-            composable(RootScreenRoute.Authentication.route) {
-                AuthenticateScreen(
-                    viewModel = authViewModel,
-                    navController = navController
-                )
-            }
-
-            composable(RootScreenRoute.SetupScreen.route){
-                SetupScreenBox(){
-                    //authViewModel.onEvent(AuthenticationEvent.NavigateToProfile(navGraph = navController))
+        if (mainState.isLoading){
+            Text(text = "Loading...")
+        }else{
+            NavHost(
+                modifier = modifier.padding(innerPadding),
+                startDestination = RootScreenRoute.Authentication.route,
+                navController = navController,
+                enterTransition = {
+                    fadeIn(animationSpec = tween(500))
+                },
+                exitTransition = {
+                    fadeOut(animationSpec = tween(100))
+                },
+                popEnterTransition = {
+                    fadeIn(animationSpec = tween(500))
+                },
+                popExitTransition = {
+                    fadeOut(animationSpec = tween(100))
                 }
-            }
-
-            /*composable(RootScreenRoute.MainScreen.route){
-                MainNavigation(
-                    rootNavController = navController,
-                    snackbarHostState = snackbarHostState,
-                    authViewModel = authViewModel,
-                    profileViewModel = profileViewModel
-                )
-            }*/
-            //##
-            composable(RootScreenRoute.LifeStyle.route){
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            TopBar(
-                                title = {
-                                    LifeStyleTitle(
-                                        title = mainState.lifeStyleTitle,
-                                        previousButtonEnabled = mainState.isPreviousDayAvailable,
-                                        onPreviousDayClick = {
-                                            Log.d("RootNavigation", "onPreviousDayClick")
-                                            mainViewModel.onEvent(MainEvent.PreviousDayDailyData)
-                                            //authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
-                                        },
-                                        nextButtonEnabled = mainState.isNextDayAvailable,
-                                        onNextDayClick = {
-                                            Log.d("RootNavigation", "onNextDayClick")
-                                            mainViewModel.onEvent(MainEvent.NextDayDailyData)
-                                        }
-                                    )
-                                },
-                            )
-                        }
+            ) {
+                composable(RootScreenRoute.Authentication.route) {
+                    Log.d("RootNavigation", "Authentication Screen")
+                    AuthenticateScreen(
+                        viewModel = authViewModel,
+                        navController = navController
                     )
-                )
-                LifeStyleScreen(
-                    modifier = Modifier
-                        .clickable{
-                            authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
-                        },
-                    mainViewModel = mainViewModel
-                )
-            }
+                }
 
-            composable(RootScreenRoute.Nutrition.route){
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            TopBar(
-                                title = {
-                                    LifeStyleTitle(
-                                        title = mainState.lifeStyleTitle,
-                                        previousButtonEnabled = mainState.isPreviousDayAvailable,
-                                        onPreviousDayClick = {
-                                            Log.d("RootNavigation", "onPreviousDayClick")
-                                            mainViewModel.onEvent(MainEvent.PreviousDayDailyData)
-                                            //authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
-                                        },
-                                        nextButtonEnabled = mainState.isNextDayAvailable,
-                                        onNextDayClick = {
-                                            Log.d("RootNavigation", "onNextDayClick")
-                                            mainViewModel.onEvent(MainEvent.NextDayDailyData)
-                                        }
-                                    )
-                                },
-                            )
-                        }
-                    )
-                )
-                NutritionScreen(
-                    onAINavigate = {
-                        navController.navigate(RootScreenRoute.NutritionAI.route)
-                    },
-                    onSearchNavigate = {
-                        navController.navigate(RootScreenRoute.NutritionSearch.route)
-                    },
-                    onBarcodeNavigate = {
-                        navController.navigate(RootScreenRoute.NutritionBarcode.route)
+                composable(RootScreenRoute.SetupScreen.route){
+
+                    Log.d("RootNavigation", "Setup Screen")
+                    SetupScreenBox(){
+                        //authViewModel.onEvent(AuthenticationEvent.NavigateToProfile(navGraph = navController))
                     }
-                )
-            }
+                }
 
-            composable(RootScreenRoute.NutritionAI.route) {
-                Text(text = "NutritionAI")
-            }
-            composable(RootScreenRoute.NutritionSearch.route) {
-                SearchNutritionScreen()
-            }
-            composable(RootScreenRoute.NutritionBarcode.route) {
-                Text(text = "NutritionBarcode")
-            }
+                /*composable(RootScreenRoute.MainScreen.route){
+                    MainNavigation(
+                        rootNavController = navController,
+                        snackbarHostState = snackbarHostState,
+                        authViewModel = authViewModel,
+                        profileViewModel = profileViewModel
+                    )
+                }*/
+                //##
+                composable(RootScreenRoute.LifeStyle.route){
+                    Log.d("RootNavigation", "LifeStyle Screen")
+                    Log.d("RootNavigation--", "LifeStyle - ${mainState.lifeStyleTitle}")
+                    Log.d("RootNavigation--", "LifeStyle - ${mainState.isPreviousDayAvailable}")
+                    Log.d("RootNavigation--", "LifeStyle - ${mainState.isNextDayAvailable}")
+                    appBarViewModel.onEvent(
+                        AppBarEvent.TopBarComposableChanged(
+                            {
+                                TopBar(
+                                    title = {
+                                        LifeStyleTitle(
+                                            title = mainState.lifeStyleTitle,
+                                            previousButtonEnabled = mainState.isPreviousDayAvailable,
+                                            onPreviousDayClick = {
+                                                Log.d("RootNavigation", "onPreviousDayClick")
+                                                mainViewModel.onEvent(MainEvent.PreviousDayDailyData)
+                                                //authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
+                                            },
+                                            nextButtonEnabled = mainState.isNextDayAvailable,
+                                            onNextDayClick = {
+                                                Log.d("RootNavigation", "onNextDayClick")
+                                                mainViewModel.onEvent(MainEvent.NextDayDailyData)
+                                            }
+                                        )
+                                    },
+                                )
+                            }
+                        )
+                    )
+                    LifeStyleScreen(
+                        modifier = Modifier
+                            .clickable{
+                                authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
+                            },
+                        mainViewModel = mainViewModel
+                    )
+                }
 
-
-            composable(RootScreenRoute.Profile.route){
-                Text(text = "ProfileG")
-            }
-            composable(RootScreenRoute.Search.route){
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            TopBar(
-                                title = {
-                                    Text("Search Trainer")
-                                },
-                            )
+                composable(RootScreenRoute.Nutrition.route){
+                    appBarViewModel.onEvent(
+                        AppBarEvent.TopBarComposableChanged(
+                            {
+                                TopBar(
+                                    title = {
+                                        LifeStyleTitle(
+                                            title = mainState.lifeStyleTitle,
+                                            previousButtonEnabled = mainState.isPreviousDayAvailable,
+                                            onPreviousDayClick = {
+                                                Log.d("RootNavigation", "onPreviousDayClick")
+                                                mainViewModel.onEvent(MainEvent.PreviousDayDailyData)
+                                                //authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
+                                            },
+                                            nextButtonEnabled = mainState.isNextDayAvailable,
+                                            onNextDayClick = {
+                                                Log.d("RootNavigation", "onNextDayClick")
+                                                mainViewModel.onEvent(MainEvent.NextDayDailyData)
+                                            }
+                                        )
+                                    },
+                                )
+                            }
+                        )
+                    )
+                    NutritionScreen(
+                        onAINavigate = {
+                            navController.navigate(RootScreenRoute.NutritionAI.route)
+                        },
+                        onSearchNavigate = {
+                            navController.navigate(RootScreenRoute.NutritionSearch.route)
+                        },
+                        onBarcodeNavigate = {
+                            navController.navigate(RootScreenRoute.NutritionBarcode.route)
                         }
                     )
-                )
-                //Text(text = "Search")
-                SearchTrainerScreen()
-            }
+                }
 
-            composable(RootScreenRoute.SearchDetail.route) { entry ->
-                val id = entry.arguments?.getString("id")
-                Text(text = "SearchDetail: $id")
-            }
+                composable(RootScreenRoute.NutritionAI.route) {
+                    Text(text = "NutritionAI")
+                }
+                composable(RootScreenRoute.NutritionSearch.route) {
+                    SearchNutritionScreen()
+                }
+                composable(RootScreenRoute.NutritionBarcode.route) {
+                    Text(text = "NutritionBarcode")
+                }
 
-            composable(RootScreenRoute.Trainer.route){
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            TopBar(
-                                title = {
-                                    Text("Trainer(s)")
-                                },
-                            )
-                        }
+
+                composable(RootScreenRoute.Profile.route){
+                    Text(text = "ProfileG")
+                }
+                composable(RootScreenRoute.Search.route){
+                    appBarViewModel.onEvent(
+                        AppBarEvent.TopBarComposableChanged(
+                            {
+                                TopBar(
+                                    title = {
+                                        Text("Search Trainer")
+                                    },
+                                )
+                            }
+                        )
                     )
-                )
-                //Text(text = "Trainer")
-                TrainerScreen()
-            }
+                    //Text(text = "Search")
+                    SearchTrainerScreen()
+                }
 
-            composable (RootScreenRoute.TrainerDetail.route) { entry ->
-                val id = entry.arguments?.getString("id")
-                Text(text = "TrainerDetail: $id")
-            }
+                composable(RootScreenRoute.SearchDetail.route) { entry ->
+                    val id = entry.arguments?.getString("id")
+                    Text(text = "SearchDetail: $id")
+                }
 
-
-            composable(RootScreenRoute.Trainees.route){
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            TopBar(
-                                title = {
-                                    Text("Trainee(s)")
-                                },
-                            )
-                        }
+                composable(RootScreenRoute.Trainer.route){
+                    appBarViewModel.onEvent(
+                        AppBarEvent.TopBarComposableChanged(
+                            {
+                                TopBar(
+                                    title = {
+                                        Text("Trainer(s)")
+                                    },
+                                )
+                            }
+                        )
                     )
-                )
-                //Text(text = "Trainees")
-                TraineesScreen()
-            }
+                    //Text(text = "Trainer")
+                    TrainerScreen()
+                }
 
-            composable(RootScreenRoute.TraineeDetail.route) { entry ->
-                val id = entry.arguments?.getString("id")
-                Text(text = "TraineeDetail: $id")
-            }
+                composable (RootScreenRoute.TrainerDetail.route) { entry ->
+                    val id = entry.arguments?.getString("id")
+                    Text(text = "TrainerDetail: $id")
+                }
 
 
-            composable(RootScreenRoute.Requests.route){
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            TopBar(
-                                title = {
-                                    Text("Request(s)")
-                                },
-                            )
-                        }
+                composable(RootScreenRoute.Trainees.route){
+                    appBarViewModel.onEvent(
+                        AppBarEvent.TopBarComposableChanged(
+                            {
+                                TopBar(
+                                    title = {
+                                        Text("Trainee(s)")
+                                    },
+                                )
+                            }
+                        )
                     )
-                )
-                //Text(text = "Requests")
-                RequestScreen()
+                    //Text(text = "Trainees")
+                    TraineesScreen()
+                }
+
+                composable(RootScreenRoute.TraineeDetail.route) { entry ->
+                    val id = entry.arguments?.getString("id")
+                    Text(text = "TraineeDetail: $id")
+                }
+
+
+                composable(RootScreenRoute.Requests.route){
+                    appBarViewModel.onEvent(
+                        AppBarEvent.TopBarComposableChanged(
+                            {
+                                TopBar(
+                                    title = {
+                                        Text("Request(s)")
+                                    },
+                                )
+                            }
+                        )
+                    )
+                    //Text(text = "Requests")
+                    RequestScreen()
+                }
+
+                composable(RootScreenRoute.RequestDetail.route) { entry ->
+                    val id = entry.arguments?.getString("id")
+                    Text(text = "RequestDetail: $id")
+                }
+
+
+                composable(RootScreenRoute.Menu.route){
+                    Text(text = "Menu")
+                }
+                //###
+
             }
-
-            composable(RootScreenRoute.RequestDetail.route) { entry ->
-                val id = entry.arguments?.getString("id")
-                Text(text = "RequestDetail: $id")
-            }
-
-
-            composable(RootScreenRoute.Menu.route){
-                Text(text = "Menu")
-            }
-            //###
-
         }
 
     }
+
+
+
+
+
 }
