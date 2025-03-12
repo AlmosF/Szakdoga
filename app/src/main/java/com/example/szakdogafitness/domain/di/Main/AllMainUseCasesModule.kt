@@ -5,6 +5,7 @@ import com.example.szakdogafitness.domain.usecases.main.AllMainUseCases
 import com.example.szakdogafitness.domain.usecases.main.FetchUserUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasUseCase
 import com.example.szakdogafitness.domain.usecases.main.GenerateNewDailyDataUseCase
+import com.example.szakdogafitness.domain.usecases.main.GetTrainersUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,16 +34,24 @@ object AllMainUseCasesModule {
 
     @Provides
     @Singleton
+    fun provideGetTrainersUseCase(repository: IMainService): GetTrainersUseCase =
+        GetTrainersUseCase(repository)
+
+
+    @Provides
+    @Singleton
     fun provideMainUseCases(
         repository: IMainService,
         fetchUserUseCase: FetchUserUseCase,
         fetchUsersDailyDatasUseCase: FetchUsersDailyDatasUseCase,
-        generateNewDailyDataUseCase: GenerateNewDailyDataUseCase
+        generateNewDailyDataUseCase: GenerateNewDailyDataUseCase,
+        getTrainersUseCase: GetTrainersUseCase
     ): AllMainUseCases = AllMainUseCases(
         repository,
         fetchUserUseCase,
         fetchUsersDailyDatasUseCase,
-        generateNewDailyDataUseCase
+        generateNewDailyDataUseCase,
+        getTrainersUseCase
     )
 
 

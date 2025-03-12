@@ -6,5 +6,6 @@ class AllMainUseCases(
     val repository: IMainService,
     val fetchUserUseCase: FetchUserUseCase,
     val fetchUsersDailyDatasUseCase: FetchUsersDailyDatasUseCase,
-    val generateNewDailyDataUseCase: GenerateNewDailyDataUseCase
+    val generateNewDailyDataUseCase: GenerateNewDailyDataUseCase,
+    val getTrainersUseCase: GetTrainersUseCase
 )

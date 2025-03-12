@@ -358,7 +358,7 @@ fun RootNavigation(
                     Log.d("RootNavigation--", "LifeStyle - ${mainState.lifeStyleTitle}")
                     Log.d("RootNavigation--", "LifeStyle - ${mainState.isPreviousDayAvailable}")
                     Log.d("RootNavigation--", "LifeStyle - ${mainState.isNextDayAvailable}")
-                    appBarViewModel.onEvent(
+                    /*appBarViewModel.onEvent(
                         AppBarEvent.TopBarComposableChanged(
                             {
                                 TopBar(
@@ -381,13 +381,14 @@ fun RootNavigation(
                                 )
                             }
                         )
-                    )
+                    )*/
                     LifeStyleScreen(
                         modifier = Modifier
                             .clickable{
                                 authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
                             },
-                        mainViewModel = mainViewModel
+                        mainViewModel = mainViewModel,
+                        appBarViewModel = appBarViewModel
                     )
                 }
 
@@ -417,6 +418,7 @@ fun RootNavigation(
                         )
                     )
                     NutritionScreen(
+                        mainViewModel = mainViewModel,
                         onAINavigate = {
                             navController.navigate(RootScreenRoute.NutritionAI.route)
                         },
@@ -456,7 +458,10 @@ fun RootNavigation(
                         )
                     )
                     //Text(text = "Search")
-                    SearchTrainerScreen()
+                    SearchTrainerScreen(
+                        navController = navController,
+                        mainViewModel = mainViewModel
+                    )
                 }
 
                 composable(RootScreenRoute.SearchDetail.route) { entry ->

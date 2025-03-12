@@ -28,7 +28,6 @@ class AppBarViewModel @Inject constructor(
                 _state.update { it.copy(bottomBarVisibility = event.bottomBarVisibility) }
             }
             is AppBarEvent.TopBarComposableChanged -> {
-                Log.d("AppBarViewModel", "TopBarComposableChanged")
                 //_state.update { it.copy(topBarComposable = event.topBarComposable) }
                 _state.value = _state.value.copy(topBarComposable = event.topBarComposable)
             }

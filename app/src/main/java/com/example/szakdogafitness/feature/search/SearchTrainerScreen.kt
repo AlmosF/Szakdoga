@@ -11,21 +11,39 @@ import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.TrainerCard
 import com.example.szakdogafitness.ui.common.TrainerDemo
+import com.example.szakdogafitness.viewmodel.MainEvent
+import com.example.szakdogafitness.viewmodel.MainViewModel
 
 @Composable
 fun SearchTrainerScreen(
     modifier: Modifier = Modifier,
+    navController: NavHostController,
+    mainViewModel: MainViewModel = hiltViewModel()
     //VMs
 ) {
+
+    LaunchedEffect(Unit) {
+        mainViewModel.onEvent(MainEvent.FetchTrainers)
+    }
+
+    val mainState by mainViewModel.state.collectAsStateWithLifecycle()
 
     Column (
         modifier = modifier
@@ -63,16 +81,31 @@ fun SearchTrainerScreen(
                 disabledContainerColor = MaterialTheme.colorScheme.surface,
             )
         )
-        LazyColumn (
-            modifier = Modifier
-                .fillMaxWidth(0.95f),
-        ) {
-            items(list.size) {
-                TrainerCard(
-                    data = list[it],
-                )
+        if (mainState.trainers.isEmpty()) {
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth(0.95f)
+            ) {
+                Text("No trainers found")
+            }
+        } else {
+            LazyColumn (
+                modifier = Modifier
+                    .fillMaxWidth(0.95f),
+            ) {
+                /*items(list.size) {
+                    TrainerCard(
+                        data = list[it],
+                    )
+                }*/
+                items(mainState.trainers.size) {
+                    TrainerCard(
+                        data = mainState.trainers[it]!!,
+                    )
+                }
             }
         }
+
     }
 }
 
@@ -96,6 +129,7 @@ val list = List(21) { id ->
 @Composable
 @Preview
 fun SearchTrainerScreenPreview() {
-    SearchTrainerScreen(
-    )
+    /*SearchTrainerScreen(
+
+    )*/
 }

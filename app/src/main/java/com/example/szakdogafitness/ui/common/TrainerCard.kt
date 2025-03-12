@@ -37,6 +37,7 @@ import androidx.constraintlayout.compose.Dimension
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.R
+import com.example.szakdogafitness.domain.model.User
 
 
 data class TrainerDemo (
@@ -55,9 +56,11 @@ data class TrainerDemo (
 
 @Composable
 fun TrainerCard(
-    data : TrainerDemo
+    //data : TrainerDemo
+    data : User
 ) {
-    val painter = rememberAsyncImagePainter(data.image)
+    //val painter = rememberAsyncImagePainter(data.image)
+    val painter = rememberAsyncImagePainter(data.profileImageUrl)
     val painterState = painter.state.collectAsState()
     Card (
         modifier = Modifier
@@ -122,7 +125,8 @@ fun TrainerCard(
                 }
             }
             Text(
-                text = "${data.Fname} ${data.Lname}",
+                //text = "${data.Fname} ${data.Lname}",
+                text = "${data.firstName} ${data.lastName}",
                 modifier = Modifier
                     .constrainAs(name) {
                         top.linkTo(parent.top, margin = 8.dp)
@@ -132,9 +136,11 @@ fun TrainerCard(
                 color = Color.Black,
                 fontWeight = Bold
             )
-            data.specializations.forEach {
+            //data.specializations.forEach {
+            data.trainer.specializations.forEach {
                 Text(
-                    text = data.specializations.joinToString(", "),
+                    //text = data.specializations.joinToString(", "),
+                    text = data.trainer.specializations.joinToString(", "),
                     modifier = Modifier
                         .constrainAs(specializations){
                             top.linkTo(name.bottom, margin = 8.dp)
@@ -163,10 +169,12 @@ fun TrainerCard(
                     modifier = Modifier
                         .padding(8.dp)
                         .weight(1f),
-                    rating = data.rating
+                    //rating = data.rating
+                    rating = data.trainer.rating
                 )
                 Text(
-                    text = "$${data.price} / session",
+                    //text = "$${data.price} / session",
+                    text = "$${data.trainer.pricing} / session",
                     modifier = Modifier.weight(1f),
                     fontSize = 18.sp,
                     color = Color.Black,
@@ -179,13 +187,14 @@ fun TrainerCard(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "${data.distance} miles away",
+                        //text = "${data.distance} miles away",
+                        text = "${data.location} miles away",
                         fontSize = 18.sp,
                         color = Color.Black,
                         fontWeight = Bold
                     )
                     Text(
-                        text = data.gender,
+                        text = data.gender.toString(),
                         fontSize = 18.sp,
                         color = Color.Black,
                         fontWeight = Bold
@@ -245,7 +254,7 @@ fun TrainerCardPreview() {
         gender = "male",
         specializations = listOf("cardio", "yoga", "pilates", "weightlifting", "crossfit")
     )
-    TrainerCard(
+    /*TrainerCard(
         data = trainer
-    )
+    )*/
 }

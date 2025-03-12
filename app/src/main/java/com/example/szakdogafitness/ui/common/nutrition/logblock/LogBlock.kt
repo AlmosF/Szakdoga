@@ -1,6 +1,7 @@
 package com.example.szakdogafitness.ui.common.nutrition.logblock
 
 import android.R.attr.data
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,11 +46,16 @@ enum class BlockState {
 @Composable
 fun LogBlock(
     modifier: Modifier = Modifier,
-    //data: Map<String, List<Nutrition>>,
+    data: Map<String, List<Nutrition>>,
     //viewModel: MealLogViewModel = viewModel(),
     viewModel: MealLogViewModel = hiltViewModel(),
     onRemove: (String, Int) -> Unit = { _, _ -> }
 ) {
+
+    LaunchedEffect(data) {
+        Log.d("LogBlock", "Data changed: $data")
+    }
+
     //val titles = listOf("Breakfast", "Lunch", "Dinner", "Morning Snack", "Afternoon Snack", "Evening Snack")
     val titles = listOf(
         BlockState.Breakfast,
@@ -102,8 +108,9 @@ fun LogBlock(
         )
     ))
     }
-    LaunchedEffect(Unit) {
-        viewModel.onEvent(MealLogEvent.SetupDemoMeal(testData))
+    LaunchedEffect(Unit, data) {
+        //viewModel.onEvent(MealLogEvent.SetupDemoMeal(testData))
+        viewModel.onEvent(MealLogEvent.SetupDemoMeal(data))
     }
     //var currentBlockState by remember { mutableStateOf(BlockState.Closed) }
     Column (

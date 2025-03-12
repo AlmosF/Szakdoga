@@ -82,6 +82,10 @@ class MainViewModel @Inject constructor(
             MainEvent.ClearState -> {
                 _state.value = MainState()
             }
+
+            MainEvent.FetchTrainers -> {
+                fetchTrainers()
+            }
         }
         //initLifestyleTitle()
         buttonsAreAvailable()
@@ -93,6 +97,23 @@ class MainViewModel @Inject constructor(
         } else
             state.value.currentDailyData.date.toDate().toString().substring(4, 10)
         )
+    }
+
+    private fun fetchTrainers(){
+        viewModelScope.launch {
+            //_state.update { it.copy(isLoading = true) }
+            try {
+                allMainUseCases.getTrainersUseCase().collect {
+                    val trainers = it
+                    _state.update { it.copy(trainers = trainers,/* isLoading = false*/) }
+                }
+            } catch (e: Exception){
+                Log.e(TAG, "Error getting trainers: ${e.message}", e)
+                //_state.update { it.copy(isLoading = false) }
+            } finally {
+
+            }
+        }
     }
 
     private fun generateNewDailyData(){
@@ -246,6 +267,7 @@ data class MainState(
     val user: User? = null,
     //val dailyDatas: DailyDatas = testMainStateDailyDatas,
     val dailyDatas: DailyDatas = DailyDatas(),
+    val trainers: List<User?> = listOf(),
     val currentDailyData: DailyData = dailyDatas.dailyData.lastOrNull() ?: DailyData(),
     val isNextDayAvailable: Boolean = false,
     val isPreviousDayAvailable: Boolean = false,
@@ -260,6 +282,7 @@ sealed class MainEvent{
     object FetchUser: MainEvent()
     object UpdateLifestyleTitle: MainEvent()
     object PreviousDayDailyData: MainEvent()
+    object FetchTrainers: MainEvent()
     object NextDayDailyData: MainEvent()
     object GenerateNewDailyData: MainEvent()
     object ClearState: MainEvent()

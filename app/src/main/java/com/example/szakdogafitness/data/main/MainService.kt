@@ -17,6 +17,7 @@ import com.google.firebase.firestore.dataObjects
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -56,6 +57,24 @@ class MainService @Inject constructor(
                             user.toUser(trainee)
                         }
                 }
+            }.flowOn(Dispatchers.IO)
+
+    override suspend fun getTrainers(): Flow<List<User?>> =
+        firestore.collection("trainers")
+            .dataObjects<FirestoreTrainer>()
+            .flatMapLatest { trainerList ->
+                val trainerFlows = trainerList.map { trainer ->
+                    firestore.collection("users")
+                        .whereEqualTo("uid", trainer.uid)
+                        .limit(1)
+                        .dataObjects<FirestoreUser>()
+                        .map { userList ->
+                            val user = userList.firstOrNull() ?: FirestoreUser()
+                            user.toUser(trainer)
+                        }
+
+                }
+                combine(trainerFlows) { it.toList() }
             }.flowOn(Dispatchers.IO)
 
     override suspend fun getUsersDailyDatas(): Flow<DailyDatas?> =

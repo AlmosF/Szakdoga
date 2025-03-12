@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.feature.search.list
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.TrainerCard
@@ -78,7 +79,8 @@ fun TrainerScreen(
         ) {
             items(filtered.size) {
                 TrainerCard(
-                    data = filtered[it],
+                    //data = filtered[it],
+                    data = User(),
                 )
             }
         }

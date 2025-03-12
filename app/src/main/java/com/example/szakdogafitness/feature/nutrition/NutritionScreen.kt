@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.feature.nutrition
 
+import android.R.attr.data
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,18 +16,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.szakdogafitness.ui.common.nutrition.AddNutrientsBlock
 import com.example.szakdogafitness.ui.common.nutrition.TargetKcalBlock
 import com.example.szakdogafitness.ui.common.nutrition.logblock.LogBlock
+import com.example.szakdogafitness.viewmodel.MainViewModel
 
 @Composable
 fun NutritionScreen(
     modifier: Modifier = Modifier,
+    mainViewModel: MainViewModel = hiltViewModel(),
     onAINavigate: () -> Unit,
     onSearchNavigate: () -> Unit,
     onBarcodeNavigate: () -> Unit
 ) {
 
+    val mainState by mainViewModel.state.collectAsStateWithLifecycle()
 
     Column (
         modifier = modifier
@@ -46,7 +52,7 @@ fun NutritionScreen(
         var kcal = 1500
         var targetKcal by remember { mutableStateOf(1500) }
         var maxKcal by remember { mutableStateOf(2500) }
-        TargetKcalBlock(
+        /*TargetKcalBlock(
             modifier = Modifier
                 .fillMaxWidth(0.9f),
             kcal = kcal,
@@ -58,8 +64,23 @@ fun NutritionScreen(
             onDecrease = {
                 targetKcal -= it
             }
+        )*/
+        TargetKcalBlock(
+            modifier = Modifier
+                .fillMaxWidth(0.9f),
+            kcal = mainState.currentDailyData.foodIntake.values.sumOf { it.sumOf { it.calories } },
+            targetKcal = mainState.currentDailyData.targetKcal,
+            maxKcal = maxKcal,
+            onIncrease = {
+                targetKcal += it
+            },
+            onDecrease = {
+                targetKcal -= it
+            }
         )
-        LogBlock()
+        LogBlock(
+            data = mainState.currentDailyData.foodIntake
+        )
     }
 
 

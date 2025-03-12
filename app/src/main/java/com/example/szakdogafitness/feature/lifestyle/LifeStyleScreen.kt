@@ -11,6 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -27,14 +28,18 @@ import com.example.szakdogafitness.ui.common.lifestyle.DailyCaloriesBlock
 import com.example.szakdogafitness.ui.common.lifestyle.StepsBlock
 import com.example.szakdogafitness.ui.common.lifestyle.WaterIntakeBlock
 import com.example.szakdogafitness.ui.common.lifestyle.WeightControlBlock
+import com.example.szakdogafitness.viewmodel.AppBarEvent
+import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.AuthenticationEvent
+import com.example.szakdogafitness.viewmodel.MainEvent
 import com.example.szakdogafitness.viewmodel.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LifeStyleScreen(
     modifier: Modifier = Modifier,
-    mainViewModel: MainViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel(),
+    appBarViewModel: AppBarViewModel = hiltViewModel()
     //VMs
 ){
     /*Scaffold (
@@ -64,7 +69,37 @@ fun LifeStyleScreen(
         }
     ){ innerPadding ->*/
 
+    val appBarState by appBarViewModel.state.collectAsStateWithLifecycle()
+
     val mainState by mainViewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        appBarViewModel.onEvent(
+            AppBarEvent.TopBarComposableChanged(
+                {
+                    TopBar(
+                        title = {
+                            LifeStyleTitle(
+                                title = mainState.lifeStyleTitle,
+                                previousButtonEnabled = mainState.isPreviousDayAvailable,
+                                onPreviousDayClick = {
+                                    Log.d("RootNavigation", "onPreviousDayClick")
+                                    mainViewModel.onEvent(MainEvent.PreviousDayDailyData)
+                                    //authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
+                                },
+                                nextButtonEnabled = mainState.isNextDayAvailable,
+                                onNextDayClick = {
+                                    Log.d("RootNavigation", "onNextDayClick")
+                                    mainViewModel.onEvent(MainEvent.NextDayDailyData)
+                                }
+                            )
+                        },
+                    )
+                }
+            )
+        )
+    }
+
 
     ConstraintLayout (
         modifier = modifier//.padding(innerPadding)
