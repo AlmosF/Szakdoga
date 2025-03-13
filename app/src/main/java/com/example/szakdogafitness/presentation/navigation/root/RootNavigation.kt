@@ -461,7 +461,7 @@ fun RootNavigation(
                     SearchTrainerScreen(
                         navController = navController,
                         mainViewModel = mainViewModel
-                    )
+                    ) {}
                 }
 
                 composable(RootScreenRoute.SearchDetail.route) { entry ->

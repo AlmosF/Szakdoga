@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.DailyData
 import com.example.szakdogafitness.domain.model.DailyDatas
+import com.example.szakdogafitness.domain.model.Nutrition
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.usecases.main.AllMainUseCases
 import com.google.firebase.Timestamp
@@ -80,23 +81,28 @@ class MainViewModel @Inject constructor(
             }
 
             MainEvent.ClearState -> {
-                _state.value = MainState()
+                Log.d("MainViewModel", "ClearState: ${state.value}")
+                _state.value = MainState(dailyDatas = DailyDatas())
+                Log.d("MainViewModel", "ClearStateEND: ${state.value}")
             }
 
             MainEvent.FetchTrainers -> {
                 fetchTrainers()
+            }
+
+            MainEvent.FetchMealTypes -> {
+                fetchMealTypes()
+            }
+            MainEvent.FetchTrainees -> {
+                fetchTrainees()
             }
         }
         //initLifestyleTitle()
         buttonsAreAvailable()
     }
 
-    private fun initLifestyleTitle(){
-        _state.value = _state.value.copy(lifeStyleTitle = if(state.value.currentDailyData.date.toYYYYMMDD() == Timestamp.now().toYYYYMMDD()) {
-            state.value.currentDailyData.date.toDate().toString().substring(4, 10)+", Today"
-        } else
-            state.value.currentDailyData.date.toDate().toString().substring(4, 10)
-        )
+    private fun fetchTrainees(){
+        TODO()
     }
 
     private fun fetchTrainers(){
@@ -114,6 +120,10 @@ class MainViewModel @Inject constructor(
 
             }
         }
+    }
+
+    private fun fetchMealTypes(){
+
     }
 
     private fun generateNewDailyData(){
@@ -174,19 +184,22 @@ class MainViewModel @Inject constructor(
 
     private fun fetchDailyData(){
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            //_state.update { it.copy(isLoading = true) }
+            _state.update { it.copy(isLoading = true, dailyDatas = DailyDatas(), currentDailyData = DailyData()) }
             try {
                 allMainUseCases.fetchUsersDailyDatasUseCase().collect { dailyDatas ->
                     if (dailyDatas != null && dailyDatas.dailyData.isNotEmpty()){
                         val latestDailyDate = dailyDatas.dailyData.last()
                         val latestDate = latestDailyDate.date.toDate().toString().substring(4, 10)
-                        buttonsAreAvailable()
+                        //buttonsAreAvailable()
                         _state.update { it.copy(
                             dailyDatas = dailyDatas,
                             currentDailyData = latestDailyDate,
                             lifeStyleTitle = latestDate,
                             isLoading = false
                         ) }
+                        buttonsAreAvailable()
+                        generateNewDailyData()
                     } else {
                         _state.update { it.copy(isLoading = false) }
                         Log.d("RootNavigation:::", "Daily data fetched: ${state.value.isLoading}")
@@ -223,6 +236,10 @@ class MainViewModel @Inject constructor(
             }
         }
     }*/
+
+    fun checkIfUserIsNew() : Boolean{
+        return state.value.user == null
+    }
 
 
 }
@@ -268,6 +285,8 @@ data class MainState(
     //val dailyDatas: DailyDatas = testMainStateDailyDatas,
     val dailyDatas: DailyDatas = DailyDatas(),
     val trainers: List<User?> = listOf(),
+    val trainees: List<User?> = listOf(),
+    val mealTypes: Map<String, List<Nutrition>> = mapOf(),
     val currentDailyData: DailyData = dailyDatas.dailyData.lastOrNull() ?: DailyData(),
     val isNextDayAvailable: Boolean = false,
     val isPreviousDayAvailable: Boolean = false,
@@ -283,6 +302,8 @@ sealed class MainEvent{
     object UpdateLifestyleTitle: MainEvent()
     object PreviousDayDailyData: MainEvent()
     object FetchTrainers: MainEvent()
+    object FetchTrainees: MainEvent()
+    object FetchMealTypes: MainEvent()
     object NextDayDailyData: MainEvent()
     object GenerateNewDailyData: MainEvent()
     object ClearState: MainEvent()

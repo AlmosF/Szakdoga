@@ -12,6 +12,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -33,6 +34,7 @@ import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.MainEvent
 import com.example.szakdogafitness.viewmodel.MainViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,6 +76,8 @@ fun LifeStyleScreen(
     val mainState by mainViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
+        delay(100)
+        Log.d("LifeStyleScreen", "LaunchedEffect: ${mainState.currentDailyData}")
         appBarViewModel.onEvent(
             AppBarEvent.TopBarComposableChanged(
                 {

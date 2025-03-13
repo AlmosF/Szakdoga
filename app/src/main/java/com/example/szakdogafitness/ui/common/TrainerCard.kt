@@ -57,7 +57,8 @@ data class TrainerDemo (
 @Composable
 fun TrainerCard(
     //data : TrainerDemo
-    data : User
+    data : User,
+    onClick: (String) -> Unit
 ) {
     //val painter = rememberAsyncImagePainter(data.image)
     val painter = rememberAsyncImagePainter(data.profileImageUrl)
@@ -66,7 +67,9 @@ fun TrainerCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        onClick = {}
+        onClick = {
+            onClick(data.userId)
+        }
     ) {
         ConstraintLayout (
             modifier = Modifier

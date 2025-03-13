@@ -81,7 +81,7 @@ fun TrainerScreen(
                 TrainerCard(
                     //data = filtered[it],
                     data = User(),
-                )
+                ) {}
             }
         }
     }

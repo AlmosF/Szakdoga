@@ -29,6 +29,7 @@ import com.example.szakdogafitness.feature.nutrition.NutritionScreen
 import com.example.szakdogafitness.feature.nutrition.SearchNutritionScreen
 import com.example.szakdogafitness.feature.setup.SetupScreenBox
 import com.example.szakdogafitness.feature.trainer.TrainerDetailsScreen
+import com.example.szakdogafitness.presentation.navigation.NewRootNavigation
 import com.example.szakdogafitness.presentation.navigation.root.RootNavigation
 import com.example.szakdogafitness.ui.common.TrainerDemo
 import com.example.szakdogafitness.ui.common.lifestyle.DailyCaloriesBlock
@@ -124,10 +125,18 @@ class MainActivity : ComponentActivity() {
 
                     //### WORKING ROOT NAV ###
                     val navController = rememberNavController()
-                    RootNavigation(
+
+
+                    /*RootNavigation(
+                        modifier = Modifier.padding(innerPadding),
+                        navController = navController,
+                    )*/
+                    NewRootNavigation(
                         modifier = Modifier.padding(innerPadding),
                         navController = navController,
                     )
+
+
                     //### WORKING ROOT NAV ###
 
 

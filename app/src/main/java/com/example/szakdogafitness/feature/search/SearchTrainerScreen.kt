@@ -35,7 +35,8 @@ import com.example.szakdogafitness.viewmodel.MainViewModel
 fun SearchTrainerScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    mainViewModel: MainViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel(),
+    onTrainerClick: (String) -> Unit
     //VMs
 ) {
 
@@ -101,7 +102,9 @@ fun SearchTrainerScreen(
                 items(mainState.trainers.size) {
                     TrainerCard(
                         data = mainState.trainers[it]!!,
-                    )
+                    ) { userId ->
+                        onTrainerClick(userId)
+                    }
                 }
             }
         }

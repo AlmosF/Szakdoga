@@ -103,7 +103,7 @@ fun AuthenticateScreen(
             .fillMaxSize()
             .safeDrawingPadding()
     ) { padding ->
-        if (state.isLoggedIn){
+        if (state.isLoggedIn && false){
             CircularProgressIndicator(
                 modifier = Modifier
                     .clickable{

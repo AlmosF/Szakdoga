@@ -8,23 +8,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.unit.dp
 
 
 @Composable
 fun SearchNutritionLabels(
     modifier: Modifier = Modifier,
-    selectedLabel: String = "Breakfast",
+    selectedLabel: String = "breakfast",
     onLabelSelected: (String) -> Unit
 ) {
 
     val labels = listOf(
-        "Breakfast",
-        "Morning Snack",
-        "Lunch",
-        "Afternoon Snack",
-        "Dinner",
-        "Evening Snack"
+        "breakfast",
+        //"Morning Snack",
+        "morning_snack",
+        "lunch",
+        "afternoon_snack",
+        "dinner",
+        "evening_snack"
     )
 
     LazyRow (
@@ -48,7 +50,7 @@ fun SearchNutritionLabels(
                 )
             ) {
                 Text(
-                    text = labels[label]
+                    text = labels[label].replace("_", " ").replaceFirstChar(Char::uppercase),
                 )
             }
         }

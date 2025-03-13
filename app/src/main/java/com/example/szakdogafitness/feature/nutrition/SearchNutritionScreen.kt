@@ -1,8 +1,14 @@
 package com.example.szakdogafitness.feature.nutrition
 
+import android.R.attr.onClick
+import android.R.attr.text
+import android.R.attr.top
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,11 +36,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,14 +55,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.domain.model.Nutrition
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.appbars.TopBar
 import com.example.szakdogafitness.ui.common.nutrition.SearchNutritionCard
 import com.example.szakdogafitness.ui.common.nutrition.SearchNutritionLabels
+import com.example.szakdogafitness.viewmodel.MealTypesEvent
+import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 
 
 /*@Composable
@@ -169,8 +189,20 @@ fun SearchNutritionScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchNutritionScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    mealTypesViewModel: MealTypesViewModel = hiltViewModel()
 ) {
+
+    val mealTypesState by mealTypesViewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        Log.d("SearchNutritionScreen", "LaunchedEffect")
+        mealTypesViewModel.onEvent(MealTypesEvent.LoadMealTypes)
+    }
+
+    LaunchedEffect(mealTypesState.mealTypes) {
+        Log.d("SearchNutritionScreen", "mealTypesState: ${mealTypesState.mealTypes}")
+    }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
@@ -179,20 +211,21 @@ fun SearchNutritionScreen(
             TopBar(
                 title = {
                     Column {
-                        var selectedLabel by remember { mutableStateOf("Breakfast") }
                         SearchNutritionLabels (
                             modifier = Modifier
                                 .fillMaxWidth(0.95f)
                                 .clip(shape = ButtonDefaults.shape),
-                            selectedLabel = selectedLabel,
-                        ) {
-                            selectedLabel = it
+                            selectedLabel = mealTypesState.selectedMealTitle,
+                        ) { selectedType ->
+                            mealTypesViewModel.onEvent(MealTypesEvent.MealTypeSelected(selectedType))
                         }
                         NormalTextField(
                             modifier = Modifier
                                 .fillMaxWidth(0.95f),
-                            value = "",
-                            onValueChange = {},
+                            value = mealTypesState.queryString,
+                            onValueChange = {
+                                mealTypesViewModel.onEvent(MealTypesEvent.SearchQuery(it))
+                            },
                             onDone = {},
                             label = "Search",
                             leadingIcon = {
@@ -236,19 +269,59 @@ fun SearchNutritionScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = modifier
-                    //.padding(padding)
-                    .fillMaxWidth(0.95f),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                items(list.size) {
-                    SearchNutritionCard(
-                        data = list[it],
-                    ) {
+            if (mealTypesState.isLoading){
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
+                ) {
+                    Text(
+                        text = "Loading...",
+                    )
+                }
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = modifier
+                        .fillMaxWidth(0.95f),
+                    horizontalArrangement = Arrangement.Center
+                ) {
 
+                    /*items(mealTypesState.mealTypes[mealTypesState.selectedMealTitle]?.size ?: 0) { index ->
+                        val mealType = mealTypesState.mealTypes[mealTypesState.selectedMealTitle]?.get(index) ?: Nutrition()
+                        SearchNutritionCard(
+                            data = mealType,
+                        ) {
+
+                        }
+                    }*/
+                    items(mealTypesState.selectedMealType.size) { index ->
+                        val mealType = mealTypesState.selectedMealType[index]
+                        SearchNutritionCard(
+                            data = mealType,
+                        ) {
+                            mealTypesViewModel.onEvent(MealTypesEvent.NutritionSelected(mealType))
+                            mealTypesViewModel.onEvent(MealTypesEvent.ChangeDialogState)
+                        }
                     }
+                }
+            }
+        }
+
+        AnimatedVisibility(
+            visible = mealTypesState.dialogOpen
+        ) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    mealTypesViewModel.onEvent(MealTypesEvent.ChangeDialogState)
+                },
+            ) {
+                ModalBottomSheetContent(
+                    nutrition = mealTypesState.selectedNutrition ?: Nutrition(),
+                    mealTypeTitle = mealTypesState.selectedMealTitle
+                ) {
+                    mealTypesViewModel.onEvent(MealTypesEvent.ChangeDialogState)
+
                 }
             }
         }
@@ -257,107 +330,95 @@ fun SearchNutritionScreen(
 }
 
 
-val list = List(51) { id ->
-    Nutrition(
-        foodId = id,
-        foodName = "Example food $id",
-        servingSize = 100,
-        calories = 52,
-        protein = 30,
-        carbs = 30,
-        fat = 40,
-        image = "https://www.mariefranceasia.com/wp-content/uploads/sites/7/2018/02/breakfast.jpg"
-    )
-}
-
-
-val COLLAPSED_TOP_BAR_HEIGHT = 56.dp
-val EXPANDED_TOP_BAR_HEIGHT = 200.dp
 @Composable
-private fun ExpandedTopBar() {
-    Column {
-        var selectedLabel by remember { mutableStateOf("Breakfast") }
-        SearchNutritionLabels (
-            modifier = Modifier
-                .fillMaxWidth(0.95f)
-                .clip(shape = ButtonDefaults.shape),
-            selectedLabel = selectedLabel,
-        ) {
-            selectedLabel = it
-        }
-        NormalTextField(
-            modifier = Modifier
-                .fillMaxWidth(0.95f),
-            value = "",
-            onValueChange = {},
-            onDone = {},
-            label = "Search",
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = "Search",
-                    modifier = Modifier
-                        .size(32.dp)
-                )
-            },
-            trailingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.FilterAlt,
-                    contentDescription = "Filter",
-                    modifier = Modifier
-                        .size(32.dp)
-                )
-            },
-            singleLine = true,
-            shape = RoundedCornerShape(32.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                disabledContainerColor = MaterialTheme.colorScheme.surface,
-            )
-        )
-
-    }
-}
-@Composable
-private fun CollapsedTopBar(modifier: Modifier = Modifier, isCollapsed: Boolean) {
-    val color: Color by animateColorAsState(
-        if (isCollapsed) Color.Red else Color.Green
-    )
-    Row (
+fun ModalBottomSheetContent(
+    modifier: Modifier = Modifier,
+    nutrition: Nutrition,
+    mealTypeTitle: String,
+    onAddToMeal: (Nutrition) -> Unit
+) {
+    val painter = rememberAsyncImagePainter(nutrition.image)
+    val painterState by painter.state.collectAsState()
+    Column (
         modifier = modifier
-            .fillMaxWidth()
-            .height(COLLAPSED_TOP_BAR_HEIGHT)
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .fillMaxSize()
+            .padding(16.dp)
+        ,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AnimatedVisibility(visible = true) {
-            IconButton(
-                onClick = {}
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = "Filter",
+        Box (
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .clip(RoundedCornerShape(16.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            if (painterState is AsyncImagePainter.State.Success){
+                Image(
+                    painter = painter,
+                    contentDescription = null,
                     modifier = Modifier
-                        .size(32.dp)
+                        .size(300.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop
                 )
             }
         }
-        AnimatedVisibility(visible = true) {
-            IconButton(
-                onClick = {}
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.FilterAlt,
-                    contentDescription = "Filter",
-                    modifier = Modifier
-                        .size(32.dp)
-                )
+        Text(
+            text = nutrition.foodName,
+            modifier = Modifier
+                .padding(top = 4.dp),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Column (
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = "${nutrition.calories} kcal",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "Total portion",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "${nutrition.servingSize} g",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "\t - ${nutrition.protein} g protein",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "\t - ${nutrition.carbs} g carbs",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "\t - ${nutrition.fat} g fat",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        OutlinedButton(
+            onClick = {
+                onAddToMeal(nutrition)
             }
+        ) {
+            Text(
+                text = "Add to ${mealTypeTitle.replace("_", " ").replaceFirstChar(Char::uppercase)}"
+            )
         }
     }
 }
-
 
 
 @Composable

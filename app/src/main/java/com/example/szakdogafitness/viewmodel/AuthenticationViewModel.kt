@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -70,8 +71,11 @@ class AuthenticationViewModel @Inject constructor(
                     onSignIn()
             }
             AuthenticationEvent.LogoutButtonClicked -> {
-                if (_state.value.isLoggedIn)
+                if (_state.value.isLoggedIn){
+                    Log.d("RootNavigation", "Logging out")
                     onLogOut()
+
+                }
             }
             AuthenticationEvent.ChangeMode -> {
                 _state.update { it.copy(isInRegisterMode = !state.value.isInRegisterMode) }
@@ -201,6 +205,8 @@ class AuthenticationViewModel @Inject constructor(
     }
 
     fun checkSignInState() = _state.update { it.copy(isLoggedIn = authentication.hasUser() ) }
+
+    fun getUserId(): String? = authentication.currentUserId()
 
 }
 

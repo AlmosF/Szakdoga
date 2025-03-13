@@ -6,6 +6,7 @@ sealed class RootScreenRoute(val route: String){
     object Profile: RootScreenRoute("profile")
     object Authentication: RootScreenRoute("authentication")
 
+    object Loading: RootScreenRoute("loading")
 
 
     object MainScreen: RootScreenRoute("main")

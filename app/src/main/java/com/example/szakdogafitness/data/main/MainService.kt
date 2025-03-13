@@ -17,8 +17,10 @@ import com.google.firebase.firestore.dataObjects
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -77,16 +79,39 @@ class MainService @Inject constructor(
                 combine(trainerFlows) { it.toList() }
             }.flowOn(Dispatchers.IO)
 
-    override suspend fun getUsersDailyDatas(): Flow<DailyDatas?> =
+    /*override suspend fun getUsersDailyDatas(): Flow<DailyDatas?> =
         firestore.collection("dailyDatas")
             .whereEqualTo("uid", userIdUseCase())
             .limit(1)
             .dataObjects<DailyDatas>()
             .map {
                 val result = it.firstOrNull()
+                Log.d("MainService", "Inside: $result")
+                Log.d("MainService", "Inside: ${userIdUseCase()}")
                 result
             }
-            .flowOn(Dispatchers.IO)
+            .flowOn(Dispatchers.IO)*/
+    override suspend fun getUsersDailyDatas(): Flow<DailyDatas?> =
+        flow {
+            val userId = userIdUseCase()
+            Log.d("MainService", "userId: $userId")
+            firestore.collection("dailyDatas")
+                .whereEqualTo("uid", userIdUseCase())
+                .limit(1)
+                .dataObjects<DailyDatas>()
+                .collect{ list ->
+                    val result = list.firstOrNull()
+                    Log.d("MainService", "Inside: $result")
+                    emit(result)
+                }
+                /*.map {
+                    val result = it.firstOrNull()
+                    Log.d("MainService", "Inside: $result")
+                    Log.d("MainService", "Inside: ${userIdUseCase()}")
+                    emit(result)
+                }*/
+
+        }.flowOn(Dispatchers.IO)
 
 
     override suspend fun generateNewDailyData(dailyDatas: DailyDatas) {

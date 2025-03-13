@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.data.appbar
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
 import javax.inject.Inject
@@ -13,35 +14,54 @@ class AppBarService @Inject constructor(
 
         when(screenRoute) {
             RootScreenRoute.Authentication.route -> {
+                Log.d("RootNavigation-AppBar", "Auth")
                 return Pair(false, false)
             }
             RootScreenRoute.SetupScreen.route -> {
+                Log.d("RootNavigation-AppBar", "Setup")
                 return Pair(false, false)
             }
             RootScreenRoute.LifeStyle.route -> {
+                Log.d("RootNavigation-AppBar", "Lifestlye")
                 //return Pair(false, true)
                 return Pair(true, true)
             }
             RootScreenRoute.Nutrition.route -> {
+                Log.d("RootNavigation-AppBar", "Nutrition")
                 return Pair(true, true)
             }
             RootScreenRoute.Search.route -> {
+                Log.d("RootNavigation-AppBar", "Search")
                 return Pair(true, true)
             }
             RootScreenRoute.Trainees.route -> {
+                Log.d("RootNavigation-AppBar", "Trainee")
                 return Pair(true, true)
             }
             RootScreenRoute.Trainer.route -> {
+                Log.d("RootNavigation-AppBar", "Trainer")
                 return Pair(true, true)
             }
             RootScreenRoute.Requests.route -> {
+                Log.d("RootNavigation-AppBar", "Req")
                 return Pair(true, true)
             }
             RootScreenRoute.Menu.route -> {
+                Log.d("RootNavigation-AppBar", "Menu")
+                return Pair(true, true)
+            }
+            RootScreenRoute.NutritionSearch.route ->{
+                Log.d("RootNavigation-AppBar", "NutritionSearch")
+                return Pair(true, true)
+            }
+            RootScreenRoute.SearchDetail.route -> {
+                Log.d("RootNavigation-AppBar", "SearchDetail")
                 return Pair(true, true)
             }
             else -> {
-                return Pair(true, true)
+                Log.d("RootNavigation-AppBar", "else")
+                //return Pair(true, true)
+                return Pair(false, false)
             }
         }
 
