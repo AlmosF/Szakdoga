@@ -49,9 +49,11 @@ import com.example.szakdogafitness.feature.lifestyle.LifeStyleScreen
 import com.example.szakdogafitness.feature.loading.CheckUserStatusScreen
 import com.example.szakdogafitness.feature.nutrition.NutritionScreen
 import com.example.szakdogafitness.feature.nutrition.SearchNutritionScreen
+import com.example.szakdogafitness.feature.profile.ProfileScreen
 import com.example.szakdogafitness.feature.request.RequestScreen
 import com.example.szakdogafitness.feature.search.SearchTrainerScreen
 import com.example.szakdogafitness.feature.trainee.TraineesScreen
+import com.example.szakdogafitness.feature.trainer.TrainerDetailsScreen
 import com.example.szakdogafitness.feature.trainer.TrainerScreen
 import com.example.szakdogafitness.presentation.navigation.main.items.BottomNavigationItems
 import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
@@ -217,7 +219,8 @@ fun NewRootNavigation(
                             authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
                         },
                     mainViewModel = mainViewModel,
-                    appBarViewModel = appBarViewModel
+                    appBarViewModel = appBarViewModel,
+                    navController = navController
                 )
 
             }
@@ -278,7 +281,16 @@ fun NewRootNavigation(
                 Text(text = "NutritionBarcode")
             }
             composable(RootScreenRoute.Profile.route){
-                Text(text = "ProfileG")
+                ProfileScreen (
+                    appBarViewModel = appBarViewModel
+                ){
+                    //navController.popBackStack()
+                    navController.navigate(RootScreenRoute.LifeStyle.route){
+                        popUpTo(RootScreenRoute.LifeStyle.route){
+                            inclusive = true
+                        }
+                    }
+                }
             }
             composable(RootScreenRoute.Search.route){
                 appBarViewModel.onEvent(
@@ -303,17 +315,18 @@ fun NewRootNavigation(
 
             composable(RootScreenRoute.SearchDetail.route) { entry ->
                 val id = entry.arguments?.getString("id")
+                val trainer = mainState.trainers.find { it?.userId == id }
                 appBarViewModel.onEvent(
                     AppBarEvent.TopBarComposableChanged(
                         {
-                            BackNavWithTitle("$id") {
+                            BackNavWithTitle("${trainer?.firstName} ${trainer?.lastName}") {
                                 navController.popBackStack()
                             }
                         }
                     )
                 )
-                val trainer = mainState.trainers.find { it?.userId == id }
-                Text(text = "SearchDetail: ${trainer}")
+                //Text(text = "SearchDetail: ${trainer}")
+                TrainerDetailsScreen(data = trainer!!) // FIXME: !! is not safe
             }
 
             composable(RootScreenRoute.Trainer.route){

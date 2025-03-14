@@ -8,5 +8,6 @@ data class Nutrition (
     val protein: Int = 0,
     val carbs: Int = 0,
     val fat: Int = 0,
-    val image: String = ""
+    val image: String = "",
+    val mealType: String = "" // Added field
 )

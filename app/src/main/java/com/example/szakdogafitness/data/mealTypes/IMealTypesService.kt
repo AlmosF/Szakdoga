@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface IMealTypesService {
     fun getMealTypes(): Flow<Map<String, List<Nutrition>>>
+    fun getNutritions(): Flow<List<Nutrition>>
 }

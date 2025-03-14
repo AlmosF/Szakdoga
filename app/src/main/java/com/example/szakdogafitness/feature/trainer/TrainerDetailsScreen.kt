@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -48,20 +50,22 @@ import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.ui.common.RatingStars
 import com.example.szakdogafitness.ui.common.TrainerDemo
 import com.example.szakdogafitness.R
+import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.ui.common.TraineeTimetableView
 
 @Composable
 fun TrainerDetailsScreen(
     modifier: Modifier = Modifier,
-    data: TrainerDemo
+    //data: TrainerDemo
+    data: User
     //VMs
 ) {
-    val painter = rememberAsyncImagePainter(data.image)
+    val painter = rememberAsyncImagePainter(data.profileImageUrl)
     val painterState = painter.state.collectAsState()
     var scheduleOpened by remember { mutableStateOf(false) }
     Column (
         modifier = modifier
-            .padding(top = 100.dp)
+            .verticalScroll(rememberScrollState())
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -119,22 +123,22 @@ fun TrainerDetailsScreen(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = data.specializations.joinToString(", "),
+                    text = data.trainer.specializations.joinToString(", "),
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
                 Text(
-                    text = "${data.distance} miles away",
+                    text = "x miles away",
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
                 Text(
-                    text = data.gender,
+                    text = data.gender.toString(),
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
                 RatingStars(
-                    rating = data.rating,
+                    rating = data.trainer.rating,
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                 )
             }
@@ -155,9 +159,10 @@ fun TrainerDetailsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                items(data.socialMediaLinks.size) {
-                    val socialMedia = data.socialMediaLinks.keys.toList()[it]
-                    val link = data.socialMediaLinks.values.toList()[it]
+                //items(data.socialMediaLinks.size) {
+                items(data.trainer.socialMediaLinks.size) {
+                    val socialMedia = data.trainer.socialMediaLinks.keys.toList()[it]
+                    val link = data.trainer.socialMediaLinks.values.toList()[it]
                     val painter = when (socialMedia) {
                         "facebook" -> painterResource(id = R.drawable.facebook)
                         "instagram" -> painterResource(id = R.drawable.instagram)
@@ -198,7 +203,7 @@ fun TrainerDetailsScreen(
                 visible = scheduleOpened
             ) {
                 TraineeTimetableView(
-                    availableHours = data.appointments,
+                    availableHours = data.trainer.availability,
                     selectedHours = selectedSchedules
                 ) { key, value ->
                     val updatedSchedules = selectedSchedules.toMutableMap().apply {
@@ -220,7 +225,7 @@ fun TrainerDetailsScreen(
             }
             Spacer(modifier = Modifier.size(16.dp))
             Text(
-                text = "${data.price}$ / session",
+                text = "${data.trainer.pricing}$ / session",
                 fontSize = 16.sp
             )
             Spacer(modifier = Modifier.size(16.dp))
@@ -262,5 +267,5 @@ fun TrainerDetailsScreenPreview() {
             "Wednesday" to List(4) { it + 1 },
         )
     )
-    TrainerDetailsScreen(data = data)
+    TrainerDetailsScreen(data = User())
 }

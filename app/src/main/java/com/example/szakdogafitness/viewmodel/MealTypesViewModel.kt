@@ -28,12 +28,28 @@ class MealTypesViewModel @Inject constructor(
                 loadMealTypes()
             }
             is MealTypesEvent.MealTypeSelected -> {
-                _state.update {
+                /*_state.update {
                     it.copy(
                         selectedMealTitle = event.mealType,
+                        /*selectedMealType = it.mealTypes[event.mealType]?.filter { nutrition ->
+                            nutrition.foodName.contains(it.queryString, ignoreCase = true)
+                        } ?: listOf()*/
                         selectedMealType = it.mealTypes[event.mealType]?.filter { nutrition ->
                             nutrition.foodName.contains(it.queryString, ignoreCase = true)
                         } ?: listOf()
+                    )
+                }*/
+                _state.update {
+                    it.copy(
+                        selectedMealTitle = event.mealType,
+                        /*selectedMealType = it.mealTypes[event.mealType]?.filter { nutrition ->
+                            nutrition.foodName.contains(it.queryString, ignoreCase = true)
+                        } ?: listOf()*/
+                        selectedMealType = it.nutritions.filter { nutrition ->
+                            //it.mealType.contains(event.mealType, ignoreCase = true)
+                            nutrition.mealType.contains(event.mealType, ignoreCase = true) &&
+                                    nutrition.foodName.contains(it.queryString, ignoreCase = true)
+                        }
                     )
                 }
             }
@@ -47,14 +63,59 @@ class MealTypesViewModel @Inject constructor(
             }
 
             is MealTypesEvent.SearchQuery -> {
-                _state.update {
+                /*_state.update {
                     it.copy(
                         queryString = event.query,
                         selectedMealType = it.mealTypes[it.selectedMealTitle]?.filter { nutrition ->
                             nutrition.foodName.contains(event.query, ignoreCase = true)
                         } ?: listOf()
                     )
+                }*/
+                _state.update {
+                    it.copy(
+                        queryString = event.query,
+                        selectedMealType = it.nutritions.filter { nutrition ->
+                            nutrition.mealType.contains(it.selectedMealTitle, ignoreCase = true) &&
+                                    nutrition.foodName.contains(event.query, ignoreCase = true)
+                        }
+                    )
                 }
+            }
+
+            MealTypesEvent.SortByCalories -> {
+                _state.update {
+                    it.copy(
+                        selectedMealType = it.selectedMealType.sortedBy { it.calories }
+                    )
+                }
+            }
+
+            MealTypesEvent.FetchNutritions -> {
+                fetchNutritions()
+            }
+        }
+    }
+
+    private fun fetchNutritions(){
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                allMealTypesUseCases.fetchNutritionsUseCase().collect { nutritions ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            nutritions = nutritions,
+                            selectedMealType = nutritions.filter { nutrition ->
+                                nutrition.mealType.contains(it.selectedMealTitle, ignoreCase = true) &&
+                                        nutrition.foodName.contains(it.queryString, ignoreCase = true)
+                            }
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                Log.d("MealTypesViewModel", "fetchNutritions: $e")
+                e.printStackTrace()
+                _state.update { it.copy(isLoading = false) }
             }
         }
     }
@@ -95,14 +156,18 @@ data class MealTypesState(
         "dinner" to listOf(),
         "evening_snack" to listOf()
     ),
-    val selectedMealTitle: String = "breakfast",
-    val selectedMealType: List<Nutrition> = mealTypes["breakfast"] ?: listOf(),
+    val nutritions: List<Nutrition> = listOf(),
+    val selectedMealTitle: String = "bf",
+    //val selectedMealType: List<Nutrition> = mealTypes["breakfast"] ?: listOf(),
+    val selectedMealType: List<Nutrition> = nutritions.filter { it.mealType.contains("bf", ignoreCase = true) },
     val selectedNutrition: Nutrition? = null
 )
 
 sealed class MealTypesEvent{
     object LoadMealTypes: MealTypesEvent()
     object ChangeDialogState: MealTypesEvent()
+    object SortByCalories: MealTypesEvent()
+    object FetchNutritions: MealTypesEvent()
     data class SearchQuery(val query: String): MealTypesEvent()
     data class MealTypeSelected(val mealType: String): MealTypesEvent()
     data class NutritionSelected(val nutrition: Nutrition): MealTypesEvent()

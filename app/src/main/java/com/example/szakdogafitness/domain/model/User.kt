@@ -61,7 +61,8 @@ data class User(
 
     val trainee: Trainee = Trainee(),
 
-    val isSetupDone: Boolean = false
+    val isSetupDone: Boolean = false,
+    val isAdmin: Boolean = false
 )
 
 /**

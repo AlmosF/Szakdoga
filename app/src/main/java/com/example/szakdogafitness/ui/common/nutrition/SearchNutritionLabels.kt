@@ -1,5 +1,7 @@
 package com.example.szakdogafitness.ui.common.nutrition
 
+import android.text.TextUtils.replace
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.ButtonDefaults
@@ -15,11 +17,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SearchNutritionLabels(
     modifier: Modifier = Modifier,
-    selectedLabel: String = "breakfast",
+    selectedLabel: String = "bf",
     onLabelSelected: (String) -> Unit
 ) {
 
-    val labels = listOf(
+    /*val labels = listOf(
         "breakfast",
         //"Morning Snack",
         "morning_snack",
@@ -27,22 +29,32 @@ fun SearchNutritionLabels(
         "afternoon_snack",
         "dinner",
         "evening_snack"
+    )*/
+    val labelsMap = mapOf(
+        "breakfast" to "bf",
+        "morning_snack" to "ms",
+        "lunch" to "l",
+        "afternoon_snack" to "as",
+        "dinner" to "d",
+        "evening_snack" to "es"
     )
 
     LazyRow (
         modifier = modifier
     ) {
-        items(labels.size) { label ->
+        items(labelsMap.size) { label ->
             OutlinedButton(
                 onClick = {
-                    onLabelSelected(labels[label])
+                    Log.d("SearchNutritionLabels", "onLabelSelected: ${labelsMap.keys.elementAt(label)}")
+                    onLabelSelected(labelsMap.values.elementAt(label))
                 },
                 modifier = Modifier
                     .padding(4.dp),
                 colors = ButtonDefaults.buttonColors(
 
                 ).copy(
-                    containerColor = if (labels[label] == selectedLabel) {
+                    //containerColor = if (labels[label] == selectedLabel) {
+                    containerColor = if (labelsMap.values.elementAt(label) == selectedLabel) {
                         Color.DarkGray
                     } else {
                         Color.LightGray
@@ -50,7 +62,7 @@ fun SearchNutritionLabels(
                 )
             ) {
                 Text(
-                    text = labels[label].replace("_", " ").replaceFirstChar(Char::uppercase),
+                    text = labelsMap.keys.elementAt(label).replace("_", " ").replaceFirstChar(Char::uppercase),
                 )
             }
         }

@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.domain.model
 
+import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
 
@@ -51,6 +52,7 @@ data class FirestoreTrainee(
 )
 
 fun FirestoreUser.toUser(trainer: FirestoreTrainer): User {
+    Log.d("FirestoreUser", "ToUserCalled")
     return User(
         userId = uid,
         firstName = firstName,
@@ -77,11 +79,13 @@ fun FirestoreUser.toUser(trainer: FirestoreTrainer): User {
             pendingRequests = trainer.pendingRequests,
             acceptedRequests = trainer.acceptedRequests
         ),
-        isSetupDone = setupDone
+        isSetupDone = setupDone,
+        isAdmin = email == "feketealmos0@gmail.com"
     )
 }
 
 fun FirestoreUser.toUser(trainee: FirestoreTrainee): User {
+    Log.d("FirestoreUser", "ToUserCalled")
     return User(
         userId = uid,
         firstName = firstName,
@@ -108,6 +112,7 @@ fun FirestoreUser.toUser(trainee: FirestoreTrainee): User {
             availableEquipment = trainee.availableEquipment,
             activeTrainers = trainee.activeTrainers
         ),
-        isSetupDone = setupDone
+        isSetupDone = setupDone,
+        isAdmin = email == "feketealmos0@gmail.com"
     )
 }

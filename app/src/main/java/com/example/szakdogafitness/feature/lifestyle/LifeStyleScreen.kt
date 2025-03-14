@@ -21,6 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
 import com.example.szakdogafitness.ui.common.appbars.LifeStyleAction
 import com.example.szakdogafitness.ui.common.appbars.LifeStyleTitle
@@ -41,6 +43,7 @@ import kotlinx.coroutines.delay
 fun LifeStyleScreen(
     modifier: Modifier = Modifier,
     mainViewModel: MainViewModel = hiltViewModel(),
+    navController: NavHostController,
     appBarViewModel: AppBarViewModel = hiltViewModel()
     //VMs
 ){
@@ -98,10 +101,18 @@ fun LifeStyleScreen(
                                 }
                             )
                         },
+                        navigationIcon = {
+                            LifeStyleAction (
+                                image = "https://th.bing.com/th/id/R.714e3da50d7cbbdc01a4cfa6d6db7749?rik=WLlLJErQ5mSgQA&pid=ImgRaw&r=0"
+                            ) {
+                                navController.navigate(RootScreenRoute.Profile.route)
+                            }
+                        }
                     )
                 }
             )
         )
+        Log.d("LifeStyle", "${mainState.user}")
     }
 
 
@@ -163,5 +174,5 @@ fun LifeStyleScreen(
 @Composable
 @Preview
 fun LifeStyleScreenPreview(){
-    LifeStyleScreen()
+    LifeStyleScreen(navController = rememberNavController())
 }

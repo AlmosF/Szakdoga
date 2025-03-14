@@ -81,4 +81,9 @@ class MealTypesService @Inject constructor(
         emitAll(combinedMealTypes)
 
     }.flowOn(Dispatchers.IO)
+
+    override fun getNutritions(): Flow<List<Nutrition>> =
+        firestore.collection("nutritions")
+            .dataObjects<Nutrition>()
+
 }

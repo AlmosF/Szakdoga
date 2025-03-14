@@ -9,11 +9,13 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +33,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -42,6 +45,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -49,6 +53,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,6 +78,8 @@ import com.example.szakdogafitness.ui.common.nutrition.SearchNutritionCard
 import com.example.szakdogafitness.ui.common.nutrition.SearchNutritionLabels
 import com.example.szakdogafitness.viewmodel.MealTypesEvent
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
+import com.google.firebase.Timestamp
+import kotlinx.coroutines.launch
 
 
 /*@Composable
@@ -197,7 +204,12 @@ fun SearchNutritionScreen(
 
     LaunchedEffect(Unit) {
         Log.d("SearchNutritionScreen", "LaunchedEffect")
-        mealTypesViewModel.onEvent(MealTypesEvent.LoadMealTypes)
+        //mealTypesViewModel.onEvent(MealTypesEvent.LoadMealTypes)
+        mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
+    }
+
+    LaunchedEffect(mealTypesState.nutritions) {
+        Log.d("SearchNutritionScreen", "nutritions: ${mealTypesState.nutritions}")
     }
 
     LaunchedEffect(mealTypesState.mealTypes) {
@@ -237,12 +249,18 @@ fun SearchNutritionScreen(
                                 )
                             },
                             trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Filled.FilterAlt,
-                                    contentDescription = "Filter",
-                                    modifier = Modifier
-                                        .size(32.dp)
-                                )
+                                IconButton(
+                                    onClick = {
+                                        mealTypesViewModel.onEvent(MealTypesEvent.SortByCalories)
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.FilterAlt,
+                                        contentDescription = "Filter",
+                                        modifier = Modifier
+                                            .size(32.dp)
+                                    )
+                                }
                             },
                             singleLine = true,
                             shape = RoundedCornerShape(32.dp),
@@ -275,6 +293,7 @@ fun SearchNutritionScreen(
                         .fillMaxSize()
                         .background(Color.White)
                 ) {
+                    Log.d("SearchNutritionScreen", "Loading")
                     Text(
                         text = "Loading...",
                     )
@@ -286,15 +305,16 @@ fun SearchNutritionScreen(
                         .fillMaxWidth(0.95f),
                     horizontalArrangement = Arrangement.Center
                 ) {
-
-                    /*items(mealTypesState.mealTypes[mealTypesState.selectedMealTitle]?.size ?: 0) { index ->
-                        val mealType = mealTypesState.mealTypes[mealTypesState.selectedMealTitle]?.get(index) ?: Nutrition()
+                    /*items(mealTypesState.selectedMealType.size) { index ->
+                        val mealType = mealTypesState.selectedMealType[index]
                         SearchNutritionCard(
                             data = mealType,
                         ) {
-
+                            mealTypesViewModel.onEvent(MealTypesEvent.NutritionSelected(mealType))
+                            mealTypesViewModel.onEvent(MealTypesEvent.ChangeDialogState)
                         }
                     }*/
+                    Log.d("SearchNutritionScreen", "selectedMealType: ${mealTypesState.selectedMealType}")
                     items(mealTypesState.selectedMealType.size) { index ->
                         val mealType = mealTypesState.selectedMealType[index]
                         SearchNutritionCard(
@@ -307,7 +327,10 @@ fun SearchNutritionScreen(
                 }
             }
         }
-
+        val sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = false
+        )
+        val scope = rememberCoroutineScope()
         AnimatedVisibility(
             visible = mealTypesState.dialogOpen
         ) {
@@ -315,13 +338,16 @@ fun SearchNutritionScreen(
                 onDismissRequest = {
                     mealTypesViewModel.onEvent(MealTypesEvent.ChangeDialogState)
                 },
+                sheetState = sheetState,
             ) {
                 ModalBottomSheetContent(
                     nutrition = mealTypesState.selectedNutrition ?: Nutrition(),
                     mealTypeTitle = mealTypesState.selectedMealTitle
                 ) {
+                    scope.launch {
+                        sheetState.hide()
+                    }
                     mealTypesViewModel.onEvent(MealTypesEvent.ChangeDialogState)
-
                 }
             }
         }
@@ -341,7 +367,7 @@ fun ModalBottomSheetContent(
     val painterState by painter.state.collectAsState()
     Column (
         modifier = modifier
-            .fillMaxSize()
+            //.fillMaxSize()
             .padding(16.dp)
         ,
         horizontalAlignment = Alignment.CenterHorizontally
