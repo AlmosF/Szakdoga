@@ -113,7 +113,7 @@ class SetupService @Inject constructor(
         return if (currentScreen == 2) "Finish" else "Next"
     }
 
-    override suspend fun finishButtonClicked(state: SetupProfileState) {
+    /*override suspend fun finishButtonClicked(state: SetupProfileState) {
         val userId = userIdUseCase()
         Log.d("FinishButtonClicked", "User id: $userId")
         Log.d("FinishButtonClicked", "state: $state")
@@ -174,6 +174,80 @@ class SetupService @Inject constructor(
                 }
             }
             firestore.collection("dailyDatas").add(
+                DailyDatas(
+                    uid = userId,
+                    dailyData = listOf(
+                        DailyData(
+                            date = Timestamp.now()
+                        )
+                    )
+                )
+            )
+        } else {
+            Log.d("SetupService", "User id is null")
+        }
+    }*/
+    override suspend fun finishButtonClicked(state: SetupProfileState) {
+        val userId = userIdUseCase()
+        Log.d("FinishButtonClicked", "User id: $userId")
+        Log.d("FinishButtonClicked", "state: $state")
+        if (userId != null) {
+            firestore.collection("users").document(userId).set(
+                FirestoreUser(
+                    uid = userId,
+                    firstName = state.user.firstName,
+                    lastName = state.user.lastName,
+                    dateOfBirth = state.user.dateOfBirth,
+                    gender = state.user.gender,
+                    phoneNumber = state.user.phoneNumber,
+                    role = state.user.role,
+                    bio = state.user.bio,
+                    fcmToken = state.user.fcmToken,
+                    profileImageUrl = state.user.profileImageUrl,
+                    location = state.user.location,
+                    email = currentUserEmail() ?: "",
+                    setupDone = true
+                )
+            ).await()
+            when(state.user.role) {
+                1 -> {
+                    firestore.collection("trainers").document(userId).set(
+                        FirestoreTrainer(
+                            uid = userId,
+                            certifications = state.user.trainer.certifications,
+                            areasOfExperties = state.user.trainer.areasOfExperties,
+                            trainingStyles = state.user.trainer.trainingStyles,
+                            experience = state.user.trainer.experience,
+                            availability = state.user.trainer.availability,
+                            pricing = state.user.trainer.pricing,
+                            rating = state.user.trainer.rating,
+                            specializations = state.user.trainer.specializations,
+                            socialMediaLinks = state.user.trainer.socialMediaLinks,
+                            pendingRequests = state.user.trainer.pendingRequests,
+                            acceptedRequests = state.user.trainer.acceptedRequests
+                        )
+                    ).await()
+                }
+                2 -> {
+                    firestore.collection("trainees").document(userId).set(
+                        FirestoreTrainee(
+                            uid = userId,
+                            unit = state.user.trainee.unit,
+                            height = state.user.trainee.height,
+                            weight = state.user.trainee.weight,
+                            trainings = state.user.trainee.trainings,
+                            fitnessGoals = state.user.trainee.fitnessGoals,
+                            currentFitnessLevel = state.user.trainee.currentFitnessLevel,
+                            trainingPreference = state.user.trainee.trainingPreference,
+                            healthInformation = state.user.trainee.healthInformation,
+                            dietaryPreferences = state.user.trainee.dietaryPreferences,
+                            availableEquipment = state.user.trainee.availableEquipment,
+                            activeTrainers = state.user.trainee.activeTrainers
+                        )
+                    ).await()
+                }
+            }
+            firestore.collection("dailyDatas").document(userId).set(
                 DailyDatas(
                     uid = userId,
                     dailyData = listOf(

@@ -20,7 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.szakdogafitness.util.UiEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
-import com.example.szakdogafitness.viewmodel.ProfileViewModel
+//import com.example.szakdogafitness.viewmodel.ProfileViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,7 +32,7 @@ import com.example.szakdogafitness.viewmodel.ProfileEvent
 fun MainScreen(
     modifier: Modifier = Modifier,
     authViewModel: AuthenticationViewModel = hiltViewModel(),
-    profileViewModel: ProfileViewModel = hiltViewModel()
+    //profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
 
     val authState by authViewModel.state.collectAsStateWithLifecycle()
@@ -47,7 +47,7 @@ fun MainScreen(
             "Main Screen - Composable"
         )
 
-        if (profileViewModel.state.value.user!!.isSetupDone){
+        /*if (profileViewModel.state.value.user!!.isSetupDone){
             Text(
                 "Setup is done",
                 modifier = Modifier
@@ -61,7 +61,7 @@ fun MainScreen(
             Text(
                 "Setup is not done"
             )
-        }
+        }*/
 
     }
 

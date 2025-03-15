@@ -62,7 +62,7 @@ import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
 import com.example.szakdogafitness.viewmodel.MainEvent
 import com.example.szakdogafitness.viewmodel.MainViewModel
 import com.example.szakdogafitness.viewmodel.ProfileEvent
-import com.example.szakdogafitness.viewmodel.ProfileViewModel
+//import com.example.szakdogafitness.viewmodel.ProfileViewModel
 import com.example.szakdogafitness.viewmodel.RootNavEvent
 import com.example.szakdogafitness.viewmodel.RootNavViewModel
 import kotlinx.coroutines.delay

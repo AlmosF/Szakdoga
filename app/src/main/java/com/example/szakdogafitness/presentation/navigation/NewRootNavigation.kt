@@ -52,6 +52,7 @@ import com.example.szakdogafitness.feature.nutrition.SearchNutritionScreen
 import com.example.szakdogafitness.feature.profile.ProfileScreen
 import com.example.szakdogafitness.feature.request.RequestScreen
 import com.example.szakdogafitness.feature.search.SearchTrainerScreen
+import com.example.szakdogafitness.feature.setup.SetupScreenBox
 import com.example.szakdogafitness.feature.trainee.TraineesScreen
 import com.example.szakdogafitness.feature.trainer.TrainerDetailsScreen
 import com.example.szakdogafitness.feature.trainer.TrainerScreen
@@ -193,13 +194,9 @@ fun NewRootNavigation(
                 )
             }
             composable(RootScreenRoute.SetupScreen.route) {
-                Text(
-                    "Setup",
-                    modifier = Modifier
-                        .clickable{
-                            authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
-                        }
-                )
+                SetupScreenBox(){
+                    navController.navigate(RootScreenRoute.Loading.route)
+                }
             }
             composable(RootScreenRoute.LifeStyle.route) {
                 /*Text(

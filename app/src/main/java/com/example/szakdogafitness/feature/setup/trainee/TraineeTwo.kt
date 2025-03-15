@@ -201,7 +201,6 @@ fun TraineeTwo(
 
         //var currentDietIndices by remember { mutableStateOf(listOf<Int>()) }
         var dietInf = listOf("None", "Vegetarian", "Vegan", "Gluten-Free", "Dairy-Free", "Lactose Intolerant", "Nut Allergy", "Peanut Allergy", "Tree Nut Allergy", "Soy Allergy", "Egg Allergy", "Shellfish Allergy", "Fish Allergy", "Wheat Allergy", "Other Allergies", "Low-Carb", "Ketogenic (Keto)", "Paleo", "Whole30", "Low-Sodium", "Low-Sugar", "High-Protein", "Kosher", "Halal", "Weight Watchers", "Other Restrictions", "Prefer Not to Say")
-
         LargeDropdownMenu(
             modifier = textFieldModifier
                 .constrainAs(dietary) {
@@ -259,7 +258,6 @@ fun TraineeTwo(
 
         //var currentEquIndices by remember { mutableStateOf(listOf<Int>()) }
         var equipment = listOf("None", "Dumbbells", "Kettlebells", "Barbell", "Bench", "Pull-Up Bar", "Resistance Bands", "Medicine Ball", "Stability Ball", "Yoga Mat", "Foam Roller", "TRX", "Box", "Bosu Ball", "Plyo Box", "Jump Rope", "Treadmill", "Stationary Bike", "Rowing Machine", "Elliptical", "Stair Climber", "Other Cardio Equipment", "Other Strength Equipment", "Other")
-
         LargeDropdownMenu(
             modifier = textFieldModifier
                 .constrainAs(equ) {

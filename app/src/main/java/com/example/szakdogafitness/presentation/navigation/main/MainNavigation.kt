@@ -33,7 +33,7 @@ import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
 import com.example.szakdogafitness.viewmodel.MainViewModel
 import com.example.szakdogafitness.viewmodel.ProfileEvent
-import com.example.szakdogafitness.viewmodel.ProfileViewModel
+//import com.example.szakdogafitness.viewmodel.ProfileViewModel
 
 @Composable
 fun MainNavigation(
@@ -41,13 +41,13 @@ fun MainNavigation(
     rootNavController: NavHostController,
     snackbarHostState: SnackbarHostState,
     authViewModel: AuthenticationViewModel = hiltViewModel(),
-    profileViewModel: ProfileViewModel = hiltViewModel(),
+    //profileViewModel: ProfileViewModel = hiltViewModel(),
     mainViewModel: MainViewModel = hiltViewModel() //Not fix yet
 ) {
 
     val navController = rememberNavController()
     val authState by authViewModel.state.collectAsStateWithLifecycle()
-    val profileState by profileViewModel.state.collectAsStateWithLifecycle()
+    //val profileState by profileViewModel.state.collectAsStateWithLifecycle()
 
     /*LaunchedEffect(Unit) {
         profileViewModel.onEvent(ProfileEvent.GetUser)
@@ -56,7 +56,7 @@ fun MainNavigation(
     Scaffold (
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         modifier = modifier,
-        bottomBar = {
+        /*bottomBar = {
             NavigationBar {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
@@ -89,7 +89,7 @@ fun MainNavigation(
 
 
             }
-        }
+        }*/
     ) { innerPadding ->
 
         NavHost(

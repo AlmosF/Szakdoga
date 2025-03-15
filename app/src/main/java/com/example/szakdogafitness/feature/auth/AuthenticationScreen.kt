@@ -50,7 +50,6 @@ import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
 import com.example.szakdogafitness.viewmodel.ProfileEvent
 import com.example.szakdogafitness.viewmodel.ProfileState
-import com.example.szakdogafitness.viewmodel.ProfileViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -59,20 +58,20 @@ fun AuthenticateScreen(
     modifier : Modifier = Modifier,
     //snackbarHostState: SnackbarHostState, //nem kell feltetlen
     viewModel: AuthenticationViewModel = viewModel(),
-    profileViewModel: ProfileViewModel = hiltViewModel(),
+    //profileViewModel: ProfileViewModel = hiltViewModel(),
     navController : NavHostController
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val profileState by profileViewModel.state.collectAsStateWithLifecycle()
+    //val profileState by profileViewModel.state.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = SnackbarHostState()
     val context = LocalContext.current
 
-    LaunchedEffect(state.isLoggedIn == true) {
-        profileViewModel.onEvent(ProfileEvent.GetUser)
-    }
+    //LaunchedEffect(state.isLoggedIn == true) {
+    //    profileViewModel.onEvent(ProfileEvent.GetUser)
+    //}
 
     LaunchedEffect(key1 = true) {
         viewModel.checkSignInState()

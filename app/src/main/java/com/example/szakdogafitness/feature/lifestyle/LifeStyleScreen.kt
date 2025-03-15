@@ -103,7 +103,7 @@ fun LifeStyleScreen(
                         },
                         navigationIcon = {
                             LifeStyleAction (
-                                image = "https://th.bing.com/th/id/R.714e3da50d7cbbdc01a4cfa6d6db7749?rik=WLlLJErQ5mSgQA&pid=ImgRaw&r=0"
+                                image = mainState.user?.profileImageUrl ?: "",
                             ) {
                                 navController.navigate(RootScreenRoute.Profile.route)
                             }

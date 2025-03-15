@@ -8,6 +8,9 @@ import com.example.szakdogafitness.domain.model.FirestoreTrainee
 import com.example.szakdogafitness.domain.model.FirestoreTrainer
 import com.example.szakdogafitness.domain.model.FirestoreUser
 import com.example.szakdogafitness.domain.model.User
+import com.example.szakdogafitness.domain.model.toFirestoreTrainee
+import com.example.szakdogafitness.domain.model.toFirestoreTrainer
+import com.example.szakdogafitness.domain.model.toFirestoreUser
 import com.example.szakdogafitness.domain.model.toUser
 import com.example.szakdogafitness.domain.usecases.auth.CurrentUserIdUseCase
 import com.example.szakdogafitness.viewmodel.toYYYYMMDD
@@ -60,6 +63,31 @@ class MainService @Inject constructor(
                         }
                 }
             }.flowOn(Dispatchers.IO)
+
+    override suspend fun updateUser(user: User) {
+        val currentUserId = userIdUseCase()
+        val updatedFirestoreUser = user.toFirestoreUser()
+
+        firestore.collection("users")
+            .document(currentUserId!!)
+            .set(updatedFirestoreUser)
+            .await()
+
+        if (user.role == 1) {
+            val updatedFirestoreTrainer = user.toFirestoreTrainer()
+            firestore.collection("trainers")
+                .document(currentUserId)
+                .set(updatedFirestoreTrainer)
+                .await()
+        } else {
+            val updatedFirestoreTrainee = user.toFirestoreTrainee()
+            firestore.collection("trainees")
+                .document(currentUserId)
+                .set(updatedFirestoreTrainee)
+                .await()
+        }
+
+    }
 
     override suspend fun getTrainers(): Flow<List<User?>> =
         firestore.collection("trainers")

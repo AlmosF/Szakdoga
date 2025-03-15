@@ -37,7 +37,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.szakdogafitness.presentation.navigation.setup.SetupNavGraph
 import com.example.szakdogafitness.ui.common.ProgressBar
 import com.example.szakdogafitness.viewmodel.ProfileEvent
-import com.example.szakdogafitness.viewmodel.ProfileViewModel
 import com.example.szakdogafitness.viewmodel.SetupEvent
 import com.example.szakdogafitness.viewmodel.SetupViewModel
 import kotlinx.coroutines.delay
@@ -48,7 +47,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SetupScreenBox(
     paddingValues: PaddingValues = PaddingValues(0.dp),
-    profileViewModel: ProfileViewModel = hiltViewModel(),
+    //profileViewModel: ProfileViewModel = hiltViewModel(),
     setupViewModel: SetupViewModel = hiltViewModel(),
     onMainNavigate: () -> Unit
 ) {
@@ -57,7 +56,7 @@ fun SetupScreenBox(
     val state = setupViewModel.state.collectAsState()
 
 
-    val profileState = profileViewModel.state.collectAsStateWithLifecycle()
+    //val profileState = profileViewModel.state.collectAsStateWithLifecycle()
 
     val previousButtonVisible = setupViewModel.isPreviousButtonVisible.collectAsState()
     val nextButtonEnabled = setupViewModel.isNextButtonEnabled.collectAsState()
@@ -67,10 +66,10 @@ fun SetupScreenBox(
 
     var isLoading by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit, profileState, profileState.value.user?.isSetupDone) {
-        Log.d("SetupScreenBoxLE", "SetupScreenBox: ${profileState.value.user}")
-        profileViewModel.onEvent(ProfileEvent.GetUser)
-    }
+    //LaunchedEffect(Unit, profileState, profileState.value.user?.isSetupDone) {
+    //    Log.d("SetupScreenBoxLE", "SetupScreenBox: ${profileState.value.user}")
+    //    profileViewModel.onEvent(ProfileEvent.GetUser)
+    //}
 
     /*LaunchedEffect(Unit) {
         isLoading = true
@@ -234,6 +233,7 @@ fun SetupScreenBox(
                         when (nextButtonLabel.value) {
                             "Finish" -> {
                                 setupViewModel.onEvent(SetupEvent.FinishButtonClicked)
+                                onMainNavigate()
                             }
 
                             "Next" -> {

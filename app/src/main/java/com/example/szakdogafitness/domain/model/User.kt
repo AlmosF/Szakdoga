@@ -119,3 +119,55 @@ data class Trainee(
     val availableEquipment: List<Int> = emptyList(),
     val activeTrainers: List<String> = emptyList(),
 )
+
+fun User.toFirestoreUser(): FirestoreUser {
+    return FirestoreUser(
+        uid = userId,
+        firstName = firstName,
+        lastName = lastName,
+        dateOfBirth = dateOfBirth,
+        gender = gender,
+        phoneNumber = phoneNumber,
+        role = role,
+        email = email,
+        bio = bio,
+        fcmToken = fcmToken,
+        profileImageUrl = profileImageUrl,
+        location = location,
+        setupDone = isSetupDone
+    )
+}
+
+fun User.toFirestoreTrainer(): FirestoreTrainer {
+    return FirestoreTrainer(
+        uid = userId,
+        certifications = trainer.certifications,
+        areasOfExperties = trainer.areasOfExperties,
+        trainingStyles = trainer.trainingStyles,
+        experience = trainer.experience,
+        availability = trainer.availability,
+        pricing = trainer.pricing,
+        rating = trainer.rating,
+        specializations = trainer.specializations,
+        socialMediaLinks = trainer.socialMediaLinks,
+        pendingRequests = trainer.pendingRequests,
+        acceptedRequests = trainer.acceptedRequests
+    )
+}
+
+fun User.toFirestoreTrainee(): FirestoreTrainee {
+    return FirestoreTrainee(
+        uid = userId,
+        unit = trainee.unit,
+        height = trainee.height,
+        weight = trainee.weight,
+        trainings = trainee.trainings,
+        fitnessGoals = trainee.fitnessGoals,
+        currentFitnessLevel = trainee.currentFitnessLevel,
+        trainingPreference = trainee.trainingPreference,
+        healthInformation = trainee.healthInformation,
+        dietaryPreferences = trainee.dietaryPreferences,
+        availableEquipment = trainee.availableEquipment,
+        activeTrainers = trainee.activeTrainers
+    )
+}
