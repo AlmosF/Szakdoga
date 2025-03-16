@@ -203,7 +203,8 @@ class SetupService @Inject constructor(
                     role = state.user.role,
                     bio = state.user.bio,
                     fcmToken = state.user.fcmToken,
-                    profileImageUrl = state.user.profileImageUrl,
+                    //profileImageUrl = state.user.profileImageUrl,
+                    profileImageUrl = "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Download-Image.png",
                     location = state.user.location,
                     email = currentUserEmail() ?: "",
                     setupDone = true

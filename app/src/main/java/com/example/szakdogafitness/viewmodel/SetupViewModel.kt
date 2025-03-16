@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.math.RoundingMode
 import javax.inject.Inject
 
 @HiltViewModel
@@ -384,10 +385,16 @@ class SetupViewModel @Inject constructor(
             }
             is SetupEvent.UnitChanged -> {
                 //_state.value = _state.value.copy(unit = event.unit)
+                val newWeight = when(event.unit){
+                    1 -> _state.value.user.trainee.weight / 2.20462
+                    2 -> _state.value.user.trainee.weight * 2.20462
+                    else -> 0.0
+                }.toBigDecimal().setScale(1, RoundingMode.HALF_UP).toDouble()
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainee = _state.value.user.trainee.copy(
-                            unit = event.unit
+                            unit = event.unit,
+                            weight = newWeight
                         )
                     )
                 )

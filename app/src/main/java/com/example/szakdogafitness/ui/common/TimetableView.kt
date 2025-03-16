@@ -72,6 +72,7 @@ fun TimetableView(
 @Composable
 fun TrainerTimetableView(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     selectedHours: Map<String, List<Int>> = emptyMap(),
     onHourSelected: (String, Int) -> Unit
 ) {
@@ -87,7 +88,8 @@ fun TrainerTimetableView(
                 DayChip(
                     day = day,
                     isSelected = selectedDay == day,
-                    onClick = { selectedDay = day }
+                    onClick = { selectedDay = day },
+                    isEnabled = enabled
                 )
             }
         }
@@ -102,7 +104,8 @@ fun TrainerTimetableView(
                 TimeChip(
                     time = "$hour:00",
                     isSelected = isSelected,
-                    onClick = { onHourSelected(selectedDay, hour) }
+                    onClick = { onHourSelected(selectedDay, hour) },
+                    enabled = enabled
                 )
             }
         }
@@ -143,15 +146,15 @@ fun TraineeTimetableView(
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             items(9) { index ->
                 val hour = index + 8
-                val isAvailable = availableHours[selectedDay]?.contains(index) == true
+                val isAvailable = availableHours[selectedDay]?.contains(hour) == true
                 Log.d("TimetableView", "isAvailable: ${isAvailable} selectedDay: ${selectedDay} - ${availableHours[selectedDay]}")
-                val isSelected = selectedHours[selectedDay]?.contains(index) == true
+                val isSelected = selectedHours[selectedDay]?.contains(hour) == true
                 Log.d("TimetableView", "isSelected: ${selectedHours[selectedDay]}")
 
                 TimeChip(
                     time = "$hour:00",
                     isSelected = isSelected,
-                    onClick = { if (isAvailable) onHourSelected(selectedDay, index) },
+                    onClick = { if (isAvailable) onHourSelected(selectedDay, hour) },
                     enabled = isAvailable
                 )
             }
@@ -165,7 +168,8 @@ fun DayChip(day: String, isSelected: Boolean, onClick: () -> Unit, isEnabled : B
         onClick = onClick,
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = if (isSelected) Color.Blue else Color.Transparent,
-            contentColor = if (isSelected) Color.White else Color.Black
+            contentColor = if (isSelected) Color.White else Color.Black,
+            disabledContainerColor = if (isSelected) Color.Blue.copy(alpha = 0.5f) else Color.Transparent //Not fix yet
         ),
         enabled = isEnabled,
         //border = BorderStroke(1.dp, if (isSelected) Color.Blue else Color.Gray),
@@ -182,7 +186,8 @@ fun TimeChip(time: String, isSelected: Boolean, onClick: () -> Unit, enabled: Bo
         onClick = onClick,
         enabled = enabled,
         colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = if (isSelected) Color.Green else Color.Unspecified
+            containerColor = if (isSelected) Color.Green else Color.Unspecified,
+            disabledContainerColor = if (isSelected) Color.Green.copy(alpha = 0.5f) else Color.Unspecified,
         ),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier.padding(4.dp)

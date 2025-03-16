@@ -8,6 +8,7 @@ sealed class RootScreenRoute(val route: String){
 
     object Loading: RootScreenRoute("loading")
 
+    object EditFoods: RootScreenRoute("editFoods")
 
     object MainScreen: RootScreenRoute("main")
 

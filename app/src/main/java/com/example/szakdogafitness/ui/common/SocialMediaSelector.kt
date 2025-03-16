@@ -112,8 +112,12 @@ fun SocialMediaSelector(
                         .padding(8.dp)
                         .size(50.dp)
                         .clickable{
-                            selectedSocialMedia = socialMedia.keys.elementAt(index)
-                            socialMediaDialogOpened = true
+                            if (enabled){
+                                selectedSocialMedia = socialMedia.keys.elementAt(index)
+                                socialMediaDialogOpened = true
+                            } else {
+                                Log.d("SocialMediaSelector", "Social media is disabled")
+                            }
                         },
                     contentScale = ContentScale.Fit,
                     colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply {

@@ -87,7 +87,17 @@ data class Trainer(
     val pricing: Int = 0,
     val rating: Int = 0,
     val specializations: List<Int> = emptyList(),
-    val socialMediaLinks: Map<String, String> = emptyMap(),
+    //val socialMediaLinks: Map<String, String> = emptyMap(),
+    val socialMediaLinks: Map<String, String> = mapOf(
+        "Facebook" to "",
+        "Instagram" to "",
+        "LinkedIn" to "",
+        "X" to "",
+        "YouTube" to "",
+        "TikTok" to "",
+        "Pinterest" to "",
+        "Twitch" to "",
+    ),
     val pendingRequests: List<String> = emptyList(),
     val acceptedRequests: List<String> = emptyList(),
 )

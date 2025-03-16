@@ -279,16 +279,49 @@ fun NewRootNavigation(
             }
             composable(RootScreenRoute.Profile.route){
                 ProfileScreen (
-                    appBarViewModel = appBarViewModel
-                ){
-                    //navController.popBackStack()
-                    navController.navigate(RootScreenRoute.LifeStyle.route){
-                        popUpTo(RootScreenRoute.LifeStyle.route){
-                            inclusive = true
+                    appBarViewModel = appBarViewModel,
+                    onNavigateBack = {
+                        navController.navigate(RootScreenRoute.LifeStyle.route){
+                            popUpTo(RootScreenRoute.LifeStyle.route){
+                                inclusive = true
+                            }
                         }
+                    },
+                    onLogout = {
+                        authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
+                    }
+                ){
+                    navController.navigate(RootScreenRoute.EditFoods.route){
+
                     }
                 }
             }
+
+            composable (RootScreenRoute.EditFoods.route) {
+                appBarViewModel.onEvent(AppBarEvent.TopBarComposableChanged(
+                    {
+                        TopBar(
+                            title = {
+                                Text("Edit Foods")
+                            },
+                            navigationIcon = {
+                                IconButton(
+                                    onClick = {
+                                        navController.popBackStack()
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = "Back"
+                                    )
+                                }
+                            },
+                            )
+                    }
+                ))
+                Text(text = "EditFoods")
+            }
+
             composable(RootScreenRoute.Search.route){
                 appBarViewModel.onEvent(
                     AppBarEvent.TopBarComposableChanged(

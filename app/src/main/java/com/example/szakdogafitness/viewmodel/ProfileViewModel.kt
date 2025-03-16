@@ -36,6 +36,10 @@ class ProfileViewModel @Inject constructor(
     fun onEvent(event: ProfileEvent){
         when(event){
             is ProfileEvent.EditUser -> {
+                Log.d(
+                    "ProfileViewModel",
+                    "onEvent: EditUser ${event.user}"
+                )
                 _state.update { it.copy(editUser = event.user) }
             }
             ProfileEvent.GetUser -> {
@@ -53,6 +57,10 @@ class ProfileViewModel @Inject constructor(
 
             ProfileEvent.UpdateUser -> {
                 updateUser()
+            }
+
+            ProfileEvent.DropDownChanged -> {
+                _state.update { it.copy(dropDownExpanded = !it.dropDownExpanded) }
             }
         }
     }
@@ -95,6 +103,7 @@ class ProfileViewModel @Inject constructor(
 sealed class ProfileEvent{
     data class EditUser(val user: User): ProfileEvent()
     data object GetUser: ProfileEvent()
+    data object DropDownChanged: ProfileEvent()
     data object SwitchEdit: ProfileEvent()
     data object UpdateUser: ProfileEvent()
 }
@@ -103,6 +112,7 @@ sealed class ProfileEvent{
 data class ProfileState(
     var isLoading: Boolean = false,
     var switchEdit: Boolean = false,
+    var dropDownExpanded: Boolean = false,
     var user: User? = null,
     var editUser: User? = null
 )

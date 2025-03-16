@@ -112,7 +112,8 @@ fun TraineeOne(
                 selected = state.user.trainee.unit == 1,
                 onClick = {
                     //unit = 1
-                    setupViewModel.onEvent(SetupEvent.UnitChanged(1))
+                    if (state.user.trainee.unit == 1) return@SegmentedButton
+                    else setupViewModel.onEvent(SetupEvent.UnitChanged(1))
                 },
                 shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
             ) {
@@ -123,7 +124,8 @@ fun TraineeOne(
                 selected = state.user.trainee.unit == 2,
                 onClick = {
                     //unit = 2
-                    setupViewModel.onEvent(SetupEvent.UnitChanged(2))
+                    if (state.user.trainee.unit == 2) return@SegmentedButton
+                    else setupViewModel.onEvent(SetupEvent.UnitChanged(2))
                 },
                 shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
             ) {
@@ -231,7 +233,7 @@ fun TraineeOne(
         }
         var weightOpened by remember { mutableStateOf(false) }
         var selectedWeight by remember { mutableStateOf(50.0) }
-        NormalTextField(
+        /*NormalTextField(
             modifier = textFieldModifier
                 .clickable(onClick = {
                     weightOpened = true
@@ -257,6 +259,49 @@ fun TraineeOne(
             onDone = {},
             leadingIcon = null,
             trailingIcon = null,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                disabledContainerColor = MaterialTheme.colorScheme.surface,
+            ),
+            textStyle = TextStyle.Default.copy(
+                fontSize = 20.sp,
+                color = Color.Black,
+                fontWeight = Bold
+            )
+        )*/
+        NormalTextField(
+            modifier = textFieldModifier
+                .constrainAs(weight) {
+                    top.linkTo(height.bottom)
+                    start.linkTo(startGuideline5)
+                    end.linkTo(endGuideline95)
+                },
+            label = "Weight",
+            onValueChange = {
+                if (it.matches(Regex("^\\d*\\.?\\d*\$"))) {
+                    setupViewModel.onEvent(SetupEvent.WeightChanged(it.toDoubleOrNull() ?: 0.0))
+                }
+            },
+            value = state.user.trainee.weight.let { weight ->
+                if (weight == 0.0) ""
+                else if(weight.toString().endsWith(".0")) weight.toString().dropLast(2)
+                else weight.toString()
+            },
+            singleLine = true,
+            enabled = true,
+            readOnly = false,
+            onDone = {},
+            leadingIcon = null,
+            trailingIcon = {
+                if (state.user.trainee.unit != 0){
+                    Text(
+                        text = if (state.user.trainee.unit == 1) "kg" else "lb",
+                        fontSize = 20.sp,
+                        fontWeight = Bold,
+                    )
+                }
+            },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surface,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
