@@ -93,6 +93,70 @@ class MealTypesViewModel @Inject constructor(
             MealTypesEvent.FetchNutritions -> {
                 fetchNutritions()
             }
+
+            is MealTypesEvent.FetchNutritionDetail -> {
+                fetchNutritionDetail(event.id)
+            }
+
+            is MealTypesEvent.EditSelectedNutrition -> {
+                _state.update { it.copy(selectedNutrition = event.nutrition) }
+            }
+            MealTypesEvent.UpdateNutrition -> {
+                updateNutrition()
+            }
+
+            is MealTypesEvent.DeleteNutrition -> {
+                TODO()
+            }
+
+            MealTypesEvent.AddNutrition -> {
+                addNutrition()
+            }
+        }
+    }
+
+    private fun addNutrition() {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                val nutrition = _state.value.selectedNutrition ?: return@launch
+                allMealTypesUseCases.addNutritionUseCase(nutrition)
+                _state.update { it.copy(isLoading = false) }
+            } catch (e: Exception) {
+                Log.d("MealTypesViewModel", "addNutrition: $e")
+                e.printStackTrace()
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    private fun updateNutrition() {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                val nutrition = _state.value.selectedNutrition ?: return@launch
+                allMealTypesUseCases.updateNutritionUseCase(nutrition)
+                _state.update { it.copy(isLoading = false) }
+            } catch (e: Exception) {
+                Log.d("MealTypesViewModel", "updateNutrition: $e")
+                e.printStackTrace()
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    private fun fetchNutritionDetail(id: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                allMealTypesUseCases.fetchNutritionByIdUseCase(id = id).collect { nutrition ->
+                    _state.update { it.copy(isLoading = false, selectedNutrition = nutrition) }
+                }
+            } catch (e: Exception) {
+                Log.d("MealTypesViewModel", "fetchNutritionDetail: $e")
+                e.printStackTrace()
+                _state.update { it.copy(isLoading = false) }
+            }
         }
     }
 
@@ -168,6 +232,11 @@ sealed class MealTypesEvent{
     object ChangeDialogState: MealTypesEvent()
     object SortByCalories: MealTypesEvent()
     object FetchNutritions: MealTypesEvent()
+    object UpdateNutrition: MealTypesEvent()
+    object AddNutrition: MealTypesEvent()
+    data class DeleteNutrition(val id : String): MealTypesEvent()
+    data class EditSelectedNutrition(val nutrition: Nutrition): MealTypesEvent()
+    data class FetchNutritionDetail(val id: String): MealTypesEvent()
     data class SearchQuery(val query: String): MealTypesEvent()
     data class MealTypeSelected(val mealType: String): MealTypesEvent()
     data class NutritionSelected(val nutrition: Nutrition): MealTypesEvent()

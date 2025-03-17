@@ -47,6 +47,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.szakdogafitness.feature.auth.AuthenticateScreen
 import com.example.szakdogafitness.feature.lifestyle.LifeStyleScreen
 import com.example.szakdogafitness.feature.loading.CheckUserStatusScreen
+import com.example.szakdogafitness.feature.nutrition.ManageNutritionItemScreen
+import com.example.szakdogafitness.feature.nutrition.ModifyNutritionScreen
 import com.example.szakdogafitness.feature.nutrition.NutritionScreen
 import com.example.szakdogafitness.feature.nutrition.SearchNutritionScreen
 import com.example.szakdogafitness.feature.profile.ProfileScreen
@@ -298,28 +300,24 @@ fun NewRootNavigation(
             }
 
             composable (RootScreenRoute.EditFoods.route) {
-                appBarViewModel.onEvent(AppBarEvent.TopBarComposableChanged(
-                    {
-                        TopBar(
-                            title = {
-                                Text("Edit Foods")
-                            },
-                            navigationIcon = {
-                                IconButton(
-                                    onClick = {
-                                        navController.popBackStack()
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = "Back"
-                                    )
-                                }
-                            },
-                            )
-                    }
-                ))
-                Text(text = "EditFoods")
+                ModifyNutritionScreen (
+                    appBarVIewModel = appBarViewModel,
+                    onItemClicked = {
+                        navController.navigate(RootScreenRoute.EditFoodDetail.createRoute(it))
+                    },
+                ) {
+                    navController.popBackStack()
+                }
+            }
+
+            composable(RootScreenRoute.EditFoodDetail.route) { entry ->
+                val id = entry.arguments?.getString("id")
+                ManageNutritionItemScreen(
+                    id = id!!,
+                    appBarVIewModel = appBarViewModel,
+                ) {
+                    navController.popBackStack()
+                }
             }
 
             composable(RootScreenRoute.Search.route){

@@ -9,6 +9,9 @@ sealed class RootScreenRoute(val route: String){
     object Loading: RootScreenRoute("loading")
 
     object EditFoods: RootScreenRoute("editFoods")
+    object EditFoodDetail: RootScreenRoute("editFoods/{id}") {
+        fun createRoute(id: String) = "editFoods/$id"
+    }
 
     object MainScreen: RootScreenRoute("main")
 

@@ -163,19 +163,31 @@ fun TrainerDetailsScreen(
                 items(data.trainer.socialMediaLinks.size) {
                     val socialMedia = data.trainer.socialMediaLinks.keys.toList()[it]
                     val link = data.trainer.socialMediaLinks.values.toList()[it]
-                    val painter = when (socialMedia) {
+                    /*val painter = when (socialMedia.lowercase()) {
                         "facebook" -> painterResource(id = R.drawable.facebook)
                         "instagram" -> painterResource(id = R.drawable.instagram)
                         "x" -> painterResource(id = R.drawable.twitter)
                         else -> painterResource(id = R.drawable.tiktok)
+                    }*/
+                    val painter = when {
+                        socialMedia.equals("facebook", ignoreCase = true) -> painterResource(id = R.drawable.facebook)
+                        socialMedia.equals("instagram", ignoreCase = true) -> painterResource(id = R.drawable.instagram)
+                        socialMedia.equals("linkedin", ignoreCase = true) -> painterResource(id = R.drawable.linkedin)
+                        socialMedia.equals("pinterest", ignoreCase = true) -> painterResource(id = R.drawable.pinterest)
+                        socialMedia.equals("tiktok", ignoreCase = true) -> painterResource(id = R.drawable.tiktok)
+                        socialMedia.equals("x", ignoreCase = true) -> painterResource(id = R.drawable.twitter)
+                        socialMedia.equals("youtube", ignoreCase = true) -> painterResource(id = R.drawable.youtube)
+                        else -> painterResource(id = R.drawable.tiktok)
                     }
-                    Image(
-                        painter = painter,
-                        contentDescription = socialMedia,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .size(40.dp)
-                    )
+                    if (link.isNotEmpty()){
+                        Image(
+                            painter = painter,
+                            contentDescription = socialMedia,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .size(40.dp)
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.size(16.dp))

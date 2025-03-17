@@ -86,4 +86,23 @@ class MealTypesService @Inject constructor(
         firestore.collection("nutritions")
             .dataObjects<Nutrition>()
 
+    override fun getNutritionById(id: String): Flow<Nutrition?> =
+        firestore.collection("nutritions")
+            .document(id)
+            .dataObjects<Nutrition>()
+
+    override suspend fun addNutrition(nutrition: Nutrition) {
+        firestore.collection("nutritions")
+            .document(nutrition.foodId.toString())
+            .set(nutrition)
+            .await()
+    }
+
+    override suspend fun updateNutrition(nutrition: Nutrition) {
+        firestore.collection("nutritions")
+            .document(nutrition.foodId.toString())
+            .set(nutrition)
+            .await()
+    }
+
 }

@@ -5,5 +5,8 @@ import com.example.szakdogafitness.data.mealTypes.IMealTypesService
 class AllMealTypesUseCases(
     val repository: IMealTypesService,
     val fetchMealTypesUseCase: FetchMealTypesUseCase,
-    val fetchNutritionsUseCase: FetchNutritionsUseCase
+    val fetchNutritionsUseCase: FetchNutritionsUseCase,
+    val fetchNutritionByIdUseCase: FetchNutritionByIdUseCase,
+    val addNutritionUseCase: AddNutritionUseCase,
+    val updateNutritionUseCase: UpdateNutritionUseCase
 )
