@@ -2,6 +2,7 @@ package com.example.szakdogafitness.viewmodel
 
 import android.R.attr.data
 import android.util.Log
+import android.util.Log.e
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +19,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,7 +39,10 @@ class MainViewModel @Inject constructor(
 
     init {
         //initLifestyleTitle()
-        buttonsAreAvailable()
+        //buttonsAreAvailable() //fixme("Workingone")
+        //if (_state.value.dailyDataList.isNotEmpty()){
+            buttonsAreAvailable()
+       // }
     }
 
     fun onEvent(event: MainEvent){
@@ -53,7 +59,8 @@ class MainViewModel @Inject constructor(
 
             MainEvent.NextDayDailyData -> {
                 if (state.value.isNextDayAvailable){
-                    val nextDailyData = state.value.dailyDatas.dailyData[state.value.dailyDatas.dailyData.indexOf(state.value.currentDailyData) + 1]
+                    //val nextDailyData = state.value.dailyDatas.dailyData[state.value.dailyDatas.dailyData.indexOf(state.value.currentDailyData) + 1] //fixme("Workingone")
+                    val nextDailyData = state.value.dailyDataList[state.value.dailyDataList.indexOf(state.value.currentDailyData) + 1]
                     _state.value = _state.value.copy(lifeStyleTitle = nextDailyData.date.toDate().toString().substring(4, 10))
                     _state.value = _state.value.copy(currentDailyData = nextDailyData)
 
@@ -61,7 +68,8 @@ class MainViewModel @Inject constructor(
             }
             MainEvent.PreviousDayDailyData -> {
                 if (state.value.isPreviousDayAvailable){
-                    val previousDailyData = state.value.dailyDatas.dailyData[state.value.dailyDatas.dailyData.indexOf(state.value.currentDailyData) - 1]
+                    //val previousDailyData = state.value.dailyDatas.dailyData[state.value.dailyDatas.dailyData.indexOf(state.value.currentDailyData) - 1] //fixme("Workingone")
+                    val previousDailyData = state.value.dailyDataList[state.value.dailyDataList.indexOf(state.value.currentDailyData) - 1]
                     _state.value = _state.value.copy(lifeStyleTitle = previousDailyData.date.toDate().toString().substring(4, 10))
                     _state.value = _state.value.copy(currentDailyData = previousDailyData)
 
@@ -82,7 +90,11 @@ class MainViewModel @Inject constructor(
 
             MainEvent.ClearState -> {
                 Log.d("MainViewModel", "ClearState: ${state.value}")
-                _state.value = MainState(dailyDatas = DailyDatas())
+                //_state.value = MainState(dailyDatas = DailyDatas()) //fixme("Workingone")
+                _state.value = MainState(
+                    dailyDataList = listOf(),
+                    currentDailyData = DailyData()
+                )
                 Log.d("MainViewModel", "ClearStateEND: ${state.value}")
             }
 
@@ -96,9 +108,21 @@ class MainViewModel @Inject constructor(
             MainEvent.FetchTrainees -> {
                 fetchTrainees()
             }
+
+            is MainEvent.AddNutrient -> {
+                addNutrient(event.nutritionID)
+            }
         }
         //initLifestyleTitle()
+        //buttonsAreAvailable() //fixme("Workingone")
+
+        //if (_state.value.dailyDataList.isNotEmpty()) {
         buttonsAreAvailable()
+        //}
+    }
+
+    private fun addNutrient(nutritionID: Int) {
+        TODO("Not yet implemented")
     }
 
     private fun fetchTrainees(){
@@ -127,10 +151,11 @@ class MainViewModel @Inject constructor(
     }
 
     private fun generateNewDailyData(){
+        Log.d("MainViewModel", "generateNewDailyData")
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                allMainUseCases.generateNewDailyDataUseCase(state.value.dailyDatas)
+                allMainUseCases.generateNewDailyDataUseCase.invoke()
                 _state.update { it.copy(isLoading = false) }
             } catch (e: Exception){
                 _state.update { it.copy(isLoading = false) }
@@ -141,12 +166,20 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun buttonsAreAvailable(){
+    /*private fun buttonsAreAvailable(){ //fixme("Workingone")
         Log.d(TAG, "${state.value.dailyDatas.dailyData.size}")
         val dailyDatas = state.value.dailyDatas
         val currentDailyData = state.value.currentDailyData
         val isNextDayAvailable = dailyDatas.dailyData.indexOf(currentDailyData) < dailyDatas.dailyData.size - 1
         val isPreviousDayAvailable = dailyDatas.dailyData.indexOf(currentDailyData) > 0
+        _state.value = _state.value.copy(isNextDayAvailable = isNextDayAvailable, isPreviousDayAvailable = isPreviousDayAvailable)
+    }*/
+
+    private fun buttonsAreAvailable(){
+        val dailyDatas = state.value.dailyDataList
+        val currentDailyData = state.value.currentDailyData
+        val isNextDayAvailable = dailyDatas.indexOf(currentDailyData) < dailyDatas.size - 1
+        val isPreviousDayAvailable = dailyDatas.indexOf(currentDailyData) > 0
         _state.value = _state.value.copy(isNextDayAvailable = isNextDayAvailable, isPreviousDayAvailable = isPreviousDayAvailable)
     }
 
@@ -182,7 +215,7 @@ class MainViewModel @Inject constructor(
         }
     }*/
 
-    private fun fetchDailyData(){
+    /*private fun fetchDailyData(){ //fixme("Workingone")
         viewModelScope.launch {
             //_state.update { it.copy(isLoading = true) }
             _state.update { it.copy(isLoading = true, dailyDatas = DailyDatas(), currentDailyData = DailyData()) }
@@ -212,7 +245,34 @@ class MainViewModel @Inject constructor(
 
             }
         }
+    }*/
+
+    private fun fetchDailyData() {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true, currentDailyData = DailyData()) }
+            try {
+                allMainUseCases.fetchUsersDailyDatasUseCase().collect { dailyDataList ->
+                    if (dailyDataList.isNotEmpty()){
+                        val latestDailyDate = dailyDataList.last()
+                        val latestDate = latestDailyDate.date.toDate().toString().substring(4, 10)
+                        _state.update { it.copy(
+                            dailyDataList = dailyDataList,
+                            currentDailyData = latestDailyDate,
+                            lifeStyleTitle = latestDate,
+                            isLoading = false
+                        ) }
+                        buttonsAreAvailable()
+                        generateNewDailyData()
+                    }
+
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error getting daily data: ${e.message}", e)
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
     }
+
     /*private fun fetchDailyData(){
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
@@ -260,7 +320,7 @@ fun getTomorrowFirebaseTimestamp(): Timestamp {
     return Timestamp(calendar.time)
 }
 
-val testMainStateDailyDatas = DailyDatas(
+/*val testMainStateDailyDatas = DailyDatas(
     dailyData = listOf(
         DailyData(
             date = getYesterdayFirebaseTimestamp(),
@@ -272,7 +332,7 @@ val testMainStateDailyDatas = DailyDatas(
             date = getTomorrowFirebaseTimestamp(),
         )
     )
-)
+)*/
 
 
 
@@ -283,20 +343,25 @@ data class MainState(
     //val user: User? = User(),
     val user: User? = null,
     //val dailyDatas: DailyDatas = testMainStateDailyDatas,
-    val dailyDatas: DailyDatas = DailyDatas(),
     val trainers: List<User?> = listOf(),
     val trainees: List<User?> = listOf(),
     val mealTypes: Map<String, List<Nutrition>> = mapOf(),
-    val currentDailyData: DailyData = dailyDatas.dailyData.lastOrNull() ?: DailyData(),
+
+    //val dailyDatas: DailyDatas = DailyDatas(), //fixme("Workingone")
+    //val currentDailyData: DailyData = dailyDatas.dailyData.lastOrNull() ?: DailyData(), //fixme("Workingone")
+
+    val dailyDataList: List<DailyData> = listOf(),
+    val currentDailyData: DailyData = DailyData(),
+
     val isNextDayAvailable: Boolean = false,
     val isPreviousDayAvailable: Boolean = false,
     val lifeStyleTitle: String = "",
-
 )
 
 sealed class MainEvent{
     data class ScreenNavigation(val route: String): MainEvent()
     data class TitleComposableChanged(val titleComposable: @Composable () -> Unit): MainEvent()
+    data class AddNutrient(val nutritionID: Int) : MainEvent()
     object FetchDailyData: MainEvent()
     object FetchUser: MainEvent()
     object UpdateLifestyleTitle: MainEvent()

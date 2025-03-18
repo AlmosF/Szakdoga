@@ -28,6 +28,9 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 class MainService @Inject constructor(
@@ -119,7 +122,8 @@ class MainService @Inject constructor(
                 result
             }
             .flowOn(Dispatchers.IO)*/
-    override suspend fun getUsersDailyDatas(): Flow<DailyDatas?> =
+
+    /*override suspend fun getUsersDailyDatas(): Flow<DailyDatas?> = //Fixme("WorkingOne")
         flow {
             val userId = userIdUseCase()
             Log.d("MainService", "userId: $userId")
@@ -139,10 +143,30 @@ class MainService @Inject constructor(
                     emit(result)
                 }*/
 
-        }.flowOn(Dispatchers.IO)
+        }.flowOn(Dispatchers.IO)*/
+
+    override suspend fun getUsersDailyDatas(): Flow<List<DailyData>> = flow {
+        val userId = userIdUseCase()
+        Log.d("MainService", "Fetching daily data for userId: $userId")
+        try {
+            firestore.collection("dailyDatas")
+                .document(userId!!)
+                .collection("dailyData")
+                .dataObjects<DailyData>()
+                .collect { dailyDataList ->
+                    val sortedDailyDataList = dailyDataList.sortedBy { it.date.toDate() }
+                    emit(sortedDailyDataList)
+                    Log.d("MainService", "Fetched real-time daily data: $sortedDailyDataList")
+                }
+        } catch (e: Exception) {
+            Log.e("MainService", "Error fetching real-time daily data: ${e.message}", e)
+            emit(emptyList())
+        }
+    }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun generateNewDailyData(dailyDatas: DailyDatas) {
+
+    /*override suspend fun generateNewDailyData(dailyDatas: DailyDatas) {
         val userId = userIdUseCase()
         val todayDate = Timestamp.now().toYYYYMMDD()
 
@@ -170,8 +194,40 @@ class MainService @Inject constructor(
         } catch (e: Exception) {
             Log.e("MainService", "Error generating new daily data: ${e.message}", e)
         }
+    }*/
+    override suspend fun generateNewDailyData() {
+        val userId = userIdUseCase()
 
+        // Format today's date as "YYYY-MM-DD"
+        val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        Log.d("MainService", "Generating new daily data for user: $userId")
+
+        try {
+            val userDocRef = firestore.collection("dailyDatas").document(userId!!)
+            val dailyDataCollectionRef = userDocRef.collection("dailyData")
+
+            // Check if today's entry exists
+            val existingDoc = dailyDataCollectionRef.document(todayDate).get().await()
+
+            if (!existingDoc.exists()) {
+                val newDailyData = DailyData(date = Timestamp.now())
+
+                // Create the new daily entry with today's date as the document ID
+                dailyDataCollectionRef
+                    .document(todayDate)
+                    .set(newDailyData)
+                    .await()
+
+                Log.d("MainService", "Created new daily data for user: $userId")
+            } else {
+                Log.d("MainService", "Today's daily data already exists for user: $userId")
+            }
+
+        } catch (e: Exception) {
+            Log.e("MainService", "Error generating new daily data: ${e.message}", e)
+        }
     }
+
 
 
 

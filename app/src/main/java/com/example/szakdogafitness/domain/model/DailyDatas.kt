@@ -1,11 +1,12 @@
 package com.example.szakdogafitness.domain.model
 
+import com.example.szakdogafitness.viewmodel.getDecember11FirebaseTimestamp
 import com.google.firebase.Timestamp
 
 
 data class DailyDatas(
     val uid: String = "",
-    val dailyData: List<DailyData> = listOf()
+    //val dailyData: List<DailyData> = listOf() //fixme("Workingone")
 )
 
 data class DailyData(
@@ -15,6 +16,8 @@ data class DailyData(
     val steps: Int = 0,
     val targetSteps: Int = 0,
     val foodIntake: Map<String, List<Nutrition>> = mapOf(),
+    val foodIntakeM: Map<String, List<Int>> = mapOf(),
     val targetKcal: Int = 1500,
     val manualFoodIntake: Map<String, List<Nutrition>> = mapOf(),
+    val manualFoodIntakeM: Map<String, List<Int>> = mapOf(),
 )

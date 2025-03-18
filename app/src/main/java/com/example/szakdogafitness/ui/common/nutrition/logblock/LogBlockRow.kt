@@ -30,25 +30,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImagePainter.State.Empty.painter
 import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.domain.model.Nutrition
+import com.example.szakdogafitness.R
 
 
 @Composable
 fun LogBlockRow(
     modifier : Modifier = Modifier,
     title: String,
-    data: List<Nutrition>,
+    //data: List<Nutrition>, //fixme("Workingone")
+    data: List<Int>,
+    meals: List<Nutrition>,
     onOpen: () -> Unit,
     state: BlockState = BlockState.Closed,
     onRemove: (String, Int) -> Unit
 ) {
     var isOpened = state.name == title.replace(" ", "")
-    val value = data.sumOf { it.calories }
+    //val value = data.sumOf { it.calories } //fixme("Workingone")
+    val value = meals.filter {it.foodId in data}.sumOf { it.calories }
 
     LaunchedEffect(data, isOpened) {
         if (data.isEmpty() && isOpened) {
@@ -95,7 +101,7 @@ fun LogBlockRow(
                 Column {
                     data.forEachIndexed { index, nutrition ->
                         RowDetailRow(
-                            nutrition = nutrition
+                            nutrition = meals.first { it.foodId == nutrition }, //fixme("Workingone")
                         ) {
                             onRemove(
                                 title,
@@ -113,12 +119,13 @@ fun LogBlockRow(
 @Composable
 fun RowDetailRow(
     modifier: Modifier = Modifier,
-    nutrition: Nutrition,
+    nutrition: Nutrition, //fixme("Workingone")
+    //nutrition: Int,
     onRemove: () -> Unit
 ){
     val painter = rememberAsyncImagePainter(
         if (nutrition.image.isBlank()) "https://wepublishnews.com/wp-content/uploads/2021/05/Johnny-Depp-Net-Worth.jpg" else nutrition.image
-    )
+    ) //fixme("Workingone")
     Row (
         modifier = modifier
             .fillMaxWidth(),
@@ -135,7 +142,8 @@ fun RowDetailRow(
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = nutrition.foodName
+            text = nutrition.foodName //fixme("Workingone")
+            //text = nutrition.toString()
         )
         Spacer(modifier = Modifier.weight(1f))
         IconButton(
@@ -176,7 +184,7 @@ fun RowValue(
 
 
 
-@Composable
+/*@Composable
 @Preview
 fun LogBlockRowPreview() {
     
@@ -195,4 +203,4 @@ fun LogBlockRowPreview() {
 
         }
     )
-}
+}*/

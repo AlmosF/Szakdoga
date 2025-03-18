@@ -70,6 +70,7 @@ import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
 import com.example.szakdogafitness.viewmodel.MainEvent
 import com.example.szakdogafitness.viewmodel.MainViewModel
+import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 import kotlinx.coroutines.launch
 import java.lang.System.exit
 
@@ -80,7 +81,8 @@ fun NewRootNavigation(
     navController: NavHostController,
     authViewModel: AuthenticationViewModel = hiltViewModel(),
     appBarViewModel: AppBarViewModel = hiltViewModel(),
-    mainViewModel: MainViewModel = hiltViewModel(key = authViewModel.getUserId())
+    mainViewModel: MainViewModel = hiltViewModel(key = authViewModel.getUserId()),
+    mealTypesViewModel: MealTypesViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -132,6 +134,11 @@ fun NewRootNavigation(
             }
         }
     }
+
+    LaunchedEffect(mainState.dailyDataList) {
+        Log.d("RootNavigation", "dailyDataList: ${mainState.dailyDataList}")
+    }
+
     Scaffold (
         modifier = modifier,
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -250,6 +257,7 @@ fun NewRootNavigation(
                 )
                 NutritionScreen(
                     mainViewModel = mainViewModel,
+                    mealTypesViewModel = mealTypesViewModel,
                     onAINavigate = {
                         navController.navigate(RootScreenRoute.NutritionAI.route)
                     },
@@ -274,7 +282,9 @@ fun NewRootNavigation(
                         }
                     )
                 )
-                SearchNutritionScreen()
+                SearchNutritionScreen(
+                    mealTypesViewModel = mealTypesViewModel,
+                )
             }
             composable(RootScreenRoute.NutritionBarcode.route) {
                 Text(text = "NutritionBarcode")
@@ -315,6 +325,7 @@ fun NewRootNavigation(
                 ManageNutritionItemScreen(
                     id = id!!,
                     appBarVIewModel = appBarViewModel,
+                    mealTypesViewModel = mealTypesViewModel
                 ) {
                     navController.popBackStack()
                 }

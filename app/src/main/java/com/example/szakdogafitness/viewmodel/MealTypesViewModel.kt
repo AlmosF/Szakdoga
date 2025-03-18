@@ -221,6 +221,7 @@ data class MealTypesState(
         "evening_snack" to listOf()
     ),
     val nutritions: List<Nutrition> = listOf(),
+
     val selectedMealTitle: String = "bf",
     //val selectedMealType: List<Nutrition> = mealTypes["breakfast"] ?: listOf(),
     val selectedMealType: List<Nutrition> = nutritions.filter { it.mealType.contains("bf", ignoreCase = true) },

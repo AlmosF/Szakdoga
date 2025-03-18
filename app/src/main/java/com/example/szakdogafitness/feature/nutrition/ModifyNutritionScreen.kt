@@ -255,7 +255,7 @@ fun ManageNutritionItemScreen(
     val painterState by painter.state.collectAsState()
     LaunchedEffect(Unit) {
         //mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritionDetail(id))
-        mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
+        //mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
         appBarVIewModel.onEvent(
             AppBarEvent.TopBarComposableChanged(
                 {

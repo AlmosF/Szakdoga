@@ -31,6 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.szakdogafitness.domain.model.Nutrition
 import com.example.szakdogafitness.viewmodel.MealLogEvent
 import com.example.szakdogafitness.viewmodel.MealLogViewModel
+import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 
 enum class BlockState {
     Closed,
@@ -46,11 +47,15 @@ enum class BlockState {
 @Composable
 fun LogBlock(
     modifier: Modifier = Modifier,
-    data: Map<String, List<Nutrition>>,
+    //data: Map<String, List<Nutrition>>,
+    data: Map<String, List<Int>>,
     //viewModel: MealLogViewModel = viewModel(),
     viewModel: MealLogViewModel = hiltViewModel(),
+    mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
     onRemove: (String, Int) -> Unit = { _, _ -> }
 ) {
+
+
 
     LaunchedEffect(data) {
         Log.d("LogBlock", "Data changed: $data")
@@ -68,6 +73,7 @@ fun LogBlock(
     //val blockState by viewModel.currentBlockState.collectAsStateWithLifecycle()
     //val consumedMeals by viewModel.consumedMeals.collectAsStateWithLifecycle()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val mealState by mealTypesViewModel.state.collectAsStateWithLifecycle()
 
     var testData by remember { mutableStateOf(mapOf<String, List<Nutrition>>(
         "Breakfast" to listOf(
@@ -110,6 +116,7 @@ fun LogBlock(
     }
     LaunchedEffect(Unit, data) {
         //viewModel.onEvent(MealLogEvent.SetupDemoMeal(testData))
+        //viewModel.onEvent(MealLogEvent.SetupDemoMeal(data)) //fixme("Workingone")
         viewModel.onEvent(MealLogEvent.SetupDemoMeal(data))
     }
     //var currentBlockState by remember { mutableStateOf(BlockState.Closed) }
@@ -148,11 +155,10 @@ fun LogBlock(
             )*/
             LogBlockRow(
                 title = it.name.replaceFirstChar { it.uppercase() },
-                //data = data[it.name] ?: emptyList(),
-                //data = consumedMeals[it.name] ?: emptyList(),
                 data = state.consumedMeals[it.name] ?: emptyList(),
                 //state = blockState.currentBlockState,
                 state = state.currentBlockState,
+                meals = mealState.nutritions,
                 onOpen = {
                     /*currentBlockState = if (currentBlockState == it) {
                         BlockState.Closed

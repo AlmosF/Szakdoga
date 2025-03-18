@@ -205,7 +205,7 @@ fun SearchNutritionScreen(
     LaunchedEffect(Unit) {
         Log.d("SearchNutritionScreen", "LaunchedEffect")
         //mealTypesViewModel.onEvent(MealTypesEvent.LoadMealTypes)
-        mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
+        //mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
     }
 
     LaunchedEffect(mealTypesState.nutritions) {

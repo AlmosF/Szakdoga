@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,17 +23,24 @@ import com.example.szakdogafitness.ui.common.nutrition.AddNutrientsBlock
 import com.example.szakdogafitness.ui.common.nutrition.TargetKcalBlock
 import com.example.szakdogafitness.ui.common.nutrition.logblock.LogBlock
 import com.example.szakdogafitness.viewmodel.MainViewModel
+import com.example.szakdogafitness.viewmodel.MealTypesEvent
+import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 
 @Composable
 fun NutritionScreen(
     modifier: Modifier = Modifier,
     mainViewModel: MainViewModel = hiltViewModel(),
+    mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
     onAINavigate: () -> Unit,
     onSearchNavigate: () -> Unit,
     onBarcodeNavigate: () -> Unit
 ) {
 
     val mainState by mainViewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
+    }
 
     Column (
         modifier = modifier
@@ -79,7 +87,9 @@ fun NutritionScreen(
             }
         )
         LogBlock(
-            data = mainState.currentDailyData.foodIntake
+            //data = mainState.currentDailyData.foodIntake, //fixme("Workingone")
+            data = mainState.currentDailyData.foodIntakeM,
+            mealTypesViewModel = mealTypesViewModel
         )
     }
 

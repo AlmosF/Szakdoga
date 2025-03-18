@@ -14,6 +14,9 @@ import com.example.szakdogafitness.viewmodel.SetupProfileState
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 class SetupService @Inject constructor(
@@ -248,7 +251,7 @@ class SetupService @Inject constructor(
                     ).await()
                 }
             }
-            firestore.collection("dailyDatas").document(userId).set(
+            /*firestore.collection("dailyDatas").document(userId).set( //fixme("Workingone")
                 DailyDatas(
                     uid = userId,
                     dailyData = listOf(
@@ -257,7 +260,14 @@ class SetupService @Inject constructor(
                         )
                     )
                 )
-            )
+            )*/
+            val dailyData = DailyData(date = Timestamp.now()) // Example with default values
+            val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            firestore.collection("dailyDatas")
+                .document(userId)
+                .collection("dailyData")
+                .document(todayDate.toString()) // Using date as document ID
+                .set(dailyData)
         } else {
             Log.d("SetupService", "User id is null")
         }
