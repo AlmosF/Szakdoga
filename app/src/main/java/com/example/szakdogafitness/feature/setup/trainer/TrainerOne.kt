@@ -21,11 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.szakdogafitness.domain.usecases.setup.AllSetupUseCases
+import com.example.szakdogafitness.feature.setup.toTriple
 import com.example.szakdogafitness.ui.common.LargeDropdownMenu
 import com.example.szakdogafitness.ui.common.TrainerTimetableView
 import com.example.szakdogafitness.ui.common.YearSelector
 import com.example.szakdogafitness.viewmodel.SetupEvent
 import com.example.szakdogafitness.viewmodel.SetupViewModel
+import com.google.firebase.Timestamp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -190,7 +192,8 @@ fun TrainerOne(
         )
 
         var selectedExperienceIndice by remember { mutableStateOf(-1) }
-        var experienceRangeYear = (1970..2100)
+        //var experienceRangeYear = (1970..2100) // FIXME: ACTUAL DATE RANGE
+        var experienceRangeYear = (1970..Timestamp.now().toTriple().third) // FIXME: ACTUAL DATE RANGE
         YearSelector(
             modifier = textFieldModifier
                 .constrainAs(exp) {
@@ -201,7 +204,7 @@ fun TrainerOne(
             label = "Experience (Since when)",
             range = experienceRangeYear,
             selectedYear = state.user.trainer.experience,
-            initialYear = if (state.user.trainer.experience == 0) 2024 else state.user.trainer.experience,
+            initialYear = if (state.user.trainer.experience == 0) Timestamp.now().toTriple().third else state.user.trainer.experience,
             textStyle = TextStyle(fontSize = 16.sp),
             textColor = Color.Black,
             selectedTextColor = Color.Black,

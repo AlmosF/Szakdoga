@@ -89,7 +89,7 @@ fun TrainerTimetableView(
                     day = day,
                     isSelected = selectedDay == day,
                     onClick = { selectedDay = day },
-                    isEnabled = enabled
+                    //isEnabled = enabled
                 )
             }
         }
