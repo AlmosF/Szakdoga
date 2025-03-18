@@ -85,7 +85,7 @@ fun FirestoreUser.toUser(trainer: FirestoreTrainer): User {
 }
 
 fun FirestoreUser.toUser(trainee: FirestoreTrainee): User {
-    Log.d("FirestoreUser", "ToUserCalled")
+    Log.d("FirestoreUser", "ToUserCalledd")
     return User(
         userId = uid,
         firstName = firstName,
