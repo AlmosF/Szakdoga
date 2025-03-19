@@ -7,6 +7,7 @@ import com.example.szakdogafitness.domain.model.DailyDatas
 import com.example.szakdogafitness.domain.usecases.main.AllMainUseCases
 import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasUseCase
 import com.example.szakdogafitness.domain.usecases.main.GenerateNewDailyDataUseCase
+import com.example.szakdogafitness.domain.usecases.mealLog.MealConsumedUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DailyDatasViewModel @Inject constructor(
     private val fetchUsersDailyDatas: FetchUsersDailyDatasUseCase,
-    private val generateNewDailyData: GenerateNewDailyDataUseCase
+    private val generateNewDailyData: GenerateNewDailyDataUseCase,
+    private val mealConsumedUseCase: MealConsumedUseCase
 ) : ViewModel(){
 
     private val _state = MutableStateFlow(DailyDatasState())
@@ -50,8 +52,33 @@ class DailyDatasViewModel @Inject constructor(
                 ) }
                 buttonsAvailability()
             }
+
+            is DailyDatasEvent.AddNutrition -> {
+                addNutrition(event.nutritionID, event.mealType)
+            }
+            is DailyDatasEvent.RemoveNutrition -> {
+                removeNutrition(event.nutritionID, event.mealType)
+            }
         }
     }
+
+    private fun addNutrition(nutritionID: Int, mealType: String){
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                mealConsumedUseCase.invoke(nutritionID, mealType)
+                _state.update { it.copy(isLoading = false) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    private fun removeNutrition(nutritionID: Int, mealType: String){
+
+    }
+
 
     private fun loadDailyDatas(){
         viewModelScope.launch {
@@ -108,6 +135,8 @@ class DailyDatasViewModel @Inject constructor(
 }
 
 sealed class DailyDatasEvent{
+    data class AddNutrition(val nutritionID: Int, val mealType: String) : DailyDatasEvent()
+    data class RemoveNutrition(val nutritionID: Int, val mealType: String) : DailyDatasEvent()
     object LoadDailyDatas: DailyDatasEvent()
     object NextDay: DailyDatasEvent()
     object PreviousDay: DailyDatasEvent()

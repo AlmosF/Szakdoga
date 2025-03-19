@@ -76,6 +76,8 @@ import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.appbars.TopBar
 import com.example.szakdogafitness.ui.common.nutrition.SearchNutritionCard
 import com.example.szakdogafitness.ui.common.nutrition.SearchNutritionLabels
+import com.example.szakdogafitness.viewmodel.DailyDatasEvent
+import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
 import com.example.szakdogafitness.viewmodel.MealTypesEvent
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 import com.google.firebase.Timestamp
@@ -197,7 +199,8 @@ fun SearchNutritionScreen(
 @Composable
 fun SearchNutritionScreen(
     modifier: Modifier = Modifier,
-    mealTypesViewModel: MealTypesViewModel = hiltViewModel()
+    mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
+    dailyDatasViewModel: DailyDatasViewModel = hiltViewModel(),
 ) {
 
     val mealTypesState by mealTypesViewModel.state.collectAsStateWithLifecycle()
@@ -207,6 +210,14 @@ fun SearchNutritionScreen(
         //mealTypesViewModel.onEvent(MealTypesEvent.LoadMealTypes)
         //mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
     }
+    val labelsMap = mapOf(
+        "bf" to "Breakfast",
+        "ms" to "Morning_Snack",
+        "l" to "Lunch",
+        "as" to "Afternoon_Snack",
+        "d" to "Dinner",
+        "es" to "Evening_Snack"
+    )
 
     LaunchedEffect(mealTypesState.nutritions) {
         Log.d("SearchNutritionScreen", "nutritions: ${mealTypesState.nutritions}")
@@ -348,6 +359,13 @@ fun SearchNutritionScreen(
                         sheetState.hide()
                     }
                     mealTypesViewModel.onEvent(MealTypesEvent.ChangeDialogState)
+                    Log.d("SearchNutritionScreen", "Add to meal: ${labelsMap[mealTypesState.selectedMealTitle]}")
+                    dailyDatasViewModel.onEvent(
+                        DailyDatasEvent.AddNutrition(
+                            nutritionID = mealTypesState.selectedNutrition!!.foodId,
+                            mealType = labelsMap[mealTypesState.selectedMealTitle]!!
+                        )
+                    )
                 }
             }
         }

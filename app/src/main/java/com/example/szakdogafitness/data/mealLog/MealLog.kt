@@ -1,12 +1,51 @@
 package com.example.szakdogafitness.data.mealLog
 
+import android.util.Log
 import com.example.szakdogafitness.domain.model.Nutrition
+import com.example.szakdogafitness.domain.usecases.auth.CurrentUserIdUseCase
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 class MealLog @Inject constructor(
-
+    private val firestore: FirebaseFirestore,
+    private val userIdUseCase: CurrentUserIdUseCase
 ) : IMealLog {
-    override fun consumeMeal(
+    override suspend fun consumeMeal(
+        mealID: Int,
+        mealType: String,
+        date: Timestamp
+    ) {
+        val userId = userIdUseCase()
+        val dateFormated = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date.toDate())
+        try {
+            val dailyDataRef = firestore.collection("dailyDatas")
+                .document(userId!!)
+                .collection("dailyData")
+                .document(dateFormated)
+
+            firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(dailyDataRef)
+
+                val foodIntakeM = snapshot.get("foodIntakeM") as? MutableMap<String, MutableList<Int>> ?: mutableMapOf()
+
+                val mealList = foodIntakeM[mealType]?.toMutableList() ?: mutableListOf()
+
+                mealList.add(mealID)
+
+                foodIntakeM[mealType] = mealList
+
+                transaction.update(dailyDataRef, "foodIntakeM", foodIntakeM)
+
+            }
+            Log.d("Firestore", "Meal $mealID added to $mealType successfully.")
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error updating meal data: ${e.message}", e)
+        }
+    }
+    /*override fun consumeMeal(
         mealType: String,
         meal: Nutrition,
         dataMap: Map<String, List<Nutrition>>
@@ -16,7 +55,8 @@ class MealLog @Inject constructor(
         mealList.add(meal)
         newConsumedMeals[mealType] = mealList
         return newConsumedMeals
-    }
+    }*/
+
 
     override fun removeMeal(
         mealType: String,

@@ -39,8 +39,8 @@ enum class BlockState {
     Lunch,
     Dinner,
     Morning_Snack,
-    afternoon_Snack,
-    evening_Snack
+    Afternoon_Snack,
+    Evening_Snack
 }
 
 
@@ -67,8 +67,8 @@ fun LogBlock(
         BlockState.Lunch,
         BlockState.Dinner,
         BlockState.Morning_Snack,
-        BlockState.afternoon_Snack,
-        BlockState.evening_Snack
+        BlockState.Afternoon_Snack,
+        BlockState.Evening_Snack
     )
     //val blockState by viewModel.currentBlockState.collectAsStateWithLifecycle()
     //val consumedMeals by viewModel.consumedMeals.collectAsStateWithLifecycle()
@@ -153,6 +153,9 @@ fun LogBlock(
                     )
                 }
             )*/
+            Log.d("LogBlock", "Title: ${it.name}")
+            Log.d("LogBlock", "Title: ${state.consumedMeals}")
+
             LogBlockRow(
                 title = it.name.replaceFirstChar { it.uppercase() },
                 data = state.consumedMeals[it.name] ?: emptyList(),
