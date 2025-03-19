@@ -34,6 +34,8 @@ import com.example.szakdogafitness.ui.common.lifestyle.WeightControlBlock
 import com.example.szakdogafitness.viewmodel.AppBarEvent
 import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.AuthenticationEvent
+import com.example.szakdogafitness.viewmodel.DailyDatasEvent
+import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
 import com.example.szakdogafitness.viewmodel.MainEvent
 import com.example.szakdogafitness.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
@@ -44,7 +46,8 @@ fun LifeStyleScreen(
     modifier: Modifier = Modifier,
     mainViewModel: MainViewModel = hiltViewModel(),
     navController: NavHostController,
-    appBarViewModel: AppBarViewModel = hiltViewModel()
+    appBarViewModel: AppBarViewModel = hiltViewModel(),
+    dailyDatasViewModel: DailyDatasViewModel = hiltViewModel(),
     //VMs
 ){
     /*Scaffold (
@@ -78,10 +81,13 @@ fun LifeStyleScreen(
 
     val mainState by mainViewModel.state.collectAsStateWithLifecycle()
 
+    val dailyDatasState by dailyDatasViewModel.state.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
+        dailyDatasViewModel.onEvent(DailyDatasEvent.LoadDailyDatas)
         delay(100)
         Log.d("LifeStyleScreen", "LaunchedEffect: ${mainState.currentDailyData}")
-        appBarViewModel.onEvent(
+        /*appBarViewModel.onEvent( //WITH MAINSTATE
             AppBarEvent.TopBarComposableChanged(
                 {
                     TopBar(
@@ -111,6 +117,34 @@ fun LifeStyleScreen(
                     )
                 }
             )
+        )*/
+        appBarViewModel.onEvent(
+            AppBarEvent.TopBarComposableChanged(
+                {
+                    TopBar(
+                        title = {
+                            LifeStyleTitle(
+                                title = dailyDatasState.lifeStyleTitle,
+                                previousButtonEnabled = dailyDatasState.isPreviousDayAvailable,
+                                onPreviousDayClick = {
+                                    dailyDatasViewModel.onEvent(DailyDatasEvent.PreviousDay)
+                                },
+                                nextButtonEnabled = dailyDatasState.isNextDayAvailable,
+                                onNextDayClick = {
+                                    dailyDatasViewModel.onEvent(DailyDatasEvent.NextDay)
+                                }
+                            )
+                        },
+                        navigationIcon = {
+                            LifeStyleAction (
+                                image = mainState.user?.profileImageUrl ?: "",
+                            ) {
+                                navController.navigate(RootScreenRoute.Profile.route)
+                            }
+                        }
+                    )
+                }
+            )
         )
         Log.d("LifeStyle", "${mainState.user}")
     }
@@ -123,7 +157,7 @@ fun LifeStyleScreen(
     ){
         val (caloryBlock, waterBlock, weightBlock, stepsBlock) = createRefs()
 
-        DailyCaloriesBlock(
+        /*DailyCaloriesBlock( //WITH MAINSTATE
             modifier = Modifier
                 .constrainAs(caloryBlock){
                     top.linkTo(parent.top)
@@ -132,8 +166,18 @@ fun LifeStyleScreen(
                 }
                 .fillMaxWidth(0.9f),
             dailyData = mainState.currentDailyData
+        )*/
+        DailyCaloriesBlock(
+            modifier = Modifier
+                .constrainAs(caloryBlock){
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+                .fillMaxWidth(0.9f),
+            dailyData = dailyDatasState.currentDailyData
         )
-        WaterIntakeBlock(
+        /*WaterIntakeBlock( //WITH MAINSTATE
             modifier = Modifier
                 .constrainAs(waterBlock){
                     top.linkTo(caloryBlock.bottom)
@@ -143,6 +187,17 @@ fun LifeStyleScreen(
                 .fillMaxWidth(0.9f),
             consumedWater = mainState.currentDailyData.waterIntake,
             goalWater = mainState.currentDailyData.targetWater
+        )*/
+        WaterIntakeBlock(
+            modifier = Modifier
+                .constrainAs(waterBlock){
+                    top.linkTo(caloryBlock.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+                .fillMaxWidth(0.9f),
+            consumedWater = dailyDatasState.currentDailyData.waterIntake,
+            goalWater = dailyDatasState.currentDailyData.targetWater
         )
         WeightControlBlock(
             modifier = Modifier
@@ -154,7 +209,7 @@ fun LifeStyleScreen(
                 .fillMaxWidth(0.9f),
             weight = mainState.user?.trainee?.weight ?: 0.0,
         )
-        StepsBlock(
+        /*StepsBlock(
             modifier = Modifier
                 .constrainAs(stepsBlock){
                     top.linkTo(weightBlock.bottom)
@@ -164,6 +219,17 @@ fun LifeStyleScreen(
                 .fillMaxWidth(0.9f),
             steps = 1234,
             goalSteps = 6000
+        )*/
+        StepsBlock(
+            modifier = Modifier
+                .constrainAs(stepsBlock){
+                    top.linkTo(weightBlock.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+                .fillMaxWidth(0.9f),
+            steps = dailyDatasState.currentDailyData.steps,
+            goalSteps = dailyDatasState.currentDailyData.targetSteps
         )
 
 
