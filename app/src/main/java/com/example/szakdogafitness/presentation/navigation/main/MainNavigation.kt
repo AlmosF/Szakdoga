@@ -31,11 +31,10 @@ import com.example.szakdogafitness.presentation.navigation.main.items.BottomNavi
 import com.example.szakdogafitness.presentation.navigation.main.items.BottomNavigationItems.SearchItem
 import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
-import com.example.szakdogafitness.viewmodel.MainViewModel
 import com.example.szakdogafitness.viewmodel.ProfileEvent
 //import com.example.szakdogafitness.viewmodel.ProfileViewModel
 
-@Composable
+/*@Composable
 fun MainNavigation(
     modifier: Modifier = Modifier,
     rootNavController: NavHostController,
@@ -135,4 +134,4 @@ fun MainNavigation(
     }
 
 
-}
+}*/

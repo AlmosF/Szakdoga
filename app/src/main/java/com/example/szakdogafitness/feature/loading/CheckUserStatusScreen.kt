@@ -14,21 +14,29 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
-import com.example.szakdogafitness.viewmodel.MainEvent
-import com.example.szakdogafitness.viewmodel.MainViewModel
+import com.example.szakdogafitness.viewmodel.ProfileEvent
+import com.example.szakdogafitness.viewmodel.ProfileViewModel
 import kotlinx.coroutines.delay
 
 @Composable
 fun CheckUserStatusScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    mainViewModel: MainViewModel = hiltViewModel()
+    //mainViewModel: MainViewModel = hiltViewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel()
     ) {
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) { //With MainVM
         mainViewModel.onEvent(MainEvent.FetchUser)
         mainViewModel.onEvent(MainEvent.FetchDailyData)
         delay(1000)
         val isNewUser = mainViewModel.checkIfUserIsNew()
+        val destination = if (isNewUser) RootScreenRoute.SetupScreen.route else RootScreenRoute.LifeStyle.route
+        navController.navigate(destination) { popUpTo(0) }
+    }*/
+    LaunchedEffect(Unit) {
+        profileViewModel.onEvent(ProfileEvent.GetUser)
+        delay(1000)
+        val isNewUser = profileViewModel.checkIfUserIsNewP()
         val destination = if (isNewUser) RootScreenRoute.SetupScreen.route else RootScreenRoute.LifeStyle.route
         navController.navigate(destination) { popUpTo(0) }
     }

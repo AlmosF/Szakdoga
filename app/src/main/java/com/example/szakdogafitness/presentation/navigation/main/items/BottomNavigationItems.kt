@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.MonitorWeight
 import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.szakdogafitness.presentation.navigation.main.MainNavigation
 import com.example.szakdogafitness.presentation.navigation.main.MainScreenRoute
 import org.checkerframework.common.subtyping.qual.Bottom
 

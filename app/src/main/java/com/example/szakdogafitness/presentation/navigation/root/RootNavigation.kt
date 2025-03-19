@@ -1,74 +1,8 @@
 package com.example.szakdogafitness.presentation.navigation.root
 
-import android.net.http.SslCertificate.restoreState
-import android.net.http.SslCertificate.saveState
-import android.nfc.Tag
-import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.toRoute
-import com.example.szakdogafitness.feature.auth.AuthenticateScreen
-import com.example.szakdogafitness.feature.lifestyle.LifeStyleScreen
-import com.example.szakdogafitness.feature.nutrition.NutritionScreen
-import com.example.szakdogafitness.feature.nutrition.SearchNutritionScreen
-import com.example.szakdogafitness.feature.request.RequestScreen
-import com.example.szakdogafitness.feature.setup.SetupScreenBox
-import com.example.szakdogafitness.feature.trainee.TraineesScreen
-import com.example.szakdogafitness.feature.search.SearchTrainerScreen
-import com.example.szakdogafitness.feature.trainer.TrainerScreen
-import com.example.szakdogafitness.presentation.navigation.main.items.BottomNavigationItems
-import com.example.szakdogafitness.ui.common.appbars.LifeStyleAction
-import com.example.szakdogafitness.ui.common.appbars.LifeStyleTitle
-import com.example.szakdogafitness.ui.common.appbars.TopBar
-import com.example.szakdogafitness.util.UiEvent
-import com.example.szakdogafitness.viewmodel.AppBarEvent
-import com.example.szakdogafitness.viewmodel.AppBarViewModel
-import com.example.szakdogafitness.viewmodel.AuthenticationEvent
-import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
-import com.example.szakdogafitness.viewmodel.MainEvent
-import com.example.szakdogafitness.viewmodel.MainViewModel
-import com.example.szakdogafitness.viewmodel.ProfileEvent
 //import com.example.szakdogafitness.viewmodel.ProfileViewModel
-import com.example.szakdogafitness.viewmodel.RootNavEvent
-import com.example.szakdogafitness.viewmodel.RootNavViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+/*@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RootNavigation(
     modifier: Modifier = Modifier,
@@ -554,4 +488,4 @@ fun RootNavigation(
 
 
 
-}
+}*/

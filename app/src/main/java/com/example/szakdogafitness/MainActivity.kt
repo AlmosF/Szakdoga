@@ -30,7 +30,6 @@ import com.example.szakdogafitness.feature.nutrition.SearchNutritionScreen
 import com.example.szakdogafitness.feature.setup.SetupScreenBox
 import com.example.szakdogafitness.feature.trainer.TrainerDetailsScreen
 import com.example.szakdogafitness.presentation.navigation.NewRootNavigation
-import com.example.szakdogafitness.presentation.navigation.root.RootNavigation
 import com.example.szakdogafitness.ui.common.TrainerDemo
 import com.example.szakdogafitness.ui.common.lifestyle.DailyCaloriesBlock
 import com.example.szakdogafitness.ui.common.nutrition.TargetKcalBlock

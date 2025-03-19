@@ -1,13 +1,10 @@
 package com.example.szakdogafitness.viewmodel
 
-import android.R.attr.data
 import android.util.Log
-import android.util.Log.e
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.DailyData
-import com.example.szakdogafitness.domain.model.DailyDatas
 import com.example.szakdogafitness.domain.model.Nutrition
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.usecases.main.AllMainUseCases
@@ -15,16 +12,12 @@ import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 import javax.inject.Inject
 
-@HiltViewModel
+/*@HiltViewModel
 class MainViewModel @Inject constructor(
     private val allMainUseCases: AllMainUseCases
 ) : ViewModel(){
@@ -385,3 +378,4 @@ fun Timestamp.toYYYYMMDD(): Triple<Int, Int, Int> {
     )
 }
 
+*/

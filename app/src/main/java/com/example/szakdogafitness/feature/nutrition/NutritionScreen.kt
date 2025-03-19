@@ -22,21 +22,24 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.szakdogafitness.ui.common.nutrition.AddNutrientsBlock
 import com.example.szakdogafitness.ui.common.nutrition.TargetKcalBlock
 import com.example.szakdogafitness.ui.common.nutrition.logblock.LogBlock
-import com.example.szakdogafitness.viewmodel.MainViewModel
+import com.example.szakdogafitness.viewmodel.DailyDatasEvent
+import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
 import com.example.szakdogafitness.viewmodel.MealTypesEvent
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 
 @Composable
 fun NutritionScreen(
     modifier: Modifier = Modifier,
-    mainViewModel: MainViewModel = hiltViewModel(),
+    //mainViewModel: MainViewModel = hiltViewModel(),
+    dailyDatasViewModel: DailyDatasViewModel = hiltViewModel(),
     mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
     onAINavigate: () -> Unit,
     onSearchNavigate: () -> Unit,
     onBarcodeNavigate: () -> Unit
 ) {
 
-    val mainState by mainViewModel.state.collectAsStateWithLifecycle()
+    //val mainState by mainViewModel.state.collectAsStateWithLifecycle()
+    val dailyDatasState by dailyDatasViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
@@ -76,8 +79,10 @@ fun NutritionScreen(
         TargetKcalBlock(
             modifier = Modifier
                 .fillMaxWidth(0.9f),
-            kcal = mainState.currentDailyData.foodIntake.values.sumOf { it.sumOf { it.calories } },
-            targetKcal = mainState.currentDailyData.targetKcal,
+            //kcal = mainState.currentDailyData.foodIntake.values.sumOf { it.sumOf { it.calories } },
+            kcal = dailyDatasState.currentDailyData.foodIntake.values.sumOf { it.sumOf { it.calories } },
+            //targetKcal = mainState.currentDailyData.targetKcal,
+            targetKcal = dailyDatasState.currentDailyData.targetKcal,
             maxKcal = maxKcal,
             onIncrease = {
                 targetKcal += it
@@ -88,7 +93,8 @@ fun NutritionScreen(
         )
         LogBlock(
             //data = mainState.currentDailyData.foodIntake, //fixme("Workingone")
-            data = mainState.currentDailyData.foodIntakeM,
+            //data = mainState.currentDailyData.foodIntakeM, //fixme("Workingone - With MAINVM")
+            data = dailyDatasState.currentDailyData.foodIntakeM,
             mealTypesViewModel = mealTypesViewModel
         )
     }

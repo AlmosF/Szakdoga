@@ -36,18 +36,18 @@ import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.DailyDatasEvent
 import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
-import com.example.szakdogafitness.viewmodel.MainEvent
-import com.example.szakdogafitness.viewmodel.MainViewModel
+import com.example.szakdogafitness.viewmodel.ProfileViewModel
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LifeStyleScreen(
     modifier: Modifier = Modifier,
-    mainViewModel: MainViewModel = hiltViewModel(),
+    //mainViewModel: MainViewModel = hiltViewModel(),
     navController: NavHostController,
     appBarViewModel: AppBarViewModel = hiltViewModel(),
     dailyDatasViewModel: DailyDatasViewModel = hiltViewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel(), //Mimic of the MainVM
     //VMs
 ){
     /*Scaffold (
@@ -79,14 +79,16 @@ fun LifeStyleScreen(
 
     val appBarState by appBarViewModel.state.collectAsStateWithLifecycle()
 
-    val mainState by mainViewModel.state.collectAsStateWithLifecycle()
+    //val mainState by mainViewModel.state.collectAsStateWithLifecycle()
 
     val dailyDatasState by dailyDatasViewModel.state.collectAsStateWithLifecycle()
+
+    val profileState by profileViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         dailyDatasViewModel.onEvent(DailyDatasEvent.LoadDailyDatas)
         delay(100)
-        Log.d("LifeStyleScreen", "LaunchedEffect: ${mainState.currentDailyData}")
+        //Log.d("LifeStyleScreen", "LaunchedEffect: ${mainState.currentDailyData}")
         /*appBarViewModel.onEvent( //WITH MAINSTATE
             AppBarEvent.TopBarComposableChanged(
                 {
@@ -135,9 +137,16 @@ fun LifeStyleScreen(
                                 }
                             )
                         },
-                        navigationIcon = {
+                        /*navigationIcon = { //WITH MAINSTATE
                             LifeStyleAction (
                                 image = mainState.user?.profileImageUrl ?: "",
+                            ) {
+                                navController.navigate(RootScreenRoute.Profile.route)
+                            }
+                        }*/
+                        navigationIcon = {
+                            LifeStyleAction (
+                                image = profileState.user?.profileImageUrl ?: "",
                             ) {
                                 navController.navigate(RootScreenRoute.Profile.route)
                             }
@@ -146,7 +155,7 @@ fun LifeStyleScreen(
                 }
             )
         )
-        Log.d("LifeStyle", "${mainState.user}")
+        //Log.d("LifeStyle", "${mainState.user}")
     }
 
 
@@ -199,7 +208,7 @@ fun LifeStyleScreen(
             consumedWater = dailyDatasState.currentDailyData.waterIntake,
             goalWater = dailyDatasState.currentDailyData.targetWater
         )
-        WeightControlBlock(
+        /*WeightControlBlock( //WITH MAINSTATE
             modifier = Modifier
                 .constrainAs(weightBlock){
                     top.linkTo(waterBlock.bottom)
@@ -208,6 +217,16 @@ fun LifeStyleScreen(
                 }
                 .fillMaxWidth(0.9f),
             weight = mainState.user?.trainee?.weight ?: 0.0,
+        )*/
+        WeightControlBlock(
+            modifier = Modifier
+                .constrainAs(weightBlock){
+                    top.linkTo(waterBlock.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+                .fillMaxWidth(0.9f),
+            weight = profileState.user?.trainee?.weight ?: 0.0,
         )
         /*StepsBlock(
             modifier = Modifier

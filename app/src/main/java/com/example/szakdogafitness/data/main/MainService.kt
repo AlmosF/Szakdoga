@@ -13,7 +13,6 @@ import com.example.szakdogafitness.domain.model.toFirestoreTrainer
 import com.example.szakdogafitness.domain.model.toFirestoreUser
 import com.example.szakdogafitness.domain.model.toUser
 import com.example.szakdogafitness.domain.usecases.auth.CurrentUserIdUseCase
-import com.example.szakdogafitness.viewmodel.toYYYYMMDD
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.dataObjects
@@ -53,6 +52,7 @@ class MainService @Inject constructor(
                         .dataObjects<FirestoreTrainer>()
                         .map { trainers ->
                             val trainer = trainers.firstOrNull() ?: FirestoreTrainer()
+                            Log.d("MainService", "Trainer: ${user.toUser(trainer)}")
                             user.toUser(trainer)
                         }
                 } else {
@@ -62,6 +62,7 @@ class MainService @Inject constructor(
                         .dataObjects<FirestoreTrainee>()
                         .map { trainees ->
                             val trainee = trainees.firstOrNull() ?: FirestoreTrainee()
+                            Log.d("MainService", "Trainee: ${user.toUser(trainee)}")
                             user.toUser(trainee)
                         }
                 }

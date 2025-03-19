@@ -1,6 +1,5 @@
 package com.example.szakdogafitness.domain.model
 
-import com.example.szakdogafitness.viewmodel.getDecember11FirebaseTimestamp
 import com.google.firebase.Timestamp
 
 

@@ -62,6 +62,12 @@ class ProfileViewModel @Inject constructor(
             ProfileEvent.DropDownChanged -> {
                 _state.update { it.copy(dropDownExpanded = !it.dropDownExpanded) }
             }
+
+            ProfileEvent.ClearState -> {
+                _state.update {
+                    ProfileState()
+                }
+            }
         }
     }
 
@@ -98,6 +104,10 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun checkIfUserIsNewP(): Boolean{
+        return state.value.user == null
+    }
+
 }
 
 sealed class ProfileEvent{
@@ -106,6 +116,7 @@ sealed class ProfileEvent{
     data object DropDownChanged: ProfileEvent()
     data object SwitchEdit: ProfileEvent()
     data object UpdateUser: ProfileEvent()
+    data object ClearState: ProfileEvent()
 }
 
 

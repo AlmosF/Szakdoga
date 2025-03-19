@@ -28,23 +28,25 @@ import androidx.navigation.NavHostController
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.TrainerCard
 import com.example.szakdogafitness.ui.common.TrainerDemo
-import com.example.szakdogafitness.viewmodel.MainEvent
-import com.example.szakdogafitness.viewmodel.MainViewModel
+import com.example.szakdogafitness.viewmodel.TrainersEvent
+import com.example.szakdogafitness.viewmodel.TrainersViewModel
 
 @Composable
 fun SearchTrainerScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    mainViewModel: MainViewModel = hiltViewModel(),
+    trainersViewModel: TrainersViewModel = hiltViewModel(),
     onTrainerClick: (String) -> Unit
     //VMs
 ) {
 
     LaunchedEffect(Unit) {
-        mainViewModel.onEvent(MainEvent.FetchTrainers)
+        //mainViewModel.onEvent(MainEvent.FetchTrainers)
+        trainersViewModel.onEvent(TrainersEvent.LoadTrainers)
     }
 
-    val mainState by mainViewModel.state.collectAsStateWithLifecycle()
+    //val mainState by mainViewModel.state.collectAsStateWithLifecycle()
+    val trainersState by trainersViewModel.state.collectAsStateWithLifecycle()
 
     Column (
         modifier = modifier
@@ -82,7 +84,7 @@ fun SearchTrainerScreen(
                 disabledContainerColor = MaterialTheme.colorScheme.surface,
             )
         )
-        if (mainState.trainers.isEmpty()) {
+        if (trainersState.trainers.isEmpty()) {
             Column (
                 modifier = Modifier
                     .fillMaxWidth(0.95f)
@@ -99,9 +101,9 @@ fun SearchTrainerScreen(
                         data = list[it],
                     )
                 }*/
-                items(mainState.trainers.size) {
+                items(trainersState.trainers.size) {
                     TrainerCard(
-                        data = mainState.trainers[it]!!,
+                        data = trainersState.trainers[it]!!,
                     ) { userId ->
                         onTrainerClick(userId)
                     }

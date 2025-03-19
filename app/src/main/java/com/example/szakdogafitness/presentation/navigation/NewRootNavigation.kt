@@ -59,6 +59,7 @@ import com.example.szakdogafitness.feature.trainee.TraineesScreen
 import com.example.szakdogafitness.feature.trainer.TrainerDetailsScreen
 import com.example.szakdogafitness.feature.trainer.TrainerScreen
 import com.example.szakdogafitness.presentation.navigation.main.items.BottomNavigationItems
+import com.example.szakdogafitness.presentation.navigation.main.items.TopNavigationItem.Companion.items
 import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
 import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
 import com.example.szakdogafitness.ui.common.appbars.LifeStyleTitle
@@ -68,9 +69,12 @@ import com.example.szakdogafitness.viewmodel.AppBarEvent
 import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
-import com.example.szakdogafitness.viewmodel.MainEvent
-import com.example.szakdogafitness.viewmodel.MainViewModel
+import com.example.szakdogafitness.viewmodel.DailyDatasEvent
+import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
+import com.example.szakdogafitness.viewmodel.ProfileEvent
+import com.example.szakdogafitness.viewmodel.ProfileViewModel
+import com.example.szakdogafitness.viewmodel.TrainersViewModel
 import kotlinx.coroutines.launch
 import java.lang.System.exit
 
@@ -81,8 +85,10 @@ fun NewRootNavigation(
     navController: NavHostController,
     authViewModel: AuthenticationViewModel = hiltViewModel(),
     appBarViewModel: AppBarViewModel = hiltViewModel(),
-    mainViewModel: MainViewModel = hiltViewModel(key = authViewModel.getUserId()),
-    mealTypesViewModel: MealTypesViewModel = hiltViewModel()
+    profileViewModel: ProfileViewModel = hiltViewModel(key = authViewModel.getUserId()), //Mimic of the mainVM
+    mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
+    dailyDatasViewModel: DailyDatasViewModel = hiltViewModel(),
+    trainersViewModel: TrainersViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -91,7 +97,9 @@ fun NewRootNavigation(
 
     val authState by authViewModel.state.collectAsStateWithLifecycle()
     val appBarState by appBarViewModel.state.collectAsStateWithLifecycle()
-    val mainState by mainViewModel.state.collectAsStateWithLifecycle()
+    val profileState by profileViewModel.state.collectAsStateWithLifecycle()
+    val dailyDatasState by dailyDatasViewModel.state.collectAsStateWithLifecycle()
+    val trainersSate by trainersViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(navBackStackEntry?.destination?.route) { //AppBarVisibility - Settings
         appBarViewModel.onEvent(AppBarEvent.AppBarVisibility(navBackStackEntry?.destination?.route ?: ""))
@@ -128,17 +136,12 @@ fun NewRootNavigation(
     LaunchedEffect(authState.isLoggedIn) {
         Log.d("RootNavigation", "isLoggedIn: ${authState.isLoggedIn}")
         if (!authState.isLoggedIn){
-            mainViewModel.onEvent(MainEvent.ClearState)
+            profileViewModel.onEvent(ProfileEvent.ClearState)
             navController.navigate(RootScreenRoute.Authentication.route) {
                 popUpTo(0)
             }
         }
     }
-
-    LaunchedEffect(mainState.dailyDataList) {
-        Log.d("RootNavigation", "dailyDataList: ${mainState.dailyDataList}")
-    }
-
     Scaffold (
         modifier = modifier,
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -153,7 +156,7 @@ fun NewRootNavigation(
                 NavigationBar {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentDestination = navBackStackEntry?.destination
-                    val items = when (mainState.user?.role) {
+                    val items = when (profileState.user?.role) {
                         1 -> BottomNavigationItems.trainerItems
                         2 -> BottomNavigationItems.trianeeItems
                         else -> emptyList()
@@ -199,7 +202,7 @@ fun NewRootNavigation(
                 CheckUserStatusScreen(
                     modifier = Modifier.padding(innerPadding),
                     navController = navController,
-                    mainViewModel = mainViewModel
+                    profileViewModel = profileViewModel
                 )
             }
             composable(RootScreenRoute.SetupScreen.route) {
@@ -208,25 +211,15 @@ fun NewRootNavigation(
                 }
             }
             composable(RootScreenRoute.LifeStyle.route) {
-                /*Text(
-                    text = "LifeStyle",
-                    modifier = Modifier
-                        .clickable{
-                            authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
-                        }
-                )
-                Text(
-                    modifier = Modifier.padding(top = 30.dp),
-                    text = mainState.currentDailyData.toString()
-                )*/
                 LifeStyleScreen(
                     modifier = Modifier
                         .clickable{
                             authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
                         },
-                    mainViewModel = mainViewModel,
+                    profileViewModel = profileViewModel,
                     appBarViewModel = appBarViewModel,
-                    navController = navController
+                    navController = navController,
+                    dailyDatasViewModel = dailyDatasViewModel
                 )
 
             }
@@ -237,17 +230,16 @@ fun NewRootNavigation(
                             TopBar(
                                 title = {
                                     LifeStyleTitle(
-                                        title = mainState.lifeStyleTitle,
-                                        previousButtonEnabled = mainState.isPreviousDayAvailable,
+                                        title = dailyDatasState.lifeStyleTitle,
+                                        previousButtonEnabled = dailyDatasState.isPreviousDayAvailable,
                                         onPreviousDayClick = {
                                             Log.d("RootNavigation", "onPreviousDayClick")
-                                            mainViewModel.onEvent(MainEvent.PreviousDayDailyData)
-                                            //authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
+                                            dailyDatasViewModel.onEvent(DailyDatasEvent.PreviousDay)
                                         },
-                                        nextButtonEnabled = mainState.isNextDayAvailable,
+                                        nextButtonEnabled = dailyDatasState.isNextDayAvailable,
                                         onNextDayClick = {
                                             Log.d("RootNavigation", "onNextDayClick")
-                                            mainViewModel.onEvent(MainEvent.NextDayDailyData)
+                                            dailyDatasViewModel.onEvent(DailyDatasEvent.NextDay)
                                         }
                                     )
                                 },
@@ -256,8 +248,8 @@ fun NewRootNavigation(
                     )
                 )
                 NutritionScreen(
-                    mainViewModel = mainViewModel,
                     mealTypesViewModel = mealTypesViewModel,
+                    dailyDatasViewModel = dailyDatasViewModel,
                     onAINavigate = {
                         navController.navigate(RootScreenRoute.NutritionAI.route)
                     },
@@ -344,9 +336,10 @@ fun NewRootNavigation(
                     )
                 )
                 //Text(text = "Search")
-                SearchTrainerScreen(
+                SearchTrainerScreen( //fixme: TrainersVM needed
                     navController = navController,
-                    mainViewModel = mainViewModel,
+                    trainersViewModel = trainersViewModel,
+                    //mainViewModel = mainViewModel, //With MainVM
                 ) { userId ->
                     navController.navigate(RootScreenRoute.SearchDetail.createRoute(userId))
                 }
@@ -354,7 +347,7 @@ fun NewRootNavigation(
 
             composable(RootScreenRoute.SearchDetail.route) { entry ->
                 val id = entry.arguments?.getString("id")
-                val trainer = mainState.trainers.find { it?.userId == id }
+                val trainer = trainersSate.trainers.find { it?.userId == id } //With MainVM
                 appBarViewModel.onEvent(
                     AppBarEvent.TopBarComposableChanged(
                         {
@@ -380,7 +373,6 @@ fun NewRootNavigation(
                         }
                     )
                 )
-                //Text(text = "Trainer")
                 TrainerScreen()
             }
 
@@ -411,7 +403,6 @@ fun NewRootNavigation(
                         }
                     )
                 )
-                //Text(text = "Trainees")
                 TraineesScreen()
             }
 
@@ -442,7 +433,6 @@ fun NewRootNavigation(
                         }
                     )
                 )
-                //Text(text = "Requests")
                 RequestScreen()
             }
 
