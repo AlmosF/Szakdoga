@@ -19,6 +19,7 @@ import com.google.firebase.firestore.dataObjects
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
@@ -154,10 +155,15 @@ class MainService @Inject constructor(
                 .document(userId!!)
                 .collection("dailyData")
                 .dataObjects<DailyData>()
+                .catch { e ->
+                    Log.e("MainService", "Error fetching daily data: ${e.message}", e)
+                    emit(emptyList())
+                }
                 .collect { dailyDataList ->
-                    val sortedDailyDataList = dailyDataList.sortedBy { it.date.toDate() }
-                    emit(sortedDailyDataList)
-                    Log.d("MainService", "Fetched real-time daily data: $sortedDailyDataList")
+                    //val sortedDailyDataList = dailyDataList.sortedBy { it.date.toDate() }
+                    //emit(sortedDailyDataList)
+                    //Log.d("MainService", "Fetched real-time daily data: $sortedDailyDataList")
+                    emit(dailyDataList.sortedBy { it.date.toDate() })
                 }
         } catch (e: Exception) {
             Log.e("MainService", "Error fetching real-time daily data: ${e.message}", e)

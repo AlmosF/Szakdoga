@@ -8,6 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.collections.toMutableList
 
 class MealLog @Inject constructor(
     private val firestore: FirebaseFirestore,
@@ -41,6 +42,47 @@ class MealLog @Inject constructor(
 
             }
             Log.d("Firestore", "Meal $mealID added to $mealType successfully.")
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error updating meal data: ${e.message}", e)
+        }
+    }
+
+    override suspend fun replenishMeal(
+        mealID: Int,
+        mealType: String,
+        date: Timestamp
+    ) {
+        val userId = userIdUseCase()
+        val dateFormatted = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date.toDate())
+        try {
+            val dailyDataRef = firestore.collection("dailyDatas")
+                .document(userId!!)
+                .collection("dailyData")
+                .document(dateFormatted)
+
+            firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(dailyDataRef)
+
+                val foodIntakeM = snapshot.get("foodIntakeM") as? Map<String, List<Long>> ?: emptyMap()
+
+                val mutableFoodIntakeM = foodIntakeM.toMutableMap()
+
+                val mealList = mutableFoodIntakeM[mealType]?.toMutableList() ?: mutableListOf()
+
+                mealList.remove(mealID.toLong())
+
+                if (mealList.isEmpty()) {
+                    mutableFoodIntakeM.remove(mealType)
+                } else {
+                    mutableFoodIntakeM[mealType] = mealList
+                }
+
+                transaction.update(dailyDataRef, "foodIntakeM", mutableFoodIntakeM)
+
+
+
+            }
+            Log.d("Firestore", "Meal $mealID removed from $mealType successfully, for date $dateFormatted, user $userId.")
         } catch (e: Exception) {
             Log.e("Firestore", "Error updating meal data: ${e.message}", e)
         }

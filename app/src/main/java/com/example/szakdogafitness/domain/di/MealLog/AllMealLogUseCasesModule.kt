@@ -5,6 +5,7 @@ import com.example.szakdogafitness.data.mealLog.MealLog
 import com.example.szakdogafitness.domain.usecases.mealLog.AllMealLogUseCases
 import com.example.szakdogafitness.domain.usecases.mealLog.MealConsumedUseCase
 import com.example.szakdogafitness.domain.usecases.mealLog.MealRemovedUseCase
+import com.example.szakdogafitness.domain.usecases.mealLog.MealReplenishedUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,17 +26,24 @@ object AllMealLogUseCasesModule {
     fun provideMealRemovedUseCase(repository: MealLog): MealRemovedUseCase =
         MealRemovedUseCase(repository)
 
+    @Provides
+    @Singleton
+    fun provideMealReplenishedUseCase(repository: MealLog): MealReplenishedUseCase =
+        MealReplenishedUseCase(repository)
+
 
     @Provides
     @Singleton
     fun provideAllMealLogUseCases(
         repository: IMealLog,
         mealConsumedUseCase: MealConsumedUseCase,
-        mealRemovedUseCase: MealRemovedUseCase
+        mealRemovedUseCase: MealRemovedUseCase,
+        mealReplenishedUseCase: MealReplenishedUseCase
     ): AllMealLogUseCases = AllMealLogUseCases(
         repository,
         mealConsumedUseCase,
-        mealRemovedUseCase
+        mealRemovedUseCase,
+        mealReplenishedUseCase
     )
 
 }

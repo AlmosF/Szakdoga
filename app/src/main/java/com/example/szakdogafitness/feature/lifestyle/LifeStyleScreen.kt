@@ -36,6 +36,8 @@ import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.DailyDatasEvent
 import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
+import com.example.szakdogafitness.viewmodel.MealTypesEvent
+import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 import com.example.szakdogafitness.viewmodel.ProfileViewModel
 import kotlinx.coroutines.delay
 
@@ -48,6 +50,7 @@ fun LifeStyleScreen(
     appBarViewModel: AppBarViewModel = hiltViewModel(),
     dailyDatasViewModel: DailyDatasViewModel = hiltViewModel(),
     profileViewModel: ProfileViewModel = hiltViewModel(), //Mimic of the MainVM
+    mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
     //VMs
 ){
     /*Scaffold (
@@ -85,8 +88,11 @@ fun LifeStyleScreen(
 
     val profileState by profileViewModel.state.collectAsStateWithLifecycle()
 
+    val mealTypesState by mealTypesViewModel.state.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
         dailyDatasViewModel.onEvent(DailyDatasEvent.LoadDailyDatas)
+        mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
         delay(100)
         //Log.d("LifeStyleScreen", "LaunchedEffect: ${mainState.currentDailyData}")
         /*appBarViewModel.onEvent( //WITH MAINSTATE
@@ -184,7 +190,8 @@ fun LifeStyleScreen(
                     end.linkTo(parent.end)
                 }
                 .fillMaxWidth(0.9f),
-            dailyData = dailyDatasState.currentDailyData
+            dailyData = dailyDatasState.currentDailyData,
+            nutritions = mealTypesState.nutritions
         )
         /*WaterIntakeBlock( //WITH MAINSTATE
             modifier = Modifier

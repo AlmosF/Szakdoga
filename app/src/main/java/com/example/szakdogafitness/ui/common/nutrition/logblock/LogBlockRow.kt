@@ -50,7 +50,7 @@ fun LogBlockRow(
     meals: List<Nutrition>,
     onOpen: () -> Unit,
     state: BlockState = BlockState.Closed,
-    onRemove: (String, Int) -> Unit
+    onRemove: (Int, String) -> Unit
 ) {
     var isOpened = state.name == title.replace(" ", "")
     //val value = data.sumOf { it.calories } //fixme("Workingone")
@@ -100,12 +100,13 @@ fun LogBlockRow(
                 Spacer(modifier = Modifier.width(86.dp))
                 Column {
                     data.forEachIndexed { index, nutrition ->
+                        val meal = meals.first { it.foodId == nutrition } //fixme("Workingone")
                         RowDetailRow(
-                            nutrition = meals.first { it.foodId == nutrition }, //fixme("Workingone")
+                            nutrition = meal
                         ) {
                             onRemove(
-                                title,
-                                index
+                                meal.foodId,
+                                title
                             )
                         }
                         HorizontalDivider()

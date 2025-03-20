@@ -6,4 +6,5 @@ class AllMealLogUseCases (
     val repository: IMealLog,
     val mealConsumedUseCase: MealConsumedUseCase,
     val mealRemovedUseCase: MealRemovedUseCase,
+    val mealReplenishedUseCase: MealReplenishedUseCase
 )

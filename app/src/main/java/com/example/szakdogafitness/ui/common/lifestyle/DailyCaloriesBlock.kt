@@ -48,14 +48,24 @@ import com.github.mikephil.charting.formatter.DefaultValueFormatter
 @Composable
 fun DailyCaloriesBlock(
     modifier: Modifier = Modifier,
-    dailyData : DailyData
+    dailyData : DailyData,
+    nutritions: List<Nutrition> = emptyList()
 ) {
     val pagerState = rememberPagerState(
         initialPage = 0,
         pageCount = {2}
     )
 
-    val totalCalories = dailyData.foodIntake.values.sumOf { it.sumOf { it.calories} }
+    //val totalCalories = dailyData.foodIntake.values.sumOf { it.sumOf { it.calories} }
+    val foodIntakeList = dailyData.foodIntakeM.values.flatten().mapNotNull { foodId ->
+        nutritions.find { it.foodId == foodId }
+    }
+    val totalCalories = foodIntakeList.sumOf { it.calories }
+    /*val totalCalories = dailyData.foodIntakeM.values.flatten().filter { food ->
+        nutritions.any { it.foodId == food }
+    }.sumOf { foodId ->
+        nutritions.find { it.foodId == foodId }?.calories ?: 0
+    }*/
     val targetCalories = dailyData.targetKcal
 
     Column (
@@ -73,10 +83,10 @@ fun DailyCaloriesBlock(
                 1 -> PieChartComp(
                     totalCalories = totalCalories,
                     targetCalories = targetCalories,
-                    totalServings = dailyData.foodIntake.values.sumOf { it.sumOf {it.servingSize} },
-                    totalProt = dailyData.foodIntake.values.sumOf { it.sumOf {it.protein} },
-                    totalCarbs = dailyData.foodIntake.values.sumOf { it.sumOf {it.carbs} },
-                    totalFat = dailyData.foodIntake.values.sumOf { it.sumOf {it.fat} }
+                    totalServings = foodIntakeList.sumOf { it.servingSize },
+                    totalProt = foodIntakeList.sumOf { it.protein },
+                    totalCarbs = foodIntakeList.sumOf { it.carbs },
+                    totalFat = foodIntakeList.sumOf { it.fat }
                 )
             }
         }

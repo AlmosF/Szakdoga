@@ -219,7 +219,8 @@ fun NewRootNavigation(
                     profileViewModel = profileViewModel,
                     appBarViewModel = appBarViewModel,
                     navController = navController,
-                    dailyDatasViewModel = dailyDatasViewModel
+                    dailyDatasViewModel = dailyDatasViewModel,
+                    mealTypesViewModel = mealTypesViewModel
                 )
 
             }

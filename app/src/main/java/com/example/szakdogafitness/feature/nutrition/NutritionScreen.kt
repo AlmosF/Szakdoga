@@ -1,6 +1,5 @@
 package com.example.szakdogafitness.feature.nutrition
 
-import android.R.attr.data
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,9 +40,9 @@ fun NutritionScreen(
     //val mainState by mainViewModel.state.collectAsStateWithLifecycle()
     val dailyDatasState by dailyDatasViewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) {
         mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
-    }
+    }*/
 
     Column (
         modifier = modifier
@@ -96,7 +95,13 @@ fun NutritionScreen(
             //data = mainState.currentDailyData.foodIntakeM, //fixme("Workingone - With MAINVM")
             data = dailyDatasState.currentDailyData.foodIntakeM,
             mealTypesViewModel = mealTypesViewModel
-        )
+        ) { nutritionID, mealType ->
+            dailyDatasViewModel.onEvent(DailyDatasEvent.ReplenishNutrition(
+                nutritionID = nutritionID,
+                mealType = mealType,
+                date = dailyDatasState.currentDailyData.date
+            ))
+        }
     }
 
 

@@ -32,6 +32,7 @@ import com.example.szakdogafitness.domain.model.Nutrition
 import com.example.szakdogafitness.viewmodel.MealLogEvent
 import com.example.szakdogafitness.viewmodel.MealLogViewModel
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
+import com.google.common.collect.Multimaps.index
 
 enum class BlockState {
     Closed,
@@ -52,7 +53,7 @@ fun LogBlock(
     //viewModel: MealLogViewModel = viewModel(),
     viewModel: MealLogViewModel = hiltViewModel(),
     mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
-    onRemove: (String, Int) -> Unit = { _, _ -> }
+    onRemove: (Int, String) -> Unit = { _, _ -> }
 ) {
 
 
@@ -170,11 +171,14 @@ fun LogBlock(
                     }*/
                     viewModel.onEvent(MealLogEvent.BlockStateChanged(it))
                 },
-                onRemove = { title, index ->
+                onRemove = { nutritionID, mealType ->
                     /*onRemove(
                         title, index
                     )*/
-                    viewModel.onEvent(MealLogEvent.MealRemoved(title, index))
+                    //viewModel.onEvent(MealLogEvent.MealRemoved(title, index))
+                    onRemove(
+                        nutritionID, mealType
+                    )
                 }
             )
         }
