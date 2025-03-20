@@ -521,7 +521,7 @@ fun ProfileScreen(
     }
 }
 
-
+//
 @Composable
 fun ProfileScreenTrainer(
     profileViewModel: ProfileViewModel = hiltViewModel()
