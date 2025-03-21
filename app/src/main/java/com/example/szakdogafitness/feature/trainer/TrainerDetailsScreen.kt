@@ -4,6 +4,7 @@ import android.R.attr.bottom
 import android.R.attr.text
 import android.R.attr.top
 import android.graphics.Paint
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,6 +33,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +47,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.ui.common.RatingStars
@@ -52,16 +56,29 @@ import com.example.szakdogafitness.ui.common.TrainerDemo
 import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.ui.common.TraineeTimetableView
+import com.example.szakdogafitness.viewmodel.TrainersEvent
+import com.example.szakdogafitness.viewmodel.TrainersViewModel
 
 @Composable
 fun TrainerDetailsScreen(
     modifier: Modifier = Modifier,
     //data: TrainerDemo
-    data: User
+    data: User,
+    trainersViewModel: TrainersViewModel = hiltViewModel(),
     //VMs
 ) {
+
+    LaunchedEffect(Unit) {
+        trainersViewModel.onEvent(TrainersEvent.FetchTrainersRequests(data.userId))
+        trainersViewModel.onEvent(TrainersEvent.FetchRequestedAppointments(data.userId))
+    }
+
+    val trainerState by trainersViewModel.state.collectAsStateWithLifecycle()
+
     val painter = rememberAsyncImagePainter(data.profileImageUrl)
     val painterState = painter.state.collectAsState()
+
+
     var scheduleOpened by remember { mutableStateOf(false) }
     Column (
         modifier = modifier
@@ -214,8 +231,12 @@ fun TrainerDetailsScreen(
             AnimatedVisibility(
                 visible = scheduleOpened
             ) {
+                Log.e("TrainerDetailsScreen", "AVAILABLE: ${trainerState.trainersRequests}")
+                Log.e("TrainerDetailsScreen", "SELECTED: ${trainerState.requestedAppointments}")
                 TraineeTimetableView(
-                    availableHours = data.trainer.availability,
+                    availableHours = data.trainer.availability.mapValues { (day, hours) ->
+                        hours - (trainerState.trainersRequests[day] ?: emptyList())
+                    },
                     selectedHours = selectedSchedules
                 ) { key, value ->
                     val updatedSchedules = selectedSchedules.toMutableMap().apply {
@@ -242,10 +263,18 @@ fun TrainerDetailsScreen(
             )
             Spacer(modifier = Modifier.size(16.dp))
             OutlinedButton(
-                onClick = {}
+                onClick = {
+                    trainersViewModel.onEvent(
+                        TrainersEvent.ApplyForAppointment(
+                            trainer = data.userId,
+                            appointment = selectedSchedules, //fixme: NOT THIS VAR
+                        )
+                    )
+                },
+                enabled = trainerState.requestedAppointments.isEmpty(),
             ) {
                 Text(
-                    text = "Request as Trainer"
+                    text = if (trainerState.requestedAppointments.isEmpty()) "Request as Trainer" else "You already requested an appointment",
                 )
             }
         }
@@ -279,5 +308,8 @@ fun TrainerDetailsScreenPreview() {
             "Wednesday" to List(4) { it + 1 },
         )
     )
-    TrainerDetailsScreen(data = User())
+    TrainerDetailsScreen(
+        data = User(),
+        trainersViewModel = hiltViewModel(),
+    )
 }

@@ -8,5 +8,8 @@ class AllMainUseCases(
     val fetchUsersDailyDatasUseCase: FetchUsersDailyDatasUseCase,
     val generateNewDailyDataUseCase: GenerateNewDailyDataUseCase,
     val getTrainersUseCase: GetTrainersUseCase,
-    val updateUserUseCase: UpdateUserUseCase
+    val updateUserUseCase: UpdateUserUseCase,
+    val applyToTrainerAppointmentUseCase: ApplyToTrainerAppointmentUseCase,
+    val fetchTrainersRequests: FetchTrainersRequestsUseCase,
+    val fetchRequestedAppointments: FetchRequestedAppointmentsUseCase,
 )

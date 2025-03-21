@@ -359,7 +359,10 @@ fun NewRootNavigation(
                     )
                 )
                 //Text(text = "SearchDetail: ${trainer}")
-                TrainerDetailsScreen(data = trainer!!) // FIXME: !! is not safe
+                TrainerDetailsScreen(
+                    data = trainer!!,
+                    trainersViewModel = trainersViewModel,
+                ) // FIXME: !! is not safe
             }
 
             composable(RootScreenRoute.Trainer.route){

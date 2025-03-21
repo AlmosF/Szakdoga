@@ -7,6 +7,7 @@ import com.example.szakdogafitness.domain.model.DailyDatas
 import com.example.szakdogafitness.domain.model.FirestoreTrainee
 import com.example.szakdogafitness.domain.model.FirestoreTrainer
 import com.example.szakdogafitness.domain.model.FirestoreUser
+import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.model.toFirestoreTrainee
 import com.example.szakdogafitness.domain.model.toFirestoreTrainer
@@ -171,6 +172,89 @@ class MainService @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun applyForAppointment(
+        trainer: String?,
+        appointment: Map<String, List<Int>>,
+    ) {
+        val userId = userIdUseCase()
+        if (trainer == null || userId == null) {
+            Log.e("MainService", "Error applying for appointment: Trainer or user ID is null")
+            return
+        }
+        try {
+            val requestRef = firestore.collection("requests")
+                .document(trainer)
+                .collection("traineeRequests")
+                .document(userId)
+
+            val request = mapOf(
+                "appointment" to appointment,
+                "status" to "pending",
+                "createdAt" to Timestamp.now()
+            )
+
+            requestRef.set(request).await()
+
+
+
+        } catch (e: Exception) {
+            Log.e("MainService", "Error applying for appointment: ${e.message}", e)
+        }
+    }
+
+    override suspend fun fetchTrainersRequests(trainerId: String): Flow<Map<String, List<Int>>> = flow {
+        try {
+            firestore.collection("requests")
+                .document(trainerId)
+                .collection("traineeRequests")
+                .dataObjects<Requests>()
+                .collect { traineeRequestsList ->
+                    val mergedAppointments = mutableMapOf<String, MutableList<Int>>()
+
+                    traineeRequestsList.forEach { traineeRequests ->
+                        traineeRequests.appointment.forEach { (day, hour) ->
+                            mergedAppointments.getOrPut(day) { mutableListOf() }.addAll(hour)
+                        }
+                    }
+
+                    emit(mergedAppointments)
+
+
+                }
+        } catch (e: Exception){
+            Log.e("MainService", "Error fetching real-time trainer requests: ${e.message}", e)
+            emit(emptyMap())
+        }
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun fetchRequestedAppointments(trainerId: String): Flow<Map<String, List<Int>>> = flow {
+        val userId = userIdUseCase()
+        if (userId == null) {
+            Log.e("MainService", "Error fetching requested appointments: User ID is null")
+            return@flow
+        }
+        Log.d("MainService", "Fetching requested appointments for user: $userId")
+        try {
+            firestore.collection("requests")
+                .document(trainerId)
+                .collection("traineeRequests")
+                .document(userId)
+                .dataObjects<Requests>()
+                .collect { requests ->
+                    if (requests != null) {
+                        Log.d("MainService", "--- Requests: $requests")
+                        emit(requests.appointment)
+                    } else {
+                        Log.d("MainService", "No requested appointments found for user: $userId at trainer: $trainerId")
+                        emit(emptyMap())
+                    }
+                }
+
+        } catch (e: Exception){
+            Log.e("MainService", "Error fetching requested appointments: ${e.message}", e)
+            emit(emptyMap())
+        }
+    }.flowOn(Dispatchers.IO)
 
 
     /*override suspend fun generateNewDailyData(dailyDatas: DailyDatas) {

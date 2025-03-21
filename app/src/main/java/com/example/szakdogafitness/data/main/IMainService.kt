@@ -11,6 +11,9 @@ interface IMainService{
     suspend fun getTrainers(): Flow<List<User?>>
     //suspend fun getUsersDailyDatas(): Flow<DailyDatas?> //fixme("Workingone")
     suspend fun getUsersDailyDatas(): Flow<List<DailyData>>
+    suspend fun applyForAppointment(trainer: String?, appointment: Map<String, List<Int>>)
+    suspend fun fetchTrainersRequests(trainerId: String): Flow<Map<String, List<Int>>>
+    suspend fun fetchRequestedAppointments(trainerId: String): Flow<Map<String, List<Int>>>
     //suspend fun generateNewDailyData(dailyDatas: DailyDatas) //fixme("Workingone")
     suspend fun generateNewDailyData()
 }
