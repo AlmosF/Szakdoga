@@ -23,11 +23,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -67,6 +69,62 @@ class MainService @Inject constructor(
                             Log.d("MainService", "Trainee: ${user.toUser(trainee)}")
                             user.toUser(trainee)
                         }
+                }
+            }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun fetchPendingRequests(): Flow<List<Pair<Requests, User>>> =
+        firestore.collection("requests")
+            .document(userIdUseCase() ?: "")
+            .collection("traineeRequests")
+            .whereEqualTo("status", "pending")
+            .dataObjects<Requests>()
+            .flatMapLatest { requests ->
+                val requestFlows = requests.map { request ->
+                    getUserById(request.traineeId)
+                        .mapNotNull { user ->
+                            if (user != null) {
+                                request to user
+                            } else {
+                                null
+                            }
+                        }
+                }
+                combine(requestFlows) { it.toList() }
+            }.flowOn(Dispatchers.IO)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private suspend fun getUserById(userId: String): Flow<User?> =
+        firestore.collection("users")
+            .document(userId)
+            .dataObjects<FirestoreUser>()
+            .flatMapLatest { user->
+                if(user != null){
+                    if (user.role == 1) {
+                        firestore.collection("trainers")
+                            .document(userId)
+                            .dataObjects<FirestoreTrainer>()
+                            .map { trainer ->
+                                if (trainer != null) {
+                                    user.toUser(trainer)
+                                } else {
+                                    null
+                                }
+                            }
+                    } else {
+                        firestore.collection("trainees")
+                            .document(userId)
+                            .dataObjects<FirestoreTrainee>()
+                            .map { trainee ->
+                                if (trainee != null){
+                                    user.toUser(trainee)
+                                } else {
+                                    null
+                                }
+                            }
+                    }
+                } else {
+                    flowOf(null)
                 }
             }.flowOn(Dispatchers.IO)
 
@@ -190,7 +248,8 @@ class MainService @Inject constructor(
             val request = mapOf(
                 "appointment" to appointment,
                 "status" to "pending",
-                "createdAt" to Timestamp.now()
+                "createdAt" to Timestamp.now(),
+                "traineeId" to userId
             )
 
             requestRef.set(request).await()
@@ -255,6 +314,10 @@ class MainService @Inject constructor(
             emit(emptyMap())
         }
     }.flowOn(Dispatchers.IO)
+
+
+
+
 
 
     /*override suspend fun generateNewDailyData(dailyDatas: DailyDatas) {

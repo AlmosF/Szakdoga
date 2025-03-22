@@ -15,6 +15,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for the the Trainee users,
+ * where they can see the trainers and apply for appointments
+ */
+
 @HiltViewModel
 class TrainersViewModel @Inject constructor(
     private val getTrainersUseCase: GetTrainersUseCase,

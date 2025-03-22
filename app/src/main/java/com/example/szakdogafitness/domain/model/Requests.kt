@@ -6,4 +6,5 @@ data class Requests(
     val appointment: Map<String, List<Int>> = mapOf(),
     val createdAt: Timestamp = Timestamp.now(),
     val status: String = "pending",
+    val traineeId: String = "",
 )

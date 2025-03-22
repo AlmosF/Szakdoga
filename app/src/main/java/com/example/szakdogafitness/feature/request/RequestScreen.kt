@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.feature.request
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,20 +22,35 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.szakdogafitness.domain.model.Trainee
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.feature.search.list
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.TrainerCard
 import com.example.szakdogafitness.ui.common.request.TraineeRequestCard
+import com.example.szakdogafitness.viewmodel.TraineesEvent
+import com.example.szakdogafitness.viewmodel.TraineesViewModel
 import com.google.common.collect.Multimaps.index
 import com.google.firebase.Timestamp
 
 @Composable
 fun RequestScreen(
     modifier: Modifier = Modifier,
+    traineesViewModel: TraineesViewModel = hiltViewModel()
     //VMs
 ) {
+
+    val traineesState by traineesViewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        traineesViewModel.onEvent(TraineesEvent.LoadPendingRequests)
+    }
+    LaunchedEffect(traineesState.pendingRequests) {
+        Log.d("RequestScreen", "PendingRequests: ${traineesState.pendingRequests}")
+    }
+
     val testRequestList = List(10) { index: Int ->
         User(
             firstName = "John",
@@ -87,16 +104,16 @@ fun RequestScreen(
                 disabledContainerColor = MaterialTheme.colorScheme.surface,
             )
         )
-        val filtered = testRequestList.filter {
+        /*val filtered = testRequestList.filter {
             (it.firstName+ " " + it.lastName).contains(search, ignoreCase = true)
-        }
+        }*/
         LazyColumn (
             modifier = Modifier
                 .fillMaxWidth(0.95f),
         ) {
-            items(filtered.size) {
+            items(traineesState.pendingRequests.size) {
                 TraineeRequestCard(
-                    data = filtered[it],
+                    data = traineesState.pendingRequests[it].second,
                 ) {}
             }
         }
