@@ -73,11 +73,11 @@ class MainService @Inject constructor(
             }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun fetchPendingRequests(): Flow<List<Pair<Requests, User>>> =
+    /*override suspend fun fetchPendingRequests(status: String): Flow<List<Pair<Requests, User>>> =
         firestore.collection("requests")
             .document(userIdUseCase() ?: "")
             .collection("traineeRequests")
-            .whereEqualTo("status", "pending")
+            .whereEqualTo("status", status)
             .dataObjects<Requests>()
             .flatMapLatest { requests ->
                 val requestFlows = requests.map { request ->
@@ -91,7 +91,35 @@ class MainService @Inject constructor(
                         }
                 }
                 combine(requestFlows) { it.toList() }
-            }.flowOn(Dispatchers.IO)
+            }.flowOn(Dispatchers.IO)*/
+
+    override suspend fun fetchPendingRequests(status: String): Flow<List<Pair<Requests, User>>> =
+        firestore.collection("requests")
+            .document(userIdUseCase() ?: "")
+            .collection("traineeRequests")
+            .whereEqualTo("status", status)
+            .dataObjects<Requests>()
+            .flatMapLatest { requests ->
+                if (requests.isEmpty()) return@flatMapLatest flowOf(emptyList()) // 🔥 Emit immediately if empty
+
+                val requestFlows = requests.map { request ->
+                    getUserById(request.traineeId)
+                        .mapNotNull { user ->
+                            if (user != null) request to user else null
+                        }
+                }
+                combine(requestFlows) { it.toList() }
+            }
+            .flowOn(Dispatchers.IO)
+
+    /*override suspend fun fetchPendingRequests(status: String): Flow<List<Requests>> =
+        firestore.collection("requests")
+            .document(userIdUseCase()!!)
+            .collection("traineeRequests")
+            .whereEqualTo("status", status)
+            .dataObjects<Requests>()
+            .flowOn(Dispatchers.IO)*/
+
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun getUserById(userId: String): Flow<User?> =
@@ -315,9 +343,52 @@ class MainService @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun deleteRequest(traineeId: String) {
+        val userId = userIdUseCase()
+        if (userId == null) {
+            Log.e("MainService", "Error deleting request: User ID is null")
+            return
+        }
+        try {
+            firestore.collection("requests")
+                .document(userId)
+                .collection("traineeRequests")
+                .document(traineeId)
+                .delete()
+                .await()
 
 
 
+        } catch (e: Exception) {
+            Log.e("MainService", "Error deleting request: ${e.message}", e)
+        }
+    }
+
+    override suspend fun acceptRequest(traineeId: String) {
+        val userId = userIdUseCase()
+        if (userId == null) {
+            Log.e("MainService", "Error accepting request: User ID is null")
+            return
+        }
+        try {
+            val requestRef = firestore.collection("requests")
+                .document(userId)
+                .collection("traineeRequests")
+                .document(traineeId)
+
+            firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(requestRef)
+
+                val request = snapshot.toObject(Requests::class.java)
+
+                if (request != null) {
+                    transaction.update(requestRef, "status", "accepted")
+                }
+            }.await()
+        } catch (e: Exception) {
+            Log.e("MainService", "Error accepting request: ${e.message}", e)
+        }
+    }
 
 
     /*override suspend fun generateNewDailyData(dailyDatas: DailyDatas) {

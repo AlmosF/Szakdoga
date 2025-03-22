@@ -16,8 +16,11 @@ interface IMainService{
     suspend fun fetchTrainersRequests(trainerId: String): Flow<Map<String, List<Int>>>
     suspend fun fetchRequestedAppointments(trainerId: String): Flow<Map<String, List<Int>>>
 
-    //suspend fun fetchPendingRequests(): Flow<List<Requests>>
-    suspend fun fetchPendingRequests(): Flow<List<Pair<Requests, User>>>
+    suspend fun deleteRequest(traineeId: String)
+    suspend fun acceptRequest(traineeId: String)
+
+    //suspend fun fetchPendingRequests(status: String): Flow<List<Requests>>
+    suspend fun fetchPendingRequests(status: String): Flow<List<Pair<Requests, User>>>
 
     //suspend fun generateNewDailyData(dailyDatas: DailyDatas) //fixme("Workingone")
     suspend fun generateNewDailyData()

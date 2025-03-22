@@ -107,6 +107,7 @@ fun TraineeRequestCard(
             ) {
                 Text(
                     text = "${data.firstName} ${data.lastName}",
+                    //text = data.userId
                 )
                 Text(
                     text = data.dateOfBirth.toString().substringBefore("(")

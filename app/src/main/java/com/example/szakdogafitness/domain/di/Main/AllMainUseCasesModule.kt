@@ -1,9 +1,11 @@
 package com.example.szakdogafitness.domain.di.Main
 
 import com.example.szakdogafitness.data.main.IMainService
+import com.example.szakdogafitness.domain.usecases.main.AcceptRequestUseCase
 import com.example.szakdogafitness.domain.usecases.main.AllMainUseCases
 import com.example.szakdogafitness.domain.usecases.main.ApplyToTrainerAppointmentUseCase
-import com.example.szakdogafitness.domain.usecases.main.FetchPendingRequestsUseCase
+import com.example.szakdogafitness.domain.usecases.main.DeleteRequestUseCase
+import com.example.szakdogafitness.domain.usecases.main.FetchRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchRequestedAppointmentsUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchTrainersRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchUserUseCase
@@ -64,8 +66,18 @@ object AllMainUseCasesModule {
 
     @Provides
     @Singleton
-    fun provideFetchPendingRequestsUseCase(repository: IMainService): FetchPendingRequestsUseCase =
-        FetchPendingRequestsUseCase(repository)
+    fun provideFetchRequestsUseCase(repository: IMainService): FetchRequestsUseCase =
+        FetchRequestsUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideDeleteRequestUseCase(repository: IMainService): DeleteRequestUseCase =
+        DeleteRequestUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideAcceptRequestUseCase(repository: IMainService): AcceptRequestUseCase =
+        AcceptRequestUseCase(repository)
 
     @Provides
     @Singleton

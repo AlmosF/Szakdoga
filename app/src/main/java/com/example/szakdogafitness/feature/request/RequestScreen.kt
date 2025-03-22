@@ -113,9 +113,24 @@ fun RequestScreen(
                 .fillMaxWidth(0.95f),
         ) {
             items(traineesState.pendingRequests.size) {
-                TraineeRequestCard(
+                /*TraineeRequestCard( // With REQUEST only
+                    data = User(
+                        userId = traineesState.pendingRequests[it].traineeId),
+                ) {
+                    traineesViewModel.onEvent(
+                        TraineesEvent.DeclineRequest(
+                            userId = traineesState.pendingRequests[it].traineeId
+                        )
+                    )
+                }*/
+                TraineeRequestCard( // With PAIR
                     data = traineesState.pendingRequests[it].second,
                 ) {
+                    /*traineesViewModel.onEvent(
+                        TraineesEvent.DeclineRequest(
+                            userId = traineesState.pendingRequests[it].first.traineeId
+                        )
+                    )*/
                     val request = traineesState.pendingRequests[it]
                     onClick(
                         request.first.traineeId

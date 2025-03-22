@@ -74,6 +74,7 @@ import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 import com.example.szakdogafitness.viewmodel.ProfileEvent
 import com.example.szakdogafitness.viewmodel.ProfileViewModel
+import com.example.szakdogafitness.viewmodel.TraineesEvent
 import com.example.szakdogafitness.viewmodel.TraineesViewModel
 import com.example.szakdogafitness.viewmodel.TrainersViewModel
 import kotlinx.coroutines.launch
@@ -457,7 +458,18 @@ fun NewRootNavigation(
                     )
                 )
                 val id = entry.arguments?.getString("id")
-                Text(text = "RequestDetail: $id")
+                Text(
+                    text = "RequestDetail: $id",
+                    modifier = Modifier
+                        .clickable{
+                            traineesViewModel.onEvent(
+                                TraineesEvent.AcceptRequest(
+                                    userId = id!!
+                                )
+                            )
+                            navController.popBackStack()
+                        }
+                )
             }
 
 

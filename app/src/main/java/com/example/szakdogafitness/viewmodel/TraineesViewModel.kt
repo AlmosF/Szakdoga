@@ -1,10 +1,13 @@
 package com.example.szakdogafitness.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
-import com.example.szakdogafitness.domain.usecases.main.FetchPendingRequestsUseCase
+import com.example.szakdogafitness.domain.usecases.main.AcceptRequestUseCase
+import com.example.szakdogafitness.domain.usecases.main.DeleteRequestUseCase
+import com.example.szakdogafitness.domain.usecases.main.FetchRequestsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +21,9 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class TraineesViewModel @Inject constructor(
-    private val fetchPendingRequestsUseCase: FetchPendingRequestsUseCase
+    private val fetchRequests: FetchRequestsUseCase,
+    private val declineRequest: DeleteRequestUseCase,
+    private val acceptRequest: AcceptRequestUseCase
 ) : ViewModel() {
 
 
@@ -30,18 +35,26 @@ class TraineesViewModel @Inject constructor(
             TraineesEvent.LoadPendingRequests -> {
                 loadPendingRequests()
             }
-            is TraineesEvent.AcceptRequest -> TODO()
-            is TraineesEvent.DeclineRequest -> TODO()
-            TraineesEvent.LoadAcceptedRequests -> TODO()
+            TraineesEvent.LoadAcceptedRequests -> {
+                loadAcceptedRequests()
+            }
+            is TraineesEvent.AcceptRequest -> {
+                acceptRequest(event.userId)
+            }
+            is TraineesEvent.DeclineRequest -> {
+                declineRequest(event.userId)
+            }
 
         }
     }
 
-    private fun loadPendingRequests() {
+    private fun loadPendingRequests(
+        status: String = "pending"
+    ) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                fetchPendingRequestsUseCase.invoke().collect { pendingRequests ->
+                fetchRequests.invoke(status).collect { pendingRequests ->
                     _state.update { it.copy(
                         pendingRequests = pendingRequests,
                         isLoading = false
@@ -52,13 +65,67 @@ class TraineesViewModel @Inject constructor(
             }
         }
     }
+
+    private fun acceptRequest(
+        traineeId: String
+    ) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                acceptRequest.invoke(traineeId)
+                _state.update { it.copy(isLoading = false) }
+            } catch (e: Exception) {
+                Log.e(
+                    "TraineesViewModel",
+                    "acceptRequest: ${e.message}"
+                )
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    private fun declineRequest(
+        traineeId: String
+    ) {
+        viewModelScope.launch {
+            try {
+                declineRequest.invoke(traineeId)
+            } catch (e: Exception) {
+                Log.e(
+                    "TraineesViewModel",
+                    "declineRequest: ${e.message}"
+                )
+            }
+        }
+    }
+
+
+    private fun loadAcceptedRequests(
+        status: String = "accepted"
+    ) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                fetchRequests.invoke(status).collect { acceptedRequests ->
+                    _state.update { it.copy(
+                        acceptedRequests = acceptedRequests,
+                        isLoading = false
+                    ) }
+                }
+            } catch (e: Exception) {
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
 }
 
 data class TraineesState(
     val isLoading: Boolean = false,
     //val pendingRequests: List<Requests> = emptyList(),
     val pendingRequests: List<Pair<Requests, User>> = emptyList(),
-    val acceptedRequests: List<Requests> = emptyList()
+    //val acceptedRequests: List<Requests> = emptyList()
+    val acceptedRequests: List<Pair<Requests, User>> = emptyList()
 )
 
 sealed class TraineesEvent {
