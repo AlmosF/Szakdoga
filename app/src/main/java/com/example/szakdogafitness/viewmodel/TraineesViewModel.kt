@@ -33,6 +33,7 @@ class TraineesViewModel @Inject constructor(
             is TraineesEvent.AcceptRequest -> TODO()
             is TraineesEvent.DeclineRequest -> TODO()
             TraineesEvent.LoadAcceptedRequests -> TODO()
+
         }
     }
 

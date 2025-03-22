@@ -74,6 +74,7 @@ import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 import com.example.szakdogafitness.viewmodel.ProfileEvent
 import com.example.szakdogafitness.viewmodel.ProfileViewModel
+import com.example.szakdogafitness.viewmodel.TraineesViewModel
 import com.example.szakdogafitness.viewmodel.TrainersViewModel
 import kotlinx.coroutines.launch
 import java.lang.System.exit
@@ -88,7 +89,8 @@ fun NewRootNavigation(
     profileViewModel: ProfileViewModel = hiltViewModel(key = authViewModel.getUserId()), //Mimic of the mainVM
     mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
     dailyDatasViewModel: DailyDatasViewModel = hiltViewModel(),
-    trainersViewModel: TrainersViewModel = hiltViewModel()
+    trainersViewModel: TrainersViewModel = hiltViewModel(),
+    traineesViewModel: TraineesViewModel = hiltViewModel(),
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -437,7 +439,11 @@ fun NewRootNavigation(
                         }
                     )
                 )
-                RequestScreen()
+                RequestScreen(
+                    traineesViewModel = traineesViewModel,
+                ){ id ->
+                    navController.navigate(RootScreenRoute.RequestDetail.createRoute(id))
+                }
             }
 
             composable(RootScreenRoute.RequestDetail.route) { entry ->

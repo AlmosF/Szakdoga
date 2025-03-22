@@ -38,7 +38,8 @@ import com.google.firebase.Timestamp
 @Composable
 fun RequestScreen(
     modifier: Modifier = Modifier,
-    traineesViewModel: TraineesViewModel = hiltViewModel()
+    traineesViewModel: TraineesViewModel = hiltViewModel(),
+    onClick: (String) -> Unit = {}
     //VMs
 ) {
 
@@ -114,7 +115,12 @@ fun RequestScreen(
             items(traineesState.pendingRequests.size) {
                 TraineeRequestCard(
                     data = traineesState.pendingRequests[it].second,
-                ) {}
+                ) {
+                    val request = traineesState.pendingRequests[it]
+                    onClick(
+                        request.first.traineeId
+                    )
+                }
             }
         }
     }
