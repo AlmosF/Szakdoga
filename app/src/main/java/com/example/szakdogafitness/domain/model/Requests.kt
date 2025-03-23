@@ -7,4 +7,5 @@ data class Requests(
     val createdAt: Timestamp = Timestamp.now(),
     val status: String = "pending",
     val traineeId: String = "",
+    val trainerId: String = ""
 )

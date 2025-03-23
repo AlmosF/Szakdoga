@@ -93,24 +93,7 @@ class MainService @Inject constructor(
                 combine(requestFlows) { it.toList() }
             }.flowOn(Dispatchers.IO)*/
 
-    override suspend fun fetchPendingRequests(status: String): Flow<List<Pair<Requests, User>>> =
-        firestore.collection("requests")
-            .document(userIdUseCase() ?: "")
-            .collection("traineeRequests")
-            .whereEqualTo("status", status)
-            .dataObjects<Requests>()
-            .flatMapLatest { requests ->
-                if (requests.isEmpty()) return@flatMapLatest flowOf(emptyList()) // 🔥 Emit immediately if empty
 
-                val requestFlows = requests.map { request ->
-                    getUserById(request.traineeId)
-                        .mapNotNull { user ->
-                            if (user != null) request to user else null
-                        }
-                }
-                combine(requestFlows) { it.toList() }
-            }
-            .flowOn(Dispatchers.IO)
 
     /*override suspend fun fetchPendingRequests(status: String): Flow<List<Requests>> =
         firestore.collection("requests")
@@ -343,6 +326,23 @@ class MainService @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun fetchRequestedAppoint(trainerId: String): Flow<Pair<Requests, User>> =
+        firestore.collection("requests")
+            .document(trainerId)
+            .collection("traineeRequests")
+            .document(userIdUseCase() ?: "")
+            .dataObjects<Requests>()
+            .flatMapLatest { requests ->
+                if (requests == null) return@flatMapLatest flowOf(Requests() to User())
+
+                getUserById(requests.traineeId)
+                    .mapNotNull { user ->
+                        if (user != null) requests to user else null
+                    }
+
+            }.flowOn(Dispatchers.IO)
+
+
     override suspend fun deleteRequest(traineeId: String) {
         val userId = userIdUseCase()
         if (userId == null) {
@@ -385,10 +385,70 @@ class MainService @Inject constructor(
                     transaction.update(requestRef, "status", "accepted")
                 }
             }.await()
+            val appointment = requestRef
+                .get()
+                .await()
+                .toObject(Requests::class.java)
+                ?.appointment
+            // Create a new document for trainee->trainer
+            val traineeRef = firestore.collection("requests")
+                .document(traineeId)
+                .collection("trainers")
+                .document(userId)
+
+            val request = mapOf(
+                "appointment" to appointment,
+                "status" to "accepted",
+                "createdAt" to Timestamp.now(),
+                "trainerId" to userId
+            )
+
+            traineeRef.set(request).await()
+
+
         } catch (e: Exception) {
             Log.e("MainService", "Error accepting request: ${e.message}", e)
         }
     }
+
+    override suspend fun fetchRequests(status: String): Flow<List<Pair<Requests, User>>> =
+        firestore.collection("requests")
+            .document(userIdUseCase() ?: "")
+            .collection("traineeRequests")
+            .whereEqualTo("status", status)
+            .dataObjects<Requests>()
+            .flatMapLatest { requests ->
+                if (requests.isEmpty()) return@flatMapLatest flowOf(emptyList()) // 🔥 Emit immediately if empty
+
+                val requestFlows = requests.map { request ->
+                    getUserById(request.traineeId)
+                        .mapNotNull { user ->
+                            if (user != null) request to user else null
+                        }
+                }
+                combine(requestFlows) { it.toList() }
+            }
+            .flowOn(Dispatchers.IO)
+
+    override suspend fun getAcceptedTrainers(): Flow<List<Pair<Requests, User>>> =
+        firestore.collection("requests")
+            .document(userIdUseCase() ?: "")
+            .collection("trainers")
+            .dataObjects<Requests>()
+            .flatMapLatest { requests ->
+                Log.d("MainService", "Accepted requests: $requests for ${userIdUseCase()}")
+                if (requests.isEmpty()) return@flatMapLatest flowOf(emptyList())
+
+                val acceptedTrainerFlows = requests.map { request ->
+                    getUserById(request.trainerId)
+                        .mapNotNull { user ->
+                            if (user != null) request to user else null
+                        }
+                }
+                combine(acceptedTrainerFlows) { it.toList() }
+            }
+            .flowOn(Dispatchers.IO)
+
 
 
     /*override suspend fun generateNewDailyData(dailyDatas: DailyDatas) {

@@ -5,12 +5,14 @@ import com.example.szakdogafitness.domain.usecases.main.AcceptRequestUseCase
 import com.example.szakdogafitness.domain.usecases.main.AllMainUseCases
 import com.example.szakdogafitness.domain.usecases.main.ApplyToTrainerAppointmentUseCase
 import com.example.szakdogafitness.domain.usecases.main.DeleteRequestUseCase
+import com.example.szakdogafitness.domain.usecases.main.FetchRequestedAppoint
 import com.example.szakdogafitness.domain.usecases.main.FetchRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchRequestedAppointmentsUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchTrainersRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchUserUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasUseCase
 import com.example.szakdogafitness.domain.usecases.main.GenerateNewDailyDataUseCase
+import com.example.szakdogafitness.domain.usecases.main.GetAcceptedTrainersUseCase
 import com.example.szakdogafitness.domain.usecases.main.GetTrainersUseCase
 import com.example.szakdogafitness.domain.usecases.main.UpdateUserUseCase
 import dagger.Module
@@ -66,6 +68,11 @@ object AllMainUseCasesModule {
 
     @Provides
     @Singleton
+    fun provideFetchRequestedAppoint(repository: IMainService): FetchRequestedAppoint =
+        FetchRequestedAppoint(repository)
+
+    @Provides
+    @Singleton
     fun provideFetchRequestsUseCase(repository: IMainService): FetchRequestsUseCase =
         FetchRequestsUseCase(repository)
 
@@ -78,6 +85,11 @@ object AllMainUseCasesModule {
     @Singleton
     fun provideAcceptRequestUseCase(repository: IMainService): AcceptRequestUseCase =
         AcceptRequestUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideAcceptedTrainersUseCase(repository: IMainService): GetAcceptedTrainersUseCase =
+        GetAcceptedTrainersUseCase(repository)
 
     @Provides
     @Singleton

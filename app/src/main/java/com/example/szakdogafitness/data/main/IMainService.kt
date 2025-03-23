@@ -1,7 +1,6 @@
 package com.example.szakdogafitness.data.main
 
 import com.example.szakdogafitness.domain.model.DailyData
-import com.example.szakdogafitness.domain.model.DailyDatas
 import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
 import kotlinx.coroutines.flow.Flow
@@ -15,12 +14,15 @@ interface IMainService{
     suspend fun applyForAppointment(trainer: String?, appointment: Map<String, List<Int>>)
     suspend fun fetchTrainersRequests(trainerId: String): Flow<Map<String, List<Int>>>
     suspend fun fetchRequestedAppointments(trainerId: String): Flow<Map<String, List<Int>>>
+    suspend fun fetchRequestedAppoint(trainerId: String): Flow<Pair<Requests, User>>
 
     suspend fun deleteRequest(traineeId: String)
     suspend fun acceptRequest(traineeId: String)
 
+    suspend fun getAcceptedTrainers(): Flow<List<Pair<Requests, User>>>
+
     //suspend fun fetchPendingRequests(status: String): Flow<List<Requests>>
-    suspend fun fetchPendingRequests(status: String): Flow<List<Pair<Requests, User>>>
+    suspend fun fetchRequests(status: String): Flow<List<Pair<Requests, User>>>
 
     //suspend fun generateNewDailyData(dailyDatas: DailyDatas) //fixme("Workingone")
     suspend fun generateNewDailyData()

@@ -3,10 +3,13 @@ package com.example.szakdogafitness.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.usecases.main.ApplyToTrainerAppointmentUseCase
+import com.example.szakdogafitness.domain.usecases.main.FetchRequestedAppoint
 import com.example.szakdogafitness.domain.usecases.main.FetchRequestedAppointmentsUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchTrainersRequestsUseCase
+import com.example.szakdogafitness.domain.usecases.main.GetAcceptedTrainersUseCase
 import com.example.szakdogafitness.domain.usecases.main.GetTrainersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +28,9 @@ class TrainersViewModel @Inject constructor(
     private val getTrainersUseCase: GetTrainersUseCase,
     private val applyToTrainerAppointmentUseCase: ApplyToTrainerAppointmentUseCase,
     private val fetchTrainersRequestsUseCase: FetchTrainersRequestsUseCase,
-    private val fetchRequestedAppointmentsUseCase: FetchRequestedAppointmentsUseCase
+    private val fetchRequestedAppointmentsUseCase: FetchRequestedAppointmentsUseCase,
+    private val getAcceptedTrainersUseCase: GetAcceptedTrainersUseCase,
+    private val fetchRequestedAppoint: FetchRequestedAppoint
 ) : ViewModel() {
 
 
@@ -52,9 +57,58 @@ class TrainersViewModel @Inject constructor(
             is TrainersEvent.FetchRequestedAppointments -> {
                 fetchRequestedAppointments(event.trainerId)
             }
+
+            TrainersEvent.LoadAcceptedTrainers -> {
+                loadAcceptedTrainers()
+            }
+
+            is TrainersEvent.FetchRequestedAppoint -> {
+                fetchRequestedAppoint(event.trainerId)
+            }
         }
     }
 
+    /**
+     * Able to fetch the request from a specific trainer with a sepcific trainee
+     * Able to make difference between pending and accepted requests, or not requested at all
+     * Useful to make different UI for the users that are accepted already exmaple: Rating UI
+     */
+    private fun fetchRequestedAppoint(trainerId: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                fetchRequestedAppoint.invoke(trainerId).collect { requestedAppoint ->
+                    Log.d("TrainersViewModel", "fetchRequestedAppoint: $requestedAppoint")
+                    _state.update { it.copy(
+                        requestedAppoint = requestedAppoint,
+                        isLoading = false
+                    ) }
+                }
+            } catch (e: Exception){
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    private fun loadAcceptedTrainers() {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                getAcceptedTrainersUseCase.invoke().collect { accepted->
+                    _state.update {
+                        it.copy(
+                            acceptedTrainers = accepted,
+                            isLoading = false
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    //FIXME: DEPRECATED - NOT USED
     private fun fetchRequestedAppointments(trainerId: String) {
         Log.d("TrainersViewModel", "fetchRequestedAppointments: $trainerId")
         viewModelScope.launch {
@@ -135,6 +189,7 @@ class TrainersViewModel @Inject constructor(
  * @param appointment: Map of appointments
  * @param trainersRequests: Map of trainers requests
  * @param requestedAppointments: Map of requested appointments
+ * @param requestedAppoint: Pair of requests and user for trainee, so can decide if pending or accepted - new var
  */
 
 data class TrainersState(
@@ -143,7 +198,9 @@ data class TrainersState(
     val selectedTrainer: User? = null,
     val appointment: Map<String, List<Int>> = mapOf(),
     val trainersRequests: Map<String, List<Int>> = mapOf(),
-    val requestedAppointments: Map<String, List<Int>> = mapOf()
+    val requestedAppointments: Map<String, List<Int>> = mapOf(),
+    val requestedAppoint: Pair<Requests, User> = Pair(Requests(), User()),
+    val acceptedTrainers: List<Pair<Requests, User>> = listOf()
 )
 
 /**
@@ -156,8 +213,10 @@ data class TrainersState(
 
 sealed class TrainersEvent {
     object LoadTrainers : TrainersEvent()
+    object LoadAcceptedTrainers : TrainersEvent()
     data class FetchTrainersRequests(val trainerId: String): TrainersEvent()
     data class FetchRequestedAppointments(val trainerId: String): TrainersEvent()
+    data class FetchRequestedAppoint(val trainerId: String): TrainersEvent()
     data class TrainerSelected(val trainer: User?) : TrainersEvent()
     data class ApplyForAppointment(
         val trainer: String?,

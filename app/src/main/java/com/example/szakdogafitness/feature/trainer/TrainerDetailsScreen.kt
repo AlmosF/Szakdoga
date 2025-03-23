@@ -70,7 +70,8 @@ fun TrainerDetailsScreen(
 
     LaunchedEffect(Unit) {
         trainersViewModel.onEvent(TrainersEvent.FetchTrainersRequests(data.userId))
-        trainersViewModel.onEvent(TrainersEvent.FetchRequestedAppointments(data.userId))
+        //trainersViewModel.onEvent(TrainersEvent.FetchRequestedAppointments(data.userId))
+        trainersViewModel.onEvent(TrainersEvent.FetchRequestedAppoint(data.userId))
     }
 
     val trainerState by trainersViewModel.state.collectAsStateWithLifecycle()
@@ -233,6 +234,7 @@ fun TrainerDetailsScreen(
             ) {
                 Log.e("TrainerDetailsScreen", "AVAILABLE: ${trainerState.trainersRequests}")
                 Log.e("TrainerDetailsScreen", "SELECTED: ${trainerState.requestedAppointments}")
+                Log.e("TrainerDetailsScreen", "SELECTED: ${trainerState.requestedAppoint.first.appointment}")
                 TraineeTimetableView(
                     availableHours = data.trainer.availability.mapValues { (day, hours) ->
                         hours - (trainerState.trainersRequests[day] ?: emptyList())
@@ -271,10 +273,17 @@ fun TrainerDetailsScreen(
                         )
                     )
                 },
-                enabled = trainerState.requestedAppointments.isEmpty(),
+                //enabled = trainerState.requestedAppointments.isEmpty(),
+                enabled = trainerState.requestedAppoint.first.appointment.isEmpty(),
             ) {
                 Text(
-                    text = if (trainerState.requestedAppointments.isEmpty()) "Request as Trainer" else "You already requested an appointment",
+                    //text = if (trainerState.requestedAppointments.isEmpty()) "Request as Trainer" else "You already requested an appointment",
+                    text = if (trainerState.requestedAppoint.first.appointment.isEmpty())
+                        "Request as Trainer"
+                    else if(trainerState.requestedAppoint.first.status == "pending")
+                        "You already requested an appointment"
+                    else
+                        "You already have an appointment",
                 )
             }
         }
