@@ -30,5 +30,6 @@ interface IMainService{
 
     suspend fun rateTrainer(trainerId: String, rate: Int)
     suspend fun loadTrainersRate(trainerId: String): Flow<Rating>
+    suspend fun loadAllTrainersRates(): Flow<List<Pair<String, List<Rating>>>>
 
 }

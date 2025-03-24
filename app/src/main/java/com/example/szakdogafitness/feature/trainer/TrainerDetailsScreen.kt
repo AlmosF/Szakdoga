@@ -158,7 +158,8 @@ fun TrainerDetailsScreen(
                 )
                 RatingStars(
                     rating = data.trainer.rating,
-                    modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
+                    modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
+                    rateSize = 0
                 )
             }
         }

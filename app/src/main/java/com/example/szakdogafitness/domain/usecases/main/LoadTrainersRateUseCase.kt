@@ -6,3 +6,8 @@ class LoadTrainersRateUseCase(private val repository: IMainService){
     suspend operator fun invoke(trainerId: String) =
         repository.loadTrainersRate(trainerId)
 }
+
+class LoadAllTrainersAllRateUseCase(private val repository: IMainService){
+    suspend operator fun invoke() =
+        repository.loadAllTrainersRates()
+}

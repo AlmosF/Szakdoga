@@ -14,6 +14,7 @@ import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasUseC
 import com.example.szakdogafitness.domain.usecases.main.GenerateNewDailyDataUseCase
 import com.example.szakdogafitness.domain.usecases.main.GetAcceptedTrainersUseCase
 import com.example.szakdogafitness.domain.usecases.main.GetTrainersUseCase
+import com.example.szakdogafitness.domain.usecases.main.LoadAllTrainersAllRateUseCase
 import com.example.szakdogafitness.domain.usecases.main.LoadTrainersRateUseCase
 import com.example.szakdogafitness.domain.usecases.main.RateTrainerUseCase
 import com.example.szakdogafitness.domain.usecases.main.UpdateUserUseCase
@@ -102,6 +103,11 @@ object AllMainUseCasesModule {
     @Singleton
     fun provideLoadTrainersRateUseCase(repository: IMainService): LoadTrainersRateUseCase =
         LoadTrainersRateUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideLoadAllTrainersAllRateUseCase(repository: IMainService): LoadAllTrainersAllRateUseCase =
+        LoadAllTrainersAllRateUseCase(repository)
 
     @Provides
     @Singleton

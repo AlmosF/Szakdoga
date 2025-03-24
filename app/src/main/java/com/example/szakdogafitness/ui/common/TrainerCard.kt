@@ -59,6 +59,8 @@ data class TrainerDemo (
 fun TrainerCard(
     //data : TrainerDemo
     data : User,
+    ratingData: Int,
+    rateSize: Int,
     onClick: (String) -> Unit
 ) {
     //val painter = rememberAsyncImagePainter(data.image)
@@ -174,7 +176,9 @@ fun TrainerCard(
                         .padding(8.dp)
                         .weight(1f),
                     //rating = data.rating
-                    rating = data.trainer.rating
+                    //rating = data.trainer.rating
+                    rating = ratingData,
+                    rateSize = rateSize
                 )
                 Text(
                     //text = "$${data.price} / session",
@@ -213,11 +217,12 @@ fun TrainerCard(
 @Composable
 fun RatingStars( //Five star rating system
     modifier: Modifier = Modifier,
-    rating: Int
+    rating: Int,
+    rateSize: Int
 ){
     Row (
         modifier = modifier
-            //.padding(8.dp)
+        //.padding(8.dp)
         ,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -242,7 +247,9 @@ fun RatingStars( //Five star rating system
                 modifier = Modifier.size(20.dp)
             )
         }
+        Text("($rateSize)")
     }
+
 }
 
 @Composable

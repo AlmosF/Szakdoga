@@ -43,13 +43,22 @@ fun SearchTrainerScreen(
     //VMs
 ) {
 
+    val trainersState by trainersViewModel.state.collectAsStateWithLifecycle()
+
+
     LaunchedEffect(Unit) {
         //mainViewModel.onEvent(MainEvent.FetchTrainers)
         trainersViewModel.onEvent(TrainersEvent.LoadTrainers)
+        trainersViewModel.onEvent(TrainersEvent.LoadAllTrainersAllRating)
+        Log.d("SearchTrainerScreen", "AllTrainersAllRating: ${trainersState.allTrainersAllRating}")
+
     }
 
     //val mainState by mainViewModel.state.collectAsStateWithLifecycle()
-    val trainersState by trainersViewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(trainersState.allTrainersAllRating) {
+        Log.d("SearchTrainerScreen", "AllTrainersAllRating: ${trainersState.allTrainersAllRating}")
+    }
 
     Column (
         modifier = modifier
@@ -104,9 +113,25 @@ fun SearchTrainerScreen(
                         data = list[it],
                     )
                 }*/
+
                 items(trainersState.trainers.size) {
+                    val user = trainersState.trainers[it]!!
+                    val rating = trainersState.allTrainersAllRating.find { rating ->
+                        rating?.first == user.userId
+                    }?.second?.sumOf {
+                        it.rating
+                    }?.div(
+                        trainersState.allTrainersAllRating.find { rating ->
+                            rating?.first == user.userId
+                        }?.second?.size ?: 1
+                    )
+                    Log.d("SearchTrainerScreen", "Rating: $rating")
                     TrainerCard(
-                        data = trainersState.trainers[it]!!
+                        data = trainersState.trainers[it]!!,
+                        ratingData = rating ?: 0,
+                        rateSize = trainersState.allTrainersAllRating.find { rating ->
+                            rating?.first == user.userId
+                        }?.second?.size ?: 0
                     ) { userId ->
                         onTrainerClick(userId)
                     }

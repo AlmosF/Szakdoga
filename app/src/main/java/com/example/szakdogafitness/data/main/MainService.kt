@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -528,9 +529,13 @@ class MainService @Inject constructor(
                 .collection("trainerRatings")
                 .document(userId)
 
-            val rating = Rating(
+            /*val rating = Rating(
                 rating = rate,
                 timestamp = Timestamp.now()
+            )*/
+            val rating = mapOf(
+                "rating" to rate,
+                "timestamp" to Timestamp.now()
             )
             ratingRef.set(rating).await()
 
@@ -547,6 +552,35 @@ class MainService @Inject constructor(
             .dataObjects<Rating>()
             .map { it ?: Rating() }
             .flowOn(Dispatchers.IO)
+
+    override suspend fun loadAllTrainersRates(): Flow<List<Pair<String, List<Rating>>>> = flow {
+        Log.d("MainService", "Fetching all trainers' ratings")
+
+        val ratingQuerySnapshot = firestore.collectionGroup("trainerRatings").get().await()
+
+        if (ratingQuerySnapshot.isEmpty) {
+            Log.d("MainService", "No ratings found.")
+            emit(emptyList())
+            return@flow
+        }
+
+        val trainerFlows = ratingQuerySnapshot.documents.map { ratingDoc ->
+            val trainerId = ratingDoc.reference.parent.parent?.id ?: ""
+
+            firestore.collection("ratings")
+                .document(trainerId)
+                .collection("trainerRatings")
+                .dataObjects<Rating>()
+                .map { ratings ->
+                    trainerId to ratings
+                }
+        }
+
+        emitAll(combine(trainerFlows) { results ->
+            results.distinctBy { it.first }
+        })
+    }.flowOn(Dispatchers.IO)
+
 
 
 

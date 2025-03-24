@@ -13,6 +13,7 @@ import com.example.szakdogafitness.domain.usecases.main.FetchRequestedAppointmen
 import com.example.szakdogafitness.domain.usecases.main.FetchTrainersRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.main.GetAcceptedTrainersUseCase
 import com.example.szakdogafitness.domain.usecases.main.GetTrainersUseCase
+import com.example.szakdogafitness.domain.usecases.main.LoadAllTrainersAllRateUseCase
 import com.example.szakdogafitness.domain.usecases.main.LoadTrainersRateUseCase
 import com.example.szakdogafitness.domain.usecases.main.RateTrainerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,6 +38,7 @@ class TrainersViewModel @Inject constructor(
     private val fetchRequestedAppoint: FetchRequestedAppoint,
     private val rateTrainerUseCase: RateTrainerUseCase,
     private val loadTrainersRateUseCase: LoadTrainersRateUseCase,
+    private val loadAllTrainersAllRatingUseCase: LoadAllTrainersAllRateUseCase
 ) : ViewModel() {
 
 
@@ -79,6 +81,25 @@ class TrainersViewModel @Inject constructor(
                 rateTrainer(event.trainerId, event.rate)
             }
 
+            TrainersEvent.LoadAllTrainersAllRating -> {
+                loadAllTrainersAllRating()
+            }
+        }
+    }
+
+    private fun loadAllTrainersAllRating() {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                loadAllTrainersAllRatingUseCase.invoke().collect { allTrainersAllRating ->
+                    _state.update { it.copy(
+                        allTrainersAllRating = allTrainersAllRating,
+                        isLoading = false
+                    ) }
+                }
+            } catch (e: Exception) {
+                _state.update { it.copy(isLoading = false) }
+            }
         }
     }
 
@@ -249,7 +270,8 @@ data class TrainersState(
     val requestedAppointments: Map<String, List<Int>> = mapOf(),
     val requestedAppoint: Pair<Requests, User> = Pair(Requests(), User()),
     val acceptedTrainers: List<Pair<Requests, User>> = listOf(),
-    val trainersRate: Rating = Rating()
+    val trainersRate: Rating = Rating(),
+    val allTrainersAllRating: List<Pair<String, List<Rating>>?> = listOf()
 )
 
 /**
@@ -263,6 +285,7 @@ data class TrainersState(
 sealed class TrainersEvent {
     object LoadTrainers : TrainersEvent()
     object LoadAcceptedTrainers : TrainersEvent()
+    object LoadAllTrainersAllRating : TrainersEvent()
     data class LoadTrainersRate(val trainerId: String) : TrainersEvent()
     data class RateTrainer(val trainerId: String, val rate: Int): TrainersEvent()
     data class FetchTrainersRequests(val trainerId: String): TrainersEvent()
