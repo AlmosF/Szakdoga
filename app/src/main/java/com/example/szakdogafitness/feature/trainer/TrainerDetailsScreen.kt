@@ -55,6 +55,7 @@ import com.example.szakdogafitness.ui.common.RatingStars
 import com.example.szakdogafitness.ui.common.TrainerDemo
 import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.model.User
+import com.example.szakdogafitness.ui.common.RatingStarsTen
 import com.example.szakdogafitness.ui.common.TraineeTimetableView
 import com.example.szakdogafitness.viewmodel.TrainersEvent
 import com.example.szakdogafitness.viewmodel.TrainersViewModel
@@ -264,27 +265,58 @@ fun TrainerDetailsScreen(
                 fontSize = 16.sp
             )
             Spacer(modifier = Modifier.size(16.dp))
-            OutlinedButton(
-                onClick = {
+            if (trainerState.requestedAppoint.first.status != "accepted") {
+                OutlinedButton(
+                    onClick = {
+                        trainersViewModel.onEvent(
+                            TrainersEvent.ApplyForAppointment(
+                                trainer = data.userId,
+                                appointment = selectedSchedules, //fixme: NOT THIS VAR
+                            )
+                        )
+                    },
+                    //enabled = trainerState.requestedAppointments.isEmpty(),
+                    enabled = trainerState.requestedAppoint.first.appointment.isEmpty(),
+                ) {
+                    /*Text(
+                        //text = if (trainerState.requestedAppointments.isEmpty()) "Request as Trainer" else "You already requested an appointment",
+                        text = if (trainerState.requestedAppoint.first.appointment.isEmpty())
+                            "Request as Trainer"
+                        else if(trainerState.requestedAppoint.first.status == "pending")
+                            "You already requested an appointment"
+                        else
+                            "You already have an appointment",
+                    )*/
+                    Text(
+                        //text = if (trainerState.requestedAppointments.isEmpty()) "Request as Trainer" else "You already requested an appointment",
+                        text = if (trainerState.requestedAppoint.first.appointment.isEmpty())
+                            "Request as Trainer"
+                        else
+                            "You already requested an appointment",
+                    )
+                }
+            } else {
+                LaunchedEffect(Unit) {
                     trainersViewModel.onEvent(
-                        TrainersEvent.ApplyForAppointment(
-                            trainer = data.userId,
-                            appointment = selectedSchedules, //fixme: NOT THIS VAR
+                        TrainersEvent.LoadTrainersRate(
+                            trainerId = data.userId
                         )
                     )
-                },
-                //enabled = trainerState.requestedAppointments.isEmpty(),
-                enabled = trainerState.requestedAppoint.first.appointment.isEmpty(),
-            ) {
+                }
                 Text(
-                    //text = if (trainerState.requestedAppointments.isEmpty()) "Request as Trainer" else "You already requested an appointment",
-                    text = if (trainerState.requestedAppoint.first.appointment.isEmpty())
-                        "Request as Trainer"
-                    else if(trainerState.requestedAppoint.first.status == "pending")
-                        "You already requested an appointment"
-                    else
-                        "You already have an appointment",
+                    "Rate the trainer:",
                 )
+                RatingStarsTen(
+                    rating = trainerState.trainersRate.rating,
+                ) { rating ->
+                    trainersViewModel.onEvent(
+                        TrainersEvent.RateTrainer(
+                            trainerId = data.userId,
+                            rate = rating
+                        )
+                    )
+                }
+
             }
         }
 

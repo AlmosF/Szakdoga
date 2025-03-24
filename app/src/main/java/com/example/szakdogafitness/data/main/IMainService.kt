@@ -1,6 +1,7 @@
 package com.example.szakdogafitness.data.main
 
 import com.example.szakdogafitness.domain.model.DailyData
+import com.example.szakdogafitness.domain.model.Rating
 import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
 import kotlinx.coroutines.flow.Flow
@@ -26,4 +27,8 @@ interface IMainService{
 
     //suspend fun generateNewDailyData(dailyDatas: DailyDatas) //fixme("Workingone")
     suspend fun generateNewDailyData()
+
+    suspend fun rateTrainer(trainerId: String, rate: Int)
+    suspend fun loadTrainersRate(trainerId: String): Flow<Rating>
+
 }

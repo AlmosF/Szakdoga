@@ -3,6 +3,7 @@ package com.example.szakdogafitness.ui.common
 import android.R.attr.fontWeight
 import android.R.attr.text
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -210,7 +211,7 @@ fun TrainerCard(
 }
 
 @Composable
-fun RatingStars(
+fun RatingStars( //Five star rating system
     modifier: Modifier = Modifier,
     rating: Int
 ){
@@ -239,6 +240,28 @@ fun RatingStars(
                 imageVector = Icons.Filled.StarBorder,
                 contentDescription = null,
                 modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun RatingStarsTen( //Ten star rating system - for trainees
+    modifier: Modifier = Modifier,
+    rating: Int,
+    onRatingChanged: (Int) -> Unit
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        repeat(10) { index ->
+            Icon(
+                imageVector = if (index < rating) Icons.Filled.Star else Icons.Filled.StarBorder,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(25.dp)
+                    .clickable { onRatingChanged(index + 1) }
             )
         }
     }

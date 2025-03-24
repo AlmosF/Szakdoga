@@ -1,5 +1,8 @@
 package com.example.szakdogafitness.feature.search
 
+import android.R.attr.data
+import android.R.attr.rating
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -103,7 +106,7 @@ fun SearchTrainerScreen(
                 }*/
                 items(trainersState.trainers.size) {
                     TrainerCard(
-                        data = trainersState.trainers[it]!!,
+                        data = trainersState.trainers[it]!!
                     ) { userId ->
                         onTrainerClick(userId)
                     }

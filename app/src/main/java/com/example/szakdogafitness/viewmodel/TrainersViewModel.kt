@@ -3,6 +3,8 @@ package com.example.szakdogafitness.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.privacysandbox.ads.adservices.adid.AdId
+import com.example.szakdogafitness.domain.model.Rating
 import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.usecases.main.ApplyToTrainerAppointmentUseCase
@@ -11,6 +13,8 @@ import com.example.szakdogafitness.domain.usecases.main.FetchRequestedAppointmen
 import com.example.szakdogafitness.domain.usecases.main.FetchTrainersRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.main.GetAcceptedTrainersUseCase
 import com.example.szakdogafitness.domain.usecases.main.GetTrainersUseCase
+import com.example.szakdogafitness.domain.usecases.main.LoadTrainersRateUseCase
+import com.example.szakdogafitness.domain.usecases.main.RateTrainerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,7 +34,9 @@ class TrainersViewModel @Inject constructor(
     private val fetchTrainersRequestsUseCase: FetchTrainersRequestsUseCase,
     private val fetchRequestedAppointmentsUseCase: FetchRequestedAppointmentsUseCase,
     private val getAcceptedTrainersUseCase: GetAcceptedTrainersUseCase,
-    private val fetchRequestedAppoint: FetchRequestedAppoint
+    private val fetchRequestedAppoint: FetchRequestedAppoint,
+    private val rateTrainerUseCase: RateTrainerUseCase,
+    private val loadTrainersRateUseCase: LoadTrainersRateUseCase,
 ) : ViewModel() {
 
 
@@ -64,6 +70,48 @@ class TrainersViewModel @Inject constructor(
 
             is TrainersEvent.FetchRequestedAppoint -> {
                 fetchRequestedAppoint(event.trainerId)
+            }
+
+            is TrainersEvent.LoadTrainersRate -> {
+                loadTrainersRate(event.trainerId)
+            }
+            is TrainersEvent.RateTrainer -> {
+                rateTrainer(event.trainerId, event.rate)
+            }
+
+        }
+    }
+
+
+    private fun rateTrainer(
+        trainerId: String,
+        rate: Int
+    ) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                rateTrainerUseCase.invoke(trainerId, rate)
+                _state.update { it.copy(isLoading = false) }
+            } catch (e: Exception) {
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    private fun loadTrainersRate(
+        trainerId: String
+    ) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                loadTrainersRateUseCase.invoke(trainerId).collect { rate ->
+                    _state.update { it.copy(
+                        trainersRate = rate,
+                        isLoading = false
+                    ) }
+                }
+            } catch (e: Exception) {
+                _state.update { it.copy(isLoading = false) }
             }
         }
     }
@@ -200,7 +248,8 @@ data class TrainersState(
     val trainersRequests: Map<String, List<Int>> = mapOf(),
     val requestedAppointments: Map<String, List<Int>> = mapOf(),
     val requestedAppoint: Pair<Requests, User> = Pair(Requests(), User()),
-    val acceptedTrainers: List<Pair<Requests, User>> = listOf()
+    val acceptedTrainers: List<Pair<Requests, User>> = listOf(),
+    val trainersRate: Rating = Rating()
 )
 
 /**
@@ -214,6 +263,8 @@ data class TrainersState(
 sealed class TrainersEvent {
     object LoadTrainers : TrainersEvent()
     object LoadAcceptedTrainers : TrainersEvent()
+    data class LoadTrainersRate(val trainerId: String) : TrainersEvent()
+    data class RateTrainer(val trainerId: String, val rate: Int): TrainersEvent()
     data class FetchTrainersRequests(val trainerId: String): TrainersEvent()
     data class FetchRequestedAppointments(val trainerId: String): TrainersEvent()
     data class FetchRequestedAppoint(val trainerId: String): TrainersEvent()

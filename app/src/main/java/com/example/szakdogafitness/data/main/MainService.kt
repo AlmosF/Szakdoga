@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.data.main
 
+import android.R.attr.rating
 import android.util.Log
 import android.util.Log.e
 import com.example.szakdogafitness.domain.model.DailyData
@@ -7,6 +8,7 @@ import com.example.szakdogafitness.domain.model.DailyDatas
 import com.example.szakdogafitness.domain.model.FirestoreTrainee
 import com.example.szakdogafitness.domain.model.FirestoreTrainer
 import com.example.szakdogafitness.domain.model.FirestoreUser
+import com.example.szakdogafitness.domain.model.Rating
 import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.model.toFirestoreTrainee
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -513,6 +516,37 @@ class MainService @Inject constructor(
         }
     }
 
+    override suspend fun rateTrainer(trainerId: String, rate: Int) {
+        val userId = userIdUseCase()
+        if (userId == null) {
+            Log.e("MainService", "Error rating trainer: User ID is null")
+            return
+        }
+        try {
+            val ratingRef = firestore.collection("ratings")
+                .document(trainerId)
+                .collection("trainerRatings")
+                .document(userId)
+
+            val rating = Rating(
+                rating = rate,
+                timestamp = Timestamp.now()
+            )
+            ratingRef.set(rating).await()
+
+        } catch (e: Exception) {
+            Log.e("MainService", "Error rating trainer: ${e.message}", e)
+        }
+    }
+
+    override suspend fun loadTrainersRate(trainerId: String): Flow<Rating> =
+        firestore.collection("ratings")
+            .document(trainerId)
+            .collection("trainerRatings")
+            .document(userIdUseCase() ?: "")
+            .dataObjects<Rating>()
+            .map { it ?: Rating() }
+            .flowOn(Dispatchers.IO)
 
 
 
