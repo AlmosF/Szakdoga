@@ -92,9 +92,12 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
+                Log.d("ProfileViewModel", "getUser: ${_state.value.user}, loading: ${_state.value.isLoading}")
                 fetchUserUseCase.invoke().collect { user ->
                     _state.update { it.copy(user = user, isLoading = false, editUser = user) }
+                    Log.d("ProfileViewModel-", "getUser: ${_state.value.user}, loading: ${_state.value.isLoading}")
                 }
+                Log.d("ProfileViewModel", "getUser: ${_state.value.user}, loading: ${_state.value.isLoading}")
             } catch (e: Exception){
                 Log.e("ProfileViewModel", "getUser: ${e.message}")
                 _state.update { it.copy(isLoading = false) }
@@ -104,8 +107,11 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun checkIfUserIsNewP(): Boolean{
+    /*fun checkIfUserIsNewP(): Boolean{
         return state.value.user == null
+    }*/
+    fun checkIfUserIsNewP(): Boolean{
+        return state.value.user?.userId?.isBlank() ?: true
     }
 
 }

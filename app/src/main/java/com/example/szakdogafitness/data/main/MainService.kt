@@ -45,14 +45,44 @@ class MainService @Inject constructor(
     private val userIdUseCase: CurrentUserIdUseCase
 ) : IMainService {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    /*@OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getUser(): Flow<User?> =
         firestore.collection("users")
             .whereEqualTo("uid", userIdUseCase())
             .limit(1)
             .dataObjects<FirestoreUser>()
             .flatMapLatest { userList->
-                val user = userList.firstOrNull() ?: return@flatMapLatest flowOf(null)
+                val user = userList.firstOrNull() ?: return@flatMapLatest flowOf(User())
+                if (user.role == 1) {
+                    firestore.collection("trainers")
+                        .whereEqualTo("uid", userIdUseCase())
+                        .limit(1)
+                        .dataObjects<FirestoreTrainer>()
+                        .map { trainers ->
+                            val trainer = trainers.firstOrNull() ?: FirestoreTrainer()
+                            Log.d("MainService", "Trainer: ${user.toUser(trainer)}")
+                            user.toUser(trainer)
+                        }
+                } else {
+                    firestore.collection("trainees")
+                        .whereEqualTo("uid", userIdUseCase())
+                        .limit(1)
+                        .dataObjects<FirestoreTrainee>()
+                        .map { trainees ->
+                            val trainee = trainees.firstOrNull() ?: FirestoreTrainee()
+                            Log.d("MainService", "Trainee: ${user.toUser(trainee)}")
+                            user.toUser(trainee)
+                        }
+                }
+            }.flowOn(Dispatchers.IO)*/
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override suspend fun getUser(): Flow<User?> =
+        firestore.collection("users")
+            .document(userIdUseCase() ?: "")
+            .dataObjects<FirestoreUser>()
+            .flatMapLatest { user->
+                if (user == null) return@flatMapLatest flowOf(User())
+                //val user = userList.firstOrNull() ?: return@flatMapLatest flowOf(User())
                 if (user.role == 1) {
                     firestore.collection("trainers")
                         .whereEqualTo("uid", userIdUseCase())

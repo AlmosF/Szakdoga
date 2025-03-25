@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
 import com.example.szakdogafitness.viewmodel.ProfileEvent
@@ -33,12 +35,28 @@ fun CheckUserStatusScreen(
         val destination = if (isNewUser) RootScreenRoute.SetupScreen.route else RootScreenRoute.LifeStyle.route
         navController.navigate(destination) { popUpTo(0) }
     }*/
+    val profileState = rememberUpdatedState(profileViewModel.state.collectAsStateWithLifecycle()).value
+
+    LaunchedEffect(profileState.value.isLoading) {
+        Log.d("ProfileViewModel", "Loading: ${profileState.value.isLoading}")
+    }
+
     LaunchedEffect(Unit) {
+        Log.d("ProfileViewModel", "ProfileState: ${profileState.value}")
         profileViewModel.onEvent(ProfileEvent.GetUser)
-        delay(1000)
-        val isNewUser = profileViewModel.checkIfUserIsNewP()
-        val destination = if (isNewUser) RootScreenRoute.SetupScreen.route else RootScreenRoute.LifeStyle.route
-        navController.navigate(destination) { popUpTo(0) }
+        //delay(1000)
+        /*if(!profileState.value.isLoading){
+            val isNewUser = profileViewModel.checkIfUserIsNewP()
+            val destination = if (isNewUser) RootScreenRoute.SetupScreen.route else RootScreenRoute.LifeStyle.route
+            navController.navigate(destination) { popUpTo(0) }
+        }*/
+    }
+    LaunchedEffect(profileState.value.user != null, profileState.value.isLoading == false) {
+        if(!profileState.value.isLoading && profileState.value.user != null){
+            val isNewUser = profileViewModel.checkIfUserIsNewP()
+            val destination = if (isNewUser) RootScreenRoute.SetupScreen.route else RootScreenRoute.LifeStyle.route
+            navController.navigate(destination) { popUpTo(0) }
+        }
     }
     Column (
         modifier = modifier
