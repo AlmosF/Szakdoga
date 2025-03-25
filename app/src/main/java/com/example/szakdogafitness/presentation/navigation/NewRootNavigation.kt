@@ -55,6 +55,7 @@ import com.example.szakdogafitness.feature.profile.ProfileScreen
 import com.example.szakdogafitness.feature.request.RequestScreen
 import com.example.szakdogafitness.feature.search.SearchTrainerScreen
 import com.example.szakdogafitness.feature.setup.SetupScreenBox
+import com.example.szakdogafitness.feature.trainee.TraineeDetailScreen
 import com.example.szakdogafitness.feature.trainee.TraineesScreen
 import com.example.szakdogafitness.feature.trainer.TrainerDetailsScreen
 import com.example.szakdogafitness.feature.trainer.TrainerScreen
@@ -410,7 +411,13 @@ fun NewRootNavigation(
                         }
                     )
                 )
-                TraineesScreen()
+                TraineesScreen(
+                    traineesViewModel = traineesViewModel
+                ) {
+                    navController.navigate(RootScreenRoute.TraineeDetail.createRoute(
+                        it
+                    ))
+                }
             }
 
             composable(RootScreenRoute.TraineeDetail.route) { entry ->
@@ -424,7 +431,13 @@ fun NewRootNavigation(
                     )
                 )
                 val id = entry.arguments?.getString("id")
-                Text(text = "TraineeDetail: $id")
+                //Text(text = "TraineeDetail: ${
+                //    traineesViewModel.state.collectAsStateWithLifecycle().value.acceptedRequests.find { it.second.userId == id }
+                //}")
+                TraineeDetailScreen(
+                    traineesViewModel = traineesViewModel,
+                    id = id!!
+                )
             }
 
 

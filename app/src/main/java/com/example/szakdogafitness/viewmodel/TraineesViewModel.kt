@@ -8,11 +8,14 @@ import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.usecases.main.AcceptRequestUseCase
 import com.example.szakdogafitness.domain.usecases.main.DeleteRequestUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchRequestsUseCase
+import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 /**
@@ -45,6 +48,9 @@ class TraineesViewModel @Inject constructor(
                 declineRequest(event.userId)
             }
 
+            is TraineesEvent.DetailModeChanged -> {
+                _state.update { it.copy(detailMode = event.lifestyle) }
+            }
         }
     }
 
@@ -120,17 +126,37 @@ class TraineesViewModel @Inject constructor(
 
 }
 
+/**
+ * State for the TraineesViewModel
+ * @param detailMode: Boolean - If in detail mode: False -> Lifestyle; True -> Bio
+ */
 data class TraineesState(
     val isLoading: Boolean = false,
     //val pendingRequests: List<Requests> = emptyList(),
     val pendingRequests: List<Pair<Requests, User>> = emptyList(),
     //val acceptedRequests: List<Requests> = emptyList()
-    val acceptedRequests: List<Pair<Requests, User>> = emptyList()
+    val acceptedRequests: List<Pair<Requests, User>> = emptyList(),
+    val detailMode: Boolean = false
 )
 
 sealed class TraineesEvent {
     object LoadPendingRequests: TraineesEvent()
     object LoadAcceptedRequests: TraineesEvent()
+    data class DetailModeChanged(val lifestyle: Boolean): TraineesEvent()
     data class AcceptRequest(val userId: String): TraineesEvent()
     data class DeclineRequest(val userId: String): TraineesEvent()
+}
+
+fun calculateAge(birthTimestamp: Timestamp): Int {
+    val now = Timestamp.now()
+    val birthDate = birthTimestamp
+
+    val birthLocalDateTime = birthDate.toLocalDateTime()
+    val nowLocalDateTime = now.toLocalDateTime()
+
+    return nowLocalDateTime.year - birthLocalDateTime.year
+}
+
+fun Timestamp.toLocalDateTime(): LocalDateTime {
+    return LocalDateTime.ofInstant(Instant.ofEpochSecond(seconds, nanoseconds.toLong()), java.time.ZoneId.systemDefault())
 }

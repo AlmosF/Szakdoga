@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,15 +21,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.trainee.TraineeCard
+import com.example.szakdogafitness.viewmodel.TraineesEvent
+import com.example.szakdogafitness.viewmodel.TraineesViewModel
 
 @Composable
 fun TraineesScreen(
     modifier: Modifier = Modifier,
+    traineesViewModel: TraineesViewModel = hiltViewModel(),
+    onClick: (String) -> Unit = {}
     //VMs
 ) {
+
+    LaunchedEffect(Unit) {
+        traineesViewModel.onEvent(TraineesEvent.LoadAcceptedRequests)
+    }
+
+    val traineesState by traineesViewModel.state.collectAsStateWithLifecycle()
+
     Column (
         modifier = Modifier
             .fillMaxSize(),
@@ -75,10 +89,19 @@ fun TraineesScreen(
             modifier = Modifier
                 .fillMaxWidth(0.95f)
         ) {
-            items(filtered.size) {
+            /*items(filtered.size) {
                 TraineeCard(
                     data = filtered[it],
                     onCardClick = {},
+                    onMessageClick = {}
+                )
+            }*/
+            items(traineesState.acceptedRequests.size) {
+                TraineeCard(
+                    data = traineesState.acceptedRequests[it].second,
+                    onCardClick = {
+                        onClick(traineesState.acceptedRequests[it].second.userId)
+                    },
                     onMessageClick = {}
                 )
             }
