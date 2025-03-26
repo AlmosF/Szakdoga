@@ -3,11 +3,13 @@ package com.example.szakdogafitness.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.szakdogafitness.domain.model.DailyData
 import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.usecases.main.AcceptRequestUseCase
 import com.example.szakdogafitness.domain.usecases.main.DeleteRequestUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchRequestsUseCase
+import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasByIdUseCase
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +28,8 @@ import javax.inject.Inject
 class TraineesViewModel @Inject constructor(
     private val fetchRequests: FetchRequestsUseCase,
     private val declineRequest: DeleteRequestUseCase,
-    private val acceptRequest: AcceptRequestUseCase
+    private val acceptRequest: AcceptRequestUseCase,
+    private val fetchTraineesDailyData: FetchUsersDailyDatasByIdUseCase
 ) : ViewModel() {
 
 
@@ -60,6 +63,26 @@ class TraineesViewModel @Inject constructor(
                 _state.update { it.copy(
                     selectedTrainee = null
                 ) }
+            }
+
+            is TraineesEvent.FetchTraineesDailyData -> {
+                fetchTraineeDailyData(event.userId)
+            }
+        }
+    }
+
+    private fun fetchTraineeDailyData(traineeId: String){
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try{
+                fetchTraineesDailyData.invoke(traineeId).collect { traineeDailyDataList ->
+                    _state.update { it.copy(
+                        traineesDailyDataList = traineeDailyDataList,
+                        isLoading = false
+                    ) }
+                }
+            } catch (e: Exception) {
+                _state.update { it.copy(isLoading = false) }
             }
         }
     }
@@ -168,7 +191,8 @@ data class TraineesState(
     //val acceptedRequests: List<Requests> = emptyList()
     val acceptedRequests: List<Pair<Requests, User>> = emptyList(),
     val detailMode: Boolean = false,
-    val selectedTrainee: Pair<Requests, User>? = null
+    val selectedTrainee: Pair<Requests, User>? = null,
+    val traineesDailyDataList: List<DailyData> = emptyList()
 )
 
 sealed class TraineesEvent {
@@ -176,6 +200,7 @@ sealed class TraineesEvent {
     object ClearSelectedTrainee: TraineesEvent()
     object LoadAcceptedRequests: TraineesEvent()
     data class DetailModeChanged(val lifestyle: Boolean): TraineesEvent()
+    data class FetchTraineesDailyData(val userId: String): TraineesEvent()
     data class SelectTrainee(val userId: String) : TraineesEvent()
     data class AcceptRequest(val userId: String): TraineesEvent()
     data class DeclineRequest(val userId: String): TraineesEvent()

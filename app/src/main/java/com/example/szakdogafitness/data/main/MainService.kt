@@ -275,6 +275,21 @@ class MainService @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun getUsersDailyDatasById(userId: String): Flow<List<DailyData>> = flow {
+        try {
+            firestore.collection("dailyDatas")
+                .document(userId)
+                .collection("dailyData")
+                .dataObjects<DailyData>()
+                .collect { dailyDataList ->
+                    emit(dailyDataList.sortedBy { it.date.toDate() })
+                }
+        } catch (e: Exception) {
+            Log.e("MainService", "Error fetching daily data by ID: ${e.message}", e)
+            emit(emptyList())
+        }
+    }
+
     override suspend fun applyForAppointment(
         trainer: String?,
         appointment: Map<String, List<Int>>,

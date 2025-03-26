@@ -4,7 +4,10 @@ import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -19,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
 import com.example.szakdogafitness.viewmodel.AppBarEvent
@@ -37,6 +41,9 @@ fun TraineeDetailScreen(
 ){
     val traineesState by traineesViewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
+        traineesViewModel.onEvent(TraineesEvent.FetchTraineesDailyData(
+            traineesState.selectedTrainee?.second?.userId ?: error("Selected trainee is null")
+        ))
         delay(100)
         appBarViewModel.onEvent(
             AppBarEvent.TopBarComposableChanged(
@@ -78,14 +85,24 @@ fun TraineeDetailScreen(
                 Text(text = "Bio")
             }
         }
-        Box(modifier = Modifier.fillMaxSize()) {
-            if (!traineesState.detailMode) {
-                Text(
-                    text = "a"
-                )
-            } else {
-                TraineeBioScreen(
-                    data = traineesState.selectedTrainee?.second ?: error("Selected trainee is null")
+        if (!traineesState.isLoading){
+            Box(modifier = Modifier.fillMaxSize()) {
+                if (!traineesState.detailMode) {
+
+                    Text(
+                        text = traineesState.traineesDailyDataList.toString()
+                    )
+                } else {
+                    TraineeBioScreen(
+                        data = traineesState.selectedTrainee?.second ?: error("Selected trainee is null")
+                    )
+                }
+            }
+        } else {
+            Box(modifier = Modifier.fillMaxSize()){
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(250.dp)
                 )
             }
         }

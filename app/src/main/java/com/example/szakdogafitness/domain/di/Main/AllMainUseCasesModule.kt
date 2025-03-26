@@ -10,6 +10,7 @@ import com.example.szakdogafitness.domain.usecases.main.FetchRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchRequestedAppointmentsUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchTrainersRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchUserUseCase
+import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasByIdUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasUseCase
 import com.example.szakdogafitness.domain.usecases.main.GenerateNewDailyDataUseCase
 import com.example.szakdogafitness.domain.usecases.main.GetAcceptedTrainersUseCase
@@ -108,6 +109,11 @@ object AllMainUseCasesModule {
     @Singleton
     fun provideLoadAllTrainersAllRateUseCase(repository: IMainService): LoadAllTrainersAllRateUseCase =
         LoadAllTrainersAllRateUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideFetchUsersDailyDatasByIdUseCase(repository: IMainService): FetchUsersDailyDatasByIdUseCase =
+        FetchUsersDailyDatasByIdUseCase(repository)
 
     @Provides
     @Singleton
