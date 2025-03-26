@@ -15,11 +15,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.usecases.setup.AllSetupUseCases
 import com.example.szakdogafitness.feature.setup.toTriple
 import com.example.szakdogafitness.ui.common.LargeDropdownMenu
@@ -41,6 +43,8 @@ fun TrainerOne(
         .padding(top = 8.dp, bottom = 8.dp)
 
     val state by setupViewModel.state.collectAsState()
+
+    val context = LocalContext.current
 
     /*Column (
         modifier = Modifier
@@ -92,7 +96,8 @@ fun TrainerOne(
         )*/
 
         var selectedCertificationsIndices by remember { mutableStateOf((state.user.trainer.certifications)) }
-        var certifications = listOf("None", "ACE Certified Personal Trainer (CPT)", "NASM Certified Personal Trainer (CPT)", "ISSA Certified Personal Trainer", "ACSM Certified Personal Trainer", "NSCA Certified Personal Trainer", "AFPA Certified Personal Trainer", "NESTA Certified Personal Trainer", "AFAA Certified Personal Fitness Instructor", "NPTI Certified Personal Trainer", "CrossFit Level 1 Trainer", "CrossFit Level 2 Trainer", "Certified Strength and Conditioning Specialist (CSCS)", "National Strength and Conditioning Association (NSCA)", "USA Weightlifting Level 1 Coach", "USA Weightlifting Level 2 Coach", "Precision Nutrition Level 1", "Precision Nutrition Level 2", "Certified Sports Nutritionist (CSN)", "Registered Dietitian (RD)", "Yoga Alliance Certified Teacher (RYT)", "Pilates Certification", "Group Fitness Instructor Certification", "CPR/AED Certified", "First Aid Certified", "Other Certifications", "Prefer Not to Say")
+        //var certifications = listOf("None", "ACE Certified Personal Trainer (CPT)", "NASM Certified Personal Trainer (CPT)", "ISSA Certified Personal Trainer", "ACSM Certified Personal Trainer", "NSCA Certified Personal Trainer", "AFPA Certified Personal Trainer", "NESTA Certified Personal Trainer", "AFAA Certified Personal Fitness Instructor", "NPTI Certified Personal Trainer", "CrossFit Level 1 Trainer", "CrossFit Level 2 Trainer", "Certified Strength and Conditioning Specialist (CSCS)", "National Strength and Conditioning Association (NSCA)", "USA Weightlifting Level 1 Coach", "USA Weightlifting Level 2 Coach", "Precision Nutrition Level 1", "Precision Nutrition Level 2", "Certified Sports Nutritionist (CSN)", "Registered Dietitian (RD)", "Yoga Alliance Certified Teacher (RYT)", "Pilates Certification", "Group Fitness Instructor Certification", "CPR/AED Certified", "First Aid Certified", "Other Certifications", "Prefer Not to Say")
+        val certifications = context.resources.getStringArray(R.array.certifications).toList()
 
         LargeDropdownMenu(
             modifier = textFieldModifier
@@ -128,7 +133,8 @@ fun TrainerOne(
         )
 
         var selectedAreasIndices by remember { mutableStateOf(listOf<Int>()) }
-        var areasList = listOf("Weight Loss", "Muscle Gain / Hypertrophy", "Strength Training", "Functional Training", "HIIT (High-Intensity Interval Training)", "Cardiovascular Fitness", "Endurance Training", "Sports-Specific Training", "Bodybuilding", "Powerlifting", "Olympic Weightlifting", "Yoga", "Pilates", "Flexibility and Mobility", "Balance and Coordination", "Injury Rehabilitation", "Pre/Postnatal Fitness", "Senior Fitness", "Youth Fitness", "Nutrition Coaching", "Mindfulness and Stress Reduction", "Other Areas of Expertise", "Prefer Not to Say")
+        //var areasList = listOf("Weight Loss", "Muscle Gain / Hypertrophy", "Strength Training", "Functional Training", "HIIT (High-Intensity Interval Training)", "Cardiovascular Fitness", "Endurance Training", "Sports-Specific Training", "Bodybuilding", "Powerlifting", "Olympic Weightlifting", "Yoga", "Pilates", "Flexibility and Mobility", "Balance and Coordination", "Injury Rehabilitation", "Pre/Postnatal Fitness", "Senior Fitness", "Youth Fitness", "Nutrition Coaching", "Mindfulness and Stress Reduction", "Other Areas of Expertise", "Prefer Not to Say")
+        val areasList = context.resources.getStringArray(R.array.areas_of_expertise).toList()
 
         LargeDropdownMenu(
             modifier = textFieldModifier
@@ -160,7 +166,8 @@ fun TrainerOne(
         )
 
         var selectedStylesIndices by remember { mutableStateOf(listOf<Int>()) }
-        var stylesList = listOf("Holistic Approach", "Results-Oriented", "Client-Centered", "Evidence-Based Practice", "Functional Fitness", "Mind-Body Connection", "Strength and Conditioning", "Positive Reinforcement", "Motivational Coaching", "Personalized Programs", "Small Group Training", "Online Coaching", "Outdoor Fitness", "Corrective Exercise", "Other Training Styles", "Prefer Not to Say")
+        //var stylesList = listOf("Holistic Approach", "Results-Oriented", "Client-Centered", "Evidence-Based Practice", "Functional Fitness", "Mind-Body Connection", "Strength and Conditioning", "Positive Reinforcement", "Motivational Coaching", "Personalized Programs", "Small Group Training", "Online Coaching", "Outdoor Fitness", "Corrective Exercise", "Other Training Styles", "Prefer Not to Say")
+        val stylesList = context.resources.getStringArray(R.array.training_styles).toList()
 
         LargeDropdownMenu(
             modifier = textFieldModifier

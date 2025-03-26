@@ -5,4 +5,274 @@
     <string name="success_registration">Registration successful</string>
     <string name="success_logout">Successfully signed out</string>
     <string name="success_recovery_email">Recovery email successfully sent</string>
+    <string-array name="fitness_goal">
+       <item>Lose Weight</item>
+        <item>Gain Muscle</item>
+        <item>Improve Endurance</item>
+        <item>Improve Flexibility</item>
+        <item>Improve Strength</item>
+        <item>Improve Speed</item>
+        <item>Improve Power</item>
+        <item>Improve Agility</item>
+        <item>Improve Balance</item>
+        <item>Improve Coordination</item>
+        <item>Improve Accuracy</item>
+        <item>Improve Stamina</item>
+        <item>Improve Cardiovascular Health</item>
+        <item>Improve Mental Health</item>
+        <item>Improve Sleep</item>
+        <item>Improve Nutrition</item>
+        <item>Improve Hydration</item>
+        <item>Improve Recovery</item>
+        <item>Improve Mobility</item>
+        <item>Improve Posture</item>
+        <item>Improve Technique</item>
+        <item>Improve Form</item>
+        <item>Improve Breathing</item>
+        <item>Improve Confidence</item>
+        <item>Improve Discipline</item>
+        <item>Improve Consistency</item>
+        <item>Improve Patience</item>
+        <item>Improve Focus</item>
+        <item>Improve Mindfulness</item>
+        <item>Improve Awareness</item>
+        <item>Improve Presence</item>
+        <item>Improve Resilience</item>
+        <item>Improve Grit</item>
+        <item>Improve Determination</item>
+        <item>Improve Perseverance</item>
+        <item>Improve Dedication</item>
+        <item>Improve Commitment</item>
+        <item>Improve Passion</item>
+        <item>Improve Love</item>
+        <item>Improve Joy</item>
+        <item>Improve Happiness</item>
+        <item>Improve Fulfillment</item>
+        <item>Improve Purpose</item>
+        <item>Improve Meaning</item>
+        <item>Improve Connection</item>
+        <item>Improve Community</item>
+        <item>Improve Relationships</item>
+        <item>Improve Communication</item>
+        <item>Improve Collaboration</item>
+        <item>Improve Teamwork</item>
+        <item>Improve Leadership</item>
+        <item>Improve Management</item>
+        <item>Improve Organization</item>
+        <item>Improve Planning</item>
+        <item>Improve Preparation</item>
+        <item>Improve Execution</item>
+        <item>Improve Performance</item>
+        <item>Improve Results</item>
+        <item>Improve Success</item>
+        <item>Improve Achievement</item>
+        <item>Improve Progress</item>
+        <item>Improve Growth</item>
+        <item>Improve Development</item>
+        <item>Improve Evolution</item>
+        <item>Improve Transformation</item>
+        <item>Improve Change</item>
+        <item>Improve Adaptation</item>
+        <item>Improve Innovation</item>
+        <item>Improve Creativity</item>
+        <item>Improve Imagination</item>
+        <item>Improve Inspiration</item>
+        <item>Improve Motivation</item>
+        <item>Improve Encouragement</item>
+        <item>Improve Support</item>
+        <item>Improve Empowerment</item>
+        <item>Improve Influence</item>
+        <item>Improve Impact</item>
+        <item>Improve Contribution</item>
+        <item>Improve Service</item>
+        <item>Improve Value</item>
+        <item>Improve Quality</item>
+        <item>Improve Excellence</item>
+        <item>Improve Greatness</item>
+        <item>Improve Mastery</item>
+        <item>Improve Wisdom</item>
+        <item>Improve Knowledge</item>
+        <item>Improve Understanding</item>
+        <item>Improve Awareness</item>
+        <item>Improve Consciousness</item>
+        <item>Improve Spirituality</item>
+        <item>Improve Religion</item>
+        <item>Improve</item>
+    </string-array>
+    <string-array name="current_fitness_level">
+        <item>Beginner"</item>
+        <item>Intermediate"</item>
+        <item>Advanced"</item>
+        <item>Professional"</item>
+        <item>Elite"</item>
+        <item>Olympian"</item>
+    </string-array>
+    <string-array name="health_information">
+        <item>Healthy</item>
+        <item>Cardiovascular Disease</item>
+        <item>Respiratory Conditions</item>
+        <item>Musculoskeletal Issues</item>
+        <item>Endocrine Disorders</item>
+        <item>Neurological Conditions</item>
+        <item>Digestive Disorders</item>
+        <item>Mental Health Conditions</item>
+        <item>Allergies</item>
+        <item>Autoimmune Diseases</item>
+        <item>Back Pain</item>
+        <item>Knee Problems</item>
+        <item>Shoulder Pain</item>
+        <item>Neck Pain</item>
+        <item>Plantar Fasciitis</item>
+        <item>Carpal Tunnel Syndrome</item>
+        <item>Pregnancy</item>
+        <item>Postpartum</item>
+        <item>History of Injuries</item>
+        <item>Surgeries</item>
+        <item>Medications</item>
+        <item>Smoking Status</item>
+        <item>Alcohol Consumption</item>
+    </string-array>
+    <string-array name="diet_information">
+        <item>None</item>
+        <item>Vegetarian</item>
+        <item>Vegan</item>
+        <item>Gluten-Free</item>
+        <item>Dairy-Free</item>
+        <item>Lactose Intolerant</item>
+        <item>Nut Allergy</item>
+        <item>Peanut Allergy</item>
+        <item>Tree Nut Allergy</item>
+        <item>Soy Allergy</item>
+        <item>Egg Allergy</item>
+        <item>Shellfish Allergy</item>
+        <item>Fish Allergy</item>
+        <item>Wheat Allergy</item>
+        <item>Other Allergies</item>
+        <item>Low-Carb</item>
+        <item>Ketogenic (Keto)</item>
+        <item>Paleo</item>
+        <item>Whole30</item>
+        <item>Low-Sodium</item>
+        <item>Low-Sugar</item>
+        <item>High-Protein</item>
+        <item>Kosher</item>
+        <item>Halal</item>
+        <item>Weight Watchers</item>
+        <item>Other Restrictions</item>
+        <item>Prefer Not to Say</item>
+    </string-array>
+    <string-array name="equipment">
+        <item>None</item>
+        <item>Dumbbells</item>
+        <item>Kettlebells</item>
+        <item>Barbell</item>
+        <item>Bench</item>
+        <item>Pull-Up Bar</item>
+        <item>Resistance Bands</item>
+        <item>Medicine Ball</item>
+        <item>Stability Ball</item>
+        <item>Yoga Mat</item>
+        <item>Foam Roller</item>
+        <item>TRX</item>
+        <item>Box</item>
+        <item>Bosu Ball</item>
+        <item>Plyo Box</item>
+        <item>Jump Rope</item>
+        <item>Treadmill</item>
+        <item>Stationary Bike</item>
+        <item>Rowing Machine</item>
+        <item>Elliptical</item>
+        <item>Stair Climber</item>
+        <item>Other Cardio Equipment</item>
+        <item>Other Strength Equipment</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="certifications">
+        <item>None</item>
+        <item>ACE Certified Personal Trainer (CPT)</item>
+        <item>NASM Certified Personal Trainer (CPT)</item>
+        <item>ISSA Certified Personal Trainer</item>
+        <item>ACSM Certified Personal Trainer</item>
+        <item>NSCA Certified Personal Trainer</item>
+        <item>AFPA Certified Personal Trainer</item>
+        <item>NESTA Certified Personal Trainer</item>
+        <item>AFAA Certified Personal Fitness Instructor</item>
+        <item>NPTI Certified Personal Trainer</item>
+        <item>CrossFit Level 1 Trainer</item>
+        <item>CrossFit Level 2 Trainer</item>
+        <item>Certified Strength and Conditioning Specialist (CSCS)</item>
+        <item>National Strength and Conditioning Association (NSCA)</item>
+        <item>USA Weightlifting Level 1 Coach</item>
+        <item>USA Weightlifting Level 2 Coach</item>
+        <item>Precision Nutrition Level 1</item>
+        <item>Precision Nutrition Level 2</item>
+        <item>Certified Sports Nutritionist (CSN)</item>
+        <item>Registered Dietitian (RD)</item>
+        <item>Yoga Alliance Certified Teacher (RYT)</item>
+        <item>Pilates Certification</item>
+        <item>Group Fitness Instructor Certification</item>
+        <item>CPR/AED Certified</item>
+        <item>First Aid Certified</item>
+        <item>Other Certifications</item>
+        <item>Prefer Not to Say</item>
+    </string-array>
+    <string-array name="areas_of_expertise">
+        <item>Weight Loss</item>
+        <item>Muscle Gain / Hypertrophy</item>
+        <item>Strength Training</item>
+        <item>Functional Training</item>
+        <item>HIIT (High-Intensity Interval Training)</item>
+        <item>Cardiovascular Fitness</item>
+        <item>Endurance Training</item>
+        <item>Sports-Specific Training</item>
+        <item>Bodybuilding</item>
+        <item>Powerlifting</item>
+        <item>Olympic Weightlifting</item>
+        <item>Yoga</item>
+        <item>Pilates</item>
+        <item>Flexibility and Mobility</item>
+        <item>Balance and Coordination</item>
+        <item>Injury Rehabilitation</item>
+        <item>Pre/Postnatal Fitness</item>
+        <item>Senior Fitness</item>
+        <item>Youth Fitness</item>
+        <item>Nutrition Coaching</item>
+        <item>Mindfulness and Stress Reduction</item>
+        <item>Other Areas of Expertise</item>
+        <item>Prefer Not to Say</item>
+    </string-array>
+    <string-array name="training_styles">
+        <item>Holistic Approach</item>
+        <item>Results-Oriented</item>
+        <item>Client-Centered</item>
+        <item>Evidence-Based Practice</item>
+        <item>Functional Fitness</item>
+        <item>Mind-Body Connection</item>
+        <item>Strength and Conditioning</item>
+        <item>Positive Reinforcement</item>
+        <item>Motivational Coaching</item>
+        <item>Personalized Programs</item>
+        <item>Small Group Training</item>
+        <item>Online Coaching</item>
+        <item>Outdoor Fitness</item>
+        <item>Corrective Exercise</item>
+        <item>Other Training Styles</item>
+        <item>Prefer Not to Say</item>
+    </string-array>
+    <string-array name="specializations">
+        <item>None</item>
+        <item>Working with Seniors</item>
+        <item>Working with Athletes</item>
+        <item>Working with Children/Teenagers</item>
+        <item>Pre/Postnatal Fitness</item>
+        <item>Weight Management (Overweight/Obesity)</item>
+        <item>Corrective Exercise/Injury Prevention</item>
+        <item>Chronic Disease Management (Diabetes, Heart Disease, etc.)</item>
+        <item>Disability Fitness</item>
+        <item>Mental Health and Wellness</item>
+        <item>Body Transformation</item>
+        <item>Competition Preparation (Bodybuilding, Powerlifting, etc.)</item>
+        <item>Other Specializations</item>
+        <item>Prefer Not to Say</item>
+    </string-array>
 </resources>

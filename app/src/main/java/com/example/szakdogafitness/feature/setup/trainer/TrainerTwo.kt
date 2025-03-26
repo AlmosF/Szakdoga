@@ -26,11 +26,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.szakdogafitness.R
 import com.example.szakdogafitness.ui.common.LargeDropdownMenu
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.ProgressBar
@@ -49,6 +51,8 @@ fun TrainerTwo(
         .padding(top = 8.dp, bottom = 8.dp)
 
     val state = setupViewModel.state.collectAsState().value
+
+    val context = LocalContext.current
 
     ConstraintLayout (
         modifier = Modifier
@@ -117,7 +121,8 @@ fun TrainerTwo(
         )
 
         var selectedSpecializationsIndices by remember { mutableStateOf(listOf<Int>()) }
-        val specializations = listOf("None", "Working with Seniors", "Working with Athletes", "Working with Children/Teenagers", "Pre/Postnatal Fitness", "Weight Management (Overweight/Obesity)", "Corrective Exercise/Injury Prevention", "Chronic Disease Management (Diabetes, Heart Disease, etc.)", "Disability Fitness", "Mental Health and Wellness", "Body Transformation", "Competition Preparation (Bodybuilding, Powerlifting, etc.)", "Other Specializations", "Prefer Not to Say")
+        //val specializations = listOf("None", "Working with Seniors", "Working with Athletes", "Working with Children/Teenagers", "Pre/Postnatal Fitness", "Weight Management (Overweight/Obesity)", "Corrective Exercise/Injury Prevention", "Chronic Disease Management (Diabetes, Heart Disease, etc.)", "Disability Fitness", "Mental Health and Wellness", "Body Transformation", "Competition Preparation (Bodybuilding, Powerlifting, etc.)", "Other Specializations", "Prefer Not to Say")
+        val specializations = context.resources.getStringArray(R.array.specializations).toList()
 
         LargeDropdownMenu(
             label = "Specializations (Optional)",

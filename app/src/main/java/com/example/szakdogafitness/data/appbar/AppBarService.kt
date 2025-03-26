@@ -70,6 +70,10 @@ class AppBarService @Inject constructor(
                 Log.d("RootNavigation-AppBar", "EditFoodDetail")
                 return Pair(true, false)
             }
+            RootScreenRoute.TraineeDetail.route -> {
+                Log.d("RootNavigation-AppBar", "TraineeDetail")
+                return Pair(true, false)
+            }
             else -> {
                 Log.d("RootNavigation-AppBar", "else")
                 //return Pair(true, true)

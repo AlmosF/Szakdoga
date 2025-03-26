@@ -51,7 +51,26 @@ class TraineesViewModel @Inject constructor(
             is TraineesEvent.DetailModeChanged -> {
                 _state.update { it.copy(detailMode = event.lifestyle) }
             }
+
+            is TraineesEvent.SelectTrainee -> {
+                selectTrainee(event.userId)
+            }
+
+            TraineesEvent.ClearSelectedTrainee -> {
+                _state.update { it.copy(
+                    selectedTrainee = null
+                ) }
+            }
         }
+    }
+
+    private fun selectTrainee(traineeId: String){
+        val trainee = state.value.acceptedRequests.find {
+            it.first.traineeId == traineeId
+        } ?: error("Error finding trainee")
+        _state.update { it.copy(
+            selectedTrainee = trainee
+        ) }
     }
 
     private fun loadPendingRequests(
@@ -113,10 +132,22 @@ class TraineesViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             try {
                 fetchRequests.invoke(status).collect { acceptedRequests ->
-                    _state.update { it.copy(
+                    //val currentSelectedId = _state.value.selectedTrainee?.second?.userId
+                    //val selectedPair = _state.value.acceptedRequests.find { it.second.userId == currentSelectedId }
+                    _state.update {
+                        it.copy(
+                            acceptedRequests = acceptedRequests,
+                            isLoading = false,
+                            //selectedTrainee = selectedPair
+                        )
+                    }
+                    state.value.selectedTrainee?.let {
+                        selectTrainee(it.second.userId)
+                    }
+                    /*_state.update { it.copy(
                         acceptedRequests = acceptedRequests,
                         isLoading = false
-                    ) }
+                    ) }*/
                 }
             } catch (e: Exception) {
                 _state.update { it.copy(isLoading = false) }
@@ -136,13 +167,16 @@ data class TraineesState(
     val pendingRequests: List<Pair<Requests, User>> = emptyList(),
     //val acceptedRequests: List<Requests> = emptyList()
     val acceptedRequests: List<Pair<Requests, User>> = emptyList(),
-    val detailMode: Boolean = false
+    val detailMode: Boolean = false,
+    val selectedTrainee: Pair<Requests, User>? = null
 )
 
 sealed class TraineesEvent {
     object LoadPendingRequests: TraineesEvent()
+    object ClearSelectedTrainee: TraineesEvent()
     object LoadAcceptedRequests: TraineesEvent()
     data class DetailModeChanged(val lifestyle: Boolean): TraineesEvent()
+    data class SelectTrainee(val userId: String) : TraineesEvent()
     data class AcceptRequest(val userId: String): TraineesEvent()
     data class DeclineRequest(val userId: String): TraineesEvent()
 }

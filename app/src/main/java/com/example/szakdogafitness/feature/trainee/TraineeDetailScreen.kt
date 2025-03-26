@@ -20,16 +20,38 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
+import com.example.szakdogafitness.viewmodel.AppBarEvent
+import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.TraineesEvent
 import com.example.szakdogafitness.viewmodel.TraineesViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun TraineeDetailScreen(
     modifier: Modifier = Modifier,
     traineesViewModel: TraineesViewModel = hiltViewModel(),
-    id: String
+    appBarViewModel: AppBarViewModel = hiltViewModel(),
+    id: String,
+    onNavigateBack: () -> Unit
 ){
     val traineesState by traineesViewModel.state.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        delay(100)
+        appBarViewModel.onEvent(
+            AppBarEvent.TopBarComposableChanged(
+                {
+                    BackNavWithTitle(
+                        title = traineesState.selectedTrainee?.second?.firstName + " " + traineesState.selectedTrainee?.second?.lastName,
+                    ) {
+                        onNavigateBack()
+                        traineesViewModel.onEvent(TraineesEvent.ClearSelectedTrainee)
+                    }
+                }
+            )
+        )
+    }
+
     LaunchedEffect(traineesState.acceptedRequests) {
         Log.d("TraineeDetailScreen", "AcceptedRequests: ${traineesState.acceptedRequests}")
     }
@@ -59,15 +81,11 @@ fun TraineeDetailScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             if (!traineesState.detailMode) {
                 Text(
-                    text = traineesState.acceptedRequests.find {
-                        it.second.userId == id
-                    }?.first.toString()
+                    text = "a"
                 )
             } else {
                 TraineeBioScreen(
-                    data = traineesState.acceptedRequests.find {
-                        it.second.userId == id
-                    }?.second ?: error("asd")
+                    data = traineesState.selectedTrainee?.second ?: error("Selected trainee is null")
                 )
             }
         }

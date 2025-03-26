@@ -400,20 +400,13 @@ fun NewRootNavigation(
 
 
             composable(RootScreenRoute.Trainees.route){
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            TopBar(
-                                title = {
-                                    Text("Trainee(s)")
-                                },
-                            )
-                        }
-                    )
-                )
                 TraineesScreen(
-                    traineesViewModel = traineesViewModel
+                    traineesViewModel = traineesViewModel,
+                    appBarViewModel = appBarViewModel
                 ) {
+                    traineesViewModel.onEvent(TraineesEvent.SelectTrainee(
+                        it
+                    ))
                     navController.navigate(RootScreenRoute.TraineeDetail.createRoute(
                         it
                     ))
@@ -421,7 +414,7 @@ fun NewRootNavigation(
             }
 
             composable(RootScreenRoute.TraineeDetail.route) { entry ->
-                appBarViewModel.onEvent(
+                /*appBarViewModel.onEvent(
                     AppBarEvent.TopBarComposableChanged(
                         {
                             BackNavWithTitle("Trainee Details") {
@@ -429,14 +422,22 @@ fun NewRootNavigation(
                             }
                         }
                     )
-                )
+                )*/
                 val id = entry.arguments?.getString("id")
                 //Text(text = "TraineeDetail: ${
                 //    traineesViewModel.state.collectAsStateWithLifecycle().value.acceptedRequests.find { it.second.userId == id }
                 //}")
                 TraineeDetailScreen(
                     traineesViewModel = traineesViewModel,
-                    id = id!!
+                    appBarViewModel = appBarViewModel,
+                    id = id!!,
+                    onNavigateBack = {
+                        navController.navigate(RootScreenRoute.Trainees.route){
+                            popUpTo(RootScreenRoute.Trainees.route){
+                                inclusive = true
+                            }
+                        }
+                    }
                 )
             }
 
