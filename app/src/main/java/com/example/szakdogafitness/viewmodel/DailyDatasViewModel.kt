@@ -145,7 +145,14 @@ class DailyDatasViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             try {
                 generateNewDailyData.invoke()
-                _state.update { it.copy(isLoading = false) }
+                val latestDailyData = _state.value.dailyDataList.last()
+                val latestDate = latestDailyData.date.toDate().toString().substring(4, 10)
+                _state.update { it.copy(
+                    isLoading = false,
+                    currentDailyData = latestDailyData,
+                    lifeStyleTitle = latestDate,
+                ) }
+                buttonsAvailability()
             } catch (e: Exception) {
                 e.printStackTrace()
                 _state.update { it.copy(isLoading = false) }
