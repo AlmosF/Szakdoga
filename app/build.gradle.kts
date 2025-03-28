@@ -50,6 +50,9 @@ android {
 dependencies {
 
 
+    //Generative Ai
+    implementation(libs.generativeai)
+
     //CoilImage
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
