@@ -55,7 +55,6 @@ class MainActivity : ComponentActivity() {
                     //TraineeOne(innerPadding)
                     //TraineeTwo(innerPadding)
                     //TrainerOne(innerPadding)
-                    //TrainerTwo(innerPadding)
 
 
 
