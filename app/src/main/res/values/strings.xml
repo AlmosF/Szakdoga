@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">SzakdogaFitness</string>
-    <string name="some_error_message">watafak</string>
+    <string name="some_error_message">Something went wrong!</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="email_blank">Email cannot be empty</string>
+    <string name="password_not_match">Passwords do not match</string>
+    <string name="email_invalid">Invalid email address</string>
+    <string name="password_blank">Password cannot be empty</string>
+    <string name="password_blank_n_dont_match">Password cannot be empty and passwords do not match</string>
+    <string name="confirm_password_blank">Confirm password cannot be empty</string>
     <string name="success_login">Successful login</string>
     <string name="success_registration">Registration successful</string>
     <string name="success_logout">Successfully signed out</string>

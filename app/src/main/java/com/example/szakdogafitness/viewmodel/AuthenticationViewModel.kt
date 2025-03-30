@@ -1,6 +1,8 @@
 package com.example.szakdogafitness.viewmodel
 
+import android.content.Context
 import android.util.Log
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -93,14 +95,14 @@ class AuthenticationViewModel @Inject constructor(
                 if (!isEmailValid(email)){
                     _uiEvent.send(
                         UiEvent.Failure(
-                            UiText.StringResource(R.string.some_error_message)
+                            UiText.StringResource(R.string.email_invalid)
                         )
                     )
                 } else {
                     if (password.isBlank()){
                         _uiEvent.send(
                             UiEvent.Failure(
-                                UiText.StringResource(R.string.some_error_message)
+                                UiText.StringResource(R.string.password_blank)
                             )
                         )
                     } else {
@@ -129,14 +131,14 @@ class AuthenticationViewModel @Inject constructor(
                 if (!isEmailValid(email)){
                     _uiEvent.send(
                         UiEvent.Failure(
-                            UiText.StringResource(R.string.some_error_message)
+                            UiText.StringResource(R.string.email_blank)
                         )
                     )
                 } else {
                     if (!passwordsMatch(password, confirmPassword) && password.isNotBlank()) {
                         _uiEvent.send(
                             UiEvent.Failure(
-                                UiText.StringResource(R.string.some_error_message)
+                                UiText.StringResource(R.string.password_blank_n_dont_match)
                             )
                         )
                     } else {
@@ -206,6 +208,12 @@ class AuthenticationViewModel @Inject constructor(
 
     fun checkSignInState() = _state.update { it.copy(isLoggedIn = authentication.hasUser() ) }
 
+    fun checkOnlineState(context: Context) = _state.update {
+        it.copy(
+            isOnline = authentication.isOnline(context = context),
+        )
+    }
+
     fun getUserId(): String? = authentication.currentUserId()
 
 }
@@ -217,7 +225,8 @@ data class AuthenticationState(
     val passwordVisibility: Boolean = false,
     val confirmPasswordVisibility: Boolean = false,
     val isInRegisterMode: Boolean = false,
-    val isLoggedIn: Boolean = false
+    val isLoggedIn: Boolean = false,
+    val isOnline: Boolean = false
 )
 
 sealed class AuthenticationEvent {

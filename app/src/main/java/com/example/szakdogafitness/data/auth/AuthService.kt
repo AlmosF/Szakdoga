@@ -1,6 +1,7 @@
 package com.example.szakdogafitness.data.auth
 
 
+import android.content.Context
 import com.example.szakdogafitness.domain.model.User
 
 interface AuthService {
@@ -11,6 +12,8 @@ interface AuthService {
     fun currentUser(): User?
 
     fun hasUser(): Boolean
+
+    fun isOnline(context: Context): Boolean
 
     suspend fun signUp(
         email: String, password: String,

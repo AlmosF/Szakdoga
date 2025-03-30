@@ -114,6 +114,7 @@ fun NewRootNavigation(
     }
     LaunchedEffect(Unit) {
         authViewModel.checkSignInState()
+        authViewModel.checkOnlineState(context)
         authViewModel.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.Success -> {
@@ -137,8 +138,12 @@ fun NewRootNavigation(
     }
 
 
-    val startDestination = when {
+    /*val startDestination = when {
         authState.isLoggedIn -> RootScreenRoute.Loading.route
+        else -> RootScreenRoute.Authentication.route
+    }*/
+    val startDestination = when {
+        authState.isLoggedIn && authState.isOnline -> RootScreenRoute.Loading.route
         else -> RootScreenRoute.Authentication.route
     }
     LaunchedEffect(authState.isLoggedIn) {

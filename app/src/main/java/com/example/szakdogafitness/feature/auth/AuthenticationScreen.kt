@@ -75,6 +75,7 @@ fun AuthenticateScreen(
 
     LaunchedEffect(key1 = true) {
         viewModel.checkSignInState()
+        viewModel.checkOnlineState(context)
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.Success -> {

@@ -7,6 +7,7 @@ class AllAuthenticationUseCases(
     val currentUserId: CurrentUserIdUseCase,
     val currentUser: CurrentUserUseCase,
     val hasUser: HasUserUseCase,
+    val isOnline: IsOnlineUseCase,
     val signUp : SignUpUseCase,
     val signIn : SignInUseCase,
     val sendRecoveryEmail : SendRecoveryEmailUseCase,
