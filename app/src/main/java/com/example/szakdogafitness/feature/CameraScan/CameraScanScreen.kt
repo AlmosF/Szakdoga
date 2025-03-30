@@ -1,6 +1,7 @@
 package com.example.szakdogafitness.feature.CameraScan
 
 import android.graphics.Color
+import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import androidx.camera.view.LifecycleCameraController

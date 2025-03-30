@@ -259,7 +259,7 @@ fun NewRootNavigation(
                 NutritionScreen(
                     mealTypesViewModel = mealTypesViewModel,
                     dailyDatasViewModel = dailyDatasViewModel,
-                    image = cameraState.image,
+                    cameraViewModel = cameraViewModel,
                     onAINavigate = {
                         navController.navigate(RootScreenRoute.NutritionAI.route)
                     },

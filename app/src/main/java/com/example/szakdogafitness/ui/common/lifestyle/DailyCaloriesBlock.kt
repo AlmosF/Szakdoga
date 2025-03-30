@@ -56,16 +56,10 @@ fun DailyCaloriesBlock(
         pageCount = {2}
     )
 
-    //val totalCalories = dailyData.foodIntake.values.sumOf { it.sumOf { it.calories} }
     val foodIntakeList = dailyData.foodIntakeM.values.flatten().mapNotNull { foodId ->
         nutritions.find { it.foodId == foodId }
     }
     val totalCalories = foodIntakeList.sumOf { it.calories }
-    /*val totalCalories = dailyData.foodIntakeM.values.flatten().filter { food ->
-        nutritions.any { it.foodId == food }
-    }.sumOf { foodId ->
-        nutritions.find { it.foodId == foodId }?.calories ?: 0
-    }*/
     val targetCalories = dailyData.targetKcal
 
     Column (

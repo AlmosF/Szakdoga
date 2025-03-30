@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,7 +25,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,6 +37,7 @@ import com.example.szakdogafitness.domain.model.FoodAnalysisResult
 import com.example.szakdogafitness.ui.common.nutrition.AddNutrientsBlock
 import com.example.szakdogafitness.ui.common.nutrition.TargetKcalBlock
 import com.example.szakdogafitness.ui.common.nutrition.logblock.LogBlock
+import com.example.szakdogafitness.viewmodel.CameraEvent
 import com.example.szakdogafitness.viewmodel.CameraViewModel
 import com.example.szakdogafitness.viewmodel.DailyDatasEvent
 import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
@@ -50,7 +55,7 @@ fun NutritionScreen(
     //mainViewModel: MainViewModel = hiltViewModel(),
     dailyDatasViewModel: DailyDatasViewModel = hiltViewModel(),
     mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
-    image: Bitmap? = null,
+    cameraViewModel: CameraViewModel = hiltViewModel(),
     generativeViewModel: GenerativeViewModel = hiltViewModel(),
     onAINavigate: () -> Unit,
     onSearchNavigate: () -> Unit,
@@ -61,20 +66,21 @@ fun NutritionScreen(
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false
     )
+    val cameraState by cameraViewModel.state.collectAsStateWithLifecycle()
+    val mealTypesState by mealTypesViewModel.state.collectAsStateWithLifecycle()
     //val mainState by mainViewModel.state.collectAsStateWithLifecycle()
     val dailyDatasState by dailyDatasViewModel.state.collectAsStateWithLifecycle()
-    var capturedPhoto by remember { mutableStateOf(image?.asImageBitmap()) }
-
     val generativeState by generativeViewModel.state.collectAsStateWithLifecycle()
+    var capturedPhoto by remember { mutableStateOf(cameraState.image?.asImageBitmap()) }
 
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(image){
-        capturedPhoto = image?.asImageBitmap()
-        image?.let {
+    LaunchedEffect(cameraState.image){
+        capturedPhoto = cameraState.image?.asImageBitmap()
+        cameraState.image?.let {
             generativeViewModel.onEvent(GenerativeEvent.SendPrompt(it))
         }
-        if (image != null) {
+        if (cameraState.image != null) {
             bottomSheetVisible = true
         }
     }
@@ -98,28 +104,17 @@ fun NutritionScreen(
             onSearchNavigate = onSearchNavigate,
             onBarcodeNavigate = onBarcodeNavigate
         )
-        var kcal = 1500
         var targetKcal by remember { mutableStateOf(1500) }
         var maxKcal by remember { mutableStateOf(2500) }
-        /*TargetKcalBlock(
-            modifier = Modifier
-                .fillMaxWidth(0.9f),
-            kcal = kcal,
-            targetKcal = targetKcal,
-            maxKcal = maxKcal,
-            onIncrease = {
-                targetKcal += it
-            },
-            onDecrease = {
-                targetKcal -= it
-            }
-        )*/
+        val nutritions = mealTypesState.nutritions
+        val foodIntakeList = dailyDatasState.currentDailyData.foodIntakeM.values.flatten().mapNotNull { foodId ->
+            nutritions.find { it.foodId == foodId }
+        }
+        val totalCalories = foodIntakeList.sumOf { it.calories }
         TargetKcalBlock(
             modifier = Modifier
                 .fillMaxWidth(0.9f),
-            //kcal = mainState.currentDailyData.foodIntake.values.sumOf { it.sumOf { it.calories } },
-            kcal = dailyDatasState.currentDailyData.foodIntake.values.sumOf { it.sumOf { it.calories } },
-            //targetKcal = mainState.currentDailyData.targetKcal,
+            kcal = totalCalories,
             targetKcal = dailyDatasState.currentDailyData.targetKcal,
             maxKcal = maxKcal,
             onIncrease = {
@@ -147,6 +142,8 @@ fun NutritionScreen(
                     coroutineScope.launch {
                         sheetState.hide()
                         bottomSheetVisible = false
+                        cameraViewModel.onEvent(CameraEvent.ResetState)
+                        generativeViewModel.onEvent(GenerativeEvent.ResetState)
                     }
                 },
                 sheetState = sheetState,
@@ -154,6 +151,7 @@ fun NutritionScreen(
                 Column (
                     modifier = modifier
                         .padding(16.dp)
+                        .fillMaxWidth()
                     ,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -163,14 +161,27 @@ fun NutritionScreen(
                             contentDescription = "Captured Image",
                             modifier = Modifier
                                 .size(200.dp)
+                                .padding(8.dp)
+                                .clip(RoundedCornerShape(8.dp)),
+                            contentScale = ContentScale.Crop
                         )
                     }
                     if (generativeState.isLoading) {
                         CircularProgressIndicator()
                     } else {
-                        Text(
-                            text = generativeState.response.toString()
-                        )
+                        generativeState.error.takeIf { it.isNotBlank() }?.let {
+                            Text(
+                                text = it,
+                                color = Color.Red,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        generativeState.response.takeIf { it != FoodAnalysisResult() }?.let {
+                            Text(
+                                text = it.toString(),
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
                     }
                 }
             }

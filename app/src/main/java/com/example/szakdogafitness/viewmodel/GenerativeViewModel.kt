@@ -60,7 +60,7 @@ class GenerativeViewModel @Inject constructor(
                 ) }
             } catch (e: Exception) {
                 _state.update { it.copy(
-                    response = FoodAnalysisResult(),
+                    error = e.message ?: "An unexpected error occurred",
                     isLoading = false
                 ) }
             }
@@ -73,7 +73,8 @@ class GenerativeViewModel @Inject constructor(
 
 data class GenerativeState(
     val isLoading: Boolean = false,
-    val response: FoodAnalysisResult = FoodAnalysisResult()
+    val response: FoodAnalysisResult = FoodAnalysisResult(),
+    val error: String = ""
 )
 
 sealed class GenerativeEvent{
