@@ -54,7 +54,6 @@ class MainActivity : ComponentActivity() {
                     //SetupScreen(innerPadding)
                     //TraineeOne(innerPadding)
                     //TraineeTwo(innerPadding)
-                    //TrainerOne(innerPadding)
 
 
 
