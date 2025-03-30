@@ -44,6 +44,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.szakdogafitness.feature.CameraScan.CameraScreen
 import com.example.szakdogafitness.feature.auth.AuthenticateScreen
 import com.example.szakdogafitness.feature.lifestyle.LifeStyleScreen
 import com.example.szakdogafitness.feature.loading.CheckUserStatusScreen
@@ -70,6 +71,7 @@ import com.example.szakdogafitness.viewmodel.AppBarEvent
 import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
+import com.example.szakdogafitness.viewmodel.CameraViewModel
 import com.example.szakdogafitness.viewmodel.DailyDatasEvent
 import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
@@ -93,6 +95,7 @@ fun NewRootNavigation(
     dailyDatasViewModel: DailyDatasViewModel = hiltViewModel(),
     trainersViewModel: TrainersViewModel = hiltViewModel(),
     traineesViewModel: TraineesViewModel = hiltViewModel(),
+    cameraViewModel: CameraViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -104,6 +107,7 @@ fun NewRootNavigation(
     val profileState by profileViewModel.state.collectAsStateWithLifecycle()
     val dailyDatasState by dailyDatasViewModel.state.collectAsStateWithLifecycle()
     val trainersSate by trainersViewModel.state.collectAsStateWithLifecycle()
+    val cameraState by cameraViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(navBackStackEntry?.destination?.route) { //AppBarVisibility - Settings
         appBarViewModel.onEvent(AppBarEvent.AppBarVisibility(navBackStackEntry?.destination?.route ?: ""))
@@ -255,6 +259,7 @@ fun NewRootNavigation(
                 NutritionScreen(
                     mealTypesViewModel = mealTypesViewModel,
                     dailyDatasViewModel = dailyDatasViewModel,
+                    image = cameraState.image,
                     onAINavigate = {
                         navController.navigate(RootScreenRoute.NutritionAI.route)
                     },
@@ -267,7 +272,11 @@ fun NewRootNavigation(
                 )
             }
             composable(RootScreenRoute.NutritionAI.route) {
-                Text(text = "NutritionAI")
+                CameraScreen (
+                    cameraViewModel = cameraViewModel,
+                ) {
+                    navController.popBackStack()
+                }
             }
             composable(RootScreenRoute.NutritionSearch.route) {
                 appBarViewModel.onEvent(

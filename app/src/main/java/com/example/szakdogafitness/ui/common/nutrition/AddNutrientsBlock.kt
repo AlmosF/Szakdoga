@@ -27,7 +27,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun AddNutrientsBlock(
     modifier: Modifier = Modifier,
@@ -35,6 +39,9 @@ fun AddNutrientsBlock(
     onSearchNavigate: () -> Unit,
     onBarcodeNavigate: () -> Unit
 ) {
+    val cameraPermission = rememberPermissionState(
+        android.Manifest.permission.CAMERA
+    )
     Column(
         modifier = modifier
             .background(Color.Companion.LightGray, shape = RoundedCornerShape(16.dp))
@@ -58,7 +65,11 @@ fun AddNutrientsBlock(
                 icon = Icons.Default.CameraAlt,
                 title = "AI"
             ) {
-                onAINavigate()
+                if (cameraPermission.status.isGranted){
+                    onAINavigate()
+                } else {
+                    cameraPermission.launchPermissionRequest()
+                }
             }
             NutritionIcons(
                 modifier = Modifier.Companion,
@@ -67,13 +78,13 @@ fun AddNutrientsBlock(
             ) {
                 onSearchNavigate()
             }
-            NutritionIcons(
+            /*NutritionIcons(
                 modifier = Modifier.Companion,
                 icon = Icons.Default.QrCode,
                 title = "Barcode"
             ) {
                 onBarcodeNavigate()
-            }
+            }*/
 
         }
     }
