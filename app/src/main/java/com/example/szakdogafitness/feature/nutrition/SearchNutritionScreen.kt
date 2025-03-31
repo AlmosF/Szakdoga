@@ -206,7 +206,7 @@ fun SearchNutritionScreen(
     val mealTypesState by mealTypesViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        Log.d("SearchNutritionScreen", "LaunchedEffect")
+        mealTypesViewModel.onEvent(MealTypesEvent.MealTypeSelected("bf"))
         //mealTypesViewModel.onEvent(MealTypesEvent.LoadMealTypes)
         //mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
     }

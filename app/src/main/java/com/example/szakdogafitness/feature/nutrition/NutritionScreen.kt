@@ -3,6 +3,9 @@ package com.example.szakdogafitness.feature.nutrition
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,9 +14,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -29,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -181,15 +190,80 @@ fun NutritionScreen(
                                 text = it.toString(),
                                 modifier = Modifier.padding(8.dp)
                             )
+                            MealTypeSelector(
+                                selectedMealType = mealTypesState.selectedMealTitle
+                            ) {
+                                mealTypesViewModel.onEvent(MealTypesEvent.MealTypeSelected(it))
+                            }
+                            OutlinedButton(
+                                onClick = {
+                                    Log.d("NutritionScreen", "Consume Meal for: ${mealTypesState.selectedMealTitle}: ${generativeState.response}")
+                                    TODO("Add to database")
+                                },
+                                modifier = Modifier.fillMaxWidth(0.5f)
+                            ) {
+                                Text(
+                                    text = "Consume Meal"
+                                )
+                            }
                         }
                     }
                 }
             }
         }
     }
+}
 
+@Composable
+fun MealTypeSelector(
+    selectedMealType: String,
+    onMealTypeSelected: (String) -> Unit
+) {
+
+    var expanded by remember { mutableStateOf(false) }
+
+    val mealTypes = mapOf(
+        "Breakfast" to "bf",
+        "Lunch" to "l",
+        "Dinner" to "d",
+        "Morning Snack" to "ms",
+        "Afternoon Snack" to "as",
+        "Evening Snack" to "es"
+    )
+
+    Box {
+        Text(
+            text = mealTypes.entries.find { it.value == selectedMealType }?.key ?: "Select Meal Type",
+            modifier = Modifier
+                .padding(16.dp)
+                .clickable { expanded = true }
+                .fillMaxWidth(0.5f)
+                .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+                .padding(8.dp),
+            textAlign = TextAlign.Center
+        )
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = {
+                expanded = false
+            }
+        ) {
+            mealTypes.forEach { (mealType, mealTypeShort) ->
+                DropdownMenuItem(
+                    text = { Text(text = mealType) },
+                    onClick = {
+                        onMealTypeSelected(mealTypeShort)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
 
 }
+
+
+
 
 @Composable
 @Preview

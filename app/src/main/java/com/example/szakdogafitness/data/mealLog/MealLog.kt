@@ -87,17 +87,7 @@ class MealLog @Inject constructor(
             Log.e("Firestore", "Error updating meal data: ${e.message}", e)
         }
     }
-    /*override fun consumeMeal(
-        mealType: String,
-        meal: Nutrition,
-        dataMap: Map<String, List<Nutrition>>
-    ): Map<String, List<Nutrition>> {
-        val newConsumedMeals = dataMap.toMutableMap()
-        val mealList = newConsumedMeals[mealType]?.toMutableList() ?: mutableListOf()
-        mealList.add(meal)
-        newConsumedMeals[mealType] = mealList
-        return newConsumedMeals
-    }*/
+
 
 
     override fun removeMeal(
