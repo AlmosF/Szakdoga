@@ -40,6 +40,7 @@ class GenerativeService @Inject constructor(
         val jsonObject = JSONObject(json)
         return FoodAnalysisResult(
             foodName = jsonObject.optString("foodName", "Unknown"),
+            servingSize = jsonObject.optInt("servingSize", 0),
             kcal = jsonObject.optInt("kcal", 0),
             fat = jsonObject.optInt("fat", 0),
             carb = jsonObject.optInt("carb", 0),

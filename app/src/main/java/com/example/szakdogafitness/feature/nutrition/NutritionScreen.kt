@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.feature.nutrition
 
+import android.R.attr.enabled
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.szakdogafitness.domain.model.FoodAnalysisResult
+import com.example.szakdogafitness.domain.model.Nutrition
 import com.example.szakdogafitness.ui.common.nutrition.AddNutrientsBlock
 import com.example.szakdogafitness.ui.common.nutrition.TargetKcalBlock
 import com.example.szakdogafitness.ui.common.nutrition.logblock.LogBlock
@@ -91,6 +93,53 @@ fun NutritionScreen(
         }
         if (cameraState.image != null) {
             bottomSheetVisible = true
+        }
+    }
+
+    LaunchedEffect(generativeState.response) {
+        mealTypesViewModel.onEvent(MealTypesEvent.NutritionSelected(
+            if (generativeState.response.foodName != "null") {
+                generativeState.response.let {
+                    val newId = (1..10000).random()
+                        .takeIf { id -> mealTypesState.nutritions.none { it.foodId == id } } ?: 0
+                    val nutrition = Nutrition(
+                        foodId = newId,
+                        foodName = it.foodName,
+                        calories = it.kcal,
+                        protein = it.protein,
+                        carbs = it.carb,
+                        fat = it.fat,
+                        mealType = "-",
+                        image = "https://static.vecteezy.com/system/resources/previews/000/463/565/original/healthy-food-clipart-vector.jpg",
+                        servingSize = it.servingSize
+                    )
+                    nutrition
+                }
+            } else {
+                Nutrition()
+            }
+        ))
+    }
+
+    LaunchedEffect(mealTypesState.selectedNutrition) {
+        mealTypesState.selectedNutrition?.let {
+            Log.d("NutritionScreen", "Selected Nutrition: ${it.foodName}")
+            if (it.servingSize == 0 || it.fat == 0 || it.carbs == 0 || it.protein == 0) {
+                Log.d("NutritionScreen", "Nutrition is incomplete")
+            } else {
+                if (it.foodName.isNotBlank() && it.foodName != "null" && mealTypesState.nutritions.none { nutrition -> nutrition.foodName == it.foodName }) {
+                    //mealTypesViewModel.onEvent(MealTypesEvent.AddNutrition)
+                    Log.d("NutritionScreen", mealTypesState.nutritions.toString())
+                    Log.d("NutritionScreen", "Adding new nutrition: ${it.foodName}")
+                    mealTypesViewModel.onEvent(MealTypesEvent.AddNutrition)
+                } else if (it.foodName != "null") {
+                    Log.d("NutritionScreen", "Nutrition already exists")
+                    mealTypesState.nutritions.find { nutrition -> nutrition.foodName == it.foodName }?.let {
+                        mealTypesViewModel.onEvent(MealTypesEvent.EditSelectedNutrition(it))
+                    }
+                    Log.d("NutritionScreen", mealTypesState.selectedNutrition.toString())
+                }
+            }
         }
     }
 
@@ -190,6 +239,10 @@ fun NutritionScreen(
                                 text = it.toString(),
                                 modifier = Modifier.padding(8.dp)
                             )
+                            Text(
+                                text = mealTypesState.selectedNutrition.toString(),
+                                modifier = Modifier.padding(8.dp)
+                            )
                             MealTypeSelector(
                                 selectedMealType = mealTypesState.selectedMealTitle
                             ) {
@@ -197,9 +250,15 @@ fun NutritionScreen(
                             }
                             OutlinedButton(
                                 onClick = {
-                                    Log.d("NutritionScreen", "Consume Meal for: ${mealTypesState.selectedMealTitle}: ${generativeState.response}")
-                                    TODO("Add to database")
+                                    Log.d("NutritionScreen", "Consume Meal for: ${mealTypesState.selectedMealTitle}: ${mealTypesState.selectedNutrition}")
+                                    dailyDatasViewModel.onEvent(
+                                        DailyDatasEvent.AddNutrition(
+                                            nutritionID = mealTypesState.selectedNutrition!!.foodId,
+                                            mealType = mealTypesState.selectedMealTitle
+                                        )
+                                    )
                                 },
+                                enabled = mealTypesState.selectedNutrition != null,
                                 modifier = Modifier.fillMaxWidth(0.5f)
                             ) {
                                 Text(
@@ -223,12 +282,12 @@ fun MealTypeSelector(
     var expanded by remember { mutableStateOf(false) }
 
     val mealTypes = mapOf(
-        "Breakfast" to "bf",
-        "Lunch" to "l",
-        "Dinner" to "d",
-        "Morning Snack" to "ms",
-        "Afternoon Snack" to "as",
-        "Evening Snack" to "es"
+        "bf" to "Breakfast",
+        "ms" to "Morning_Snack",
+        "l" to "Lunch",
+        "as" to "Afternoon_Snack",
+        "d" to "Dinner",
+        "es" to "Evening_Snack"
     )
 
     Box {

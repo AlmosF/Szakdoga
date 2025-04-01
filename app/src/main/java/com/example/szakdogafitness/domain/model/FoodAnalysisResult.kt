@@ -6,4 +6,5 @@ data class FoodAnalysisResult(
     val fat: Int = 0,
     val carb: Int = 0,
     val protein: Int = 0,
+    val servingSize: Int = 0,
 )

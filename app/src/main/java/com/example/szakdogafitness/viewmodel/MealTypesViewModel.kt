@@ -56,6 +56,7 @@ class MealTypesViewModel @Inject constructor(
 
             is MealTypesEvent.NutritionSelected -> {
                 _state.update { it.copy(selectedNutrition = event.nutrition) }
+                Log.e("MealTypesViewModel", "NutritionSelected - EVENT: ${event.nutrition}")
             }
 
             MealTypesEvent.ChangeDialogState -> {

@@ -23,11 +23,12 @@ class GenerativeViewModel @Inject constructor(
 
     private val defaultPrompt = "Analyze the provided image of food. Based on the image and the following instructions, provide the information in JSON format. \n" +
             "\n" +
-            "Instructions: Identify the food in the image and estimate its nutritional content. Return the results in JSON format with the following keys: 'foodName', 'kcal', 'fat', 'carb', and 'protein'.\n" +
+            "Instructions: Identify the food in the image and estimate its nutritional content. Return the results in JSON format with the following keys: 'foodName', 'servingSize', 'kcal', 'fat', 'carb', and 'protein'.\n" +
             "\n" +
             "Example JSON format:\n" +
             "{\n" +
             "  \\\"foodName\\\": \\\"[Food Name]\\\",\n" +
+            "  \\\"servingSize\\\": [Estimated serving size in grams],\n" +
             "  \\\"kcal\\\": [Estimated kcal value],\n" +
             "  \\\"fat\\\": [Estimated fat value in grams],\n" +
             "  \\\"carb\\\": [Estimated carbohydrate value in grams],\n" +
