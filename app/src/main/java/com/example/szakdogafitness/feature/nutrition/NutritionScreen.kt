@@ -124,8 +124,9 @@ fun NutritionScreen(
     LaunchedEffect(mealTypesState.selectedNutrition) {
         mealTypesState.selectedNutrition?.let {
             Log.d("NutritionScreen", "Selected Nutrition: ${it.foodName}")
-            if (it.servingSize == 0 || it.fat == 0 || it.carbs == 0 || it.protein == 0) {
+            if (it.servingSize == 0 || (it.fat == 0 && it.carbs == 0 && it.protein == 0)) {
                 Log.d("NutritionScreen", "Nutrition is incomplete")
+                mealTypesViewModel.onEvent(MealTypesEvent.NutritionSelected(Nutrition()))
             } else {
                 if (it.foodName.isNotBlank() && it.foodName != "null" && mealTypesState.nutritions.none { nutrition -> nutrition.foodName == it.foodName }) {
                     //mealTypesViewModel.onEvent(MealTypesEvent.AddNutrition)
@@ -236,15 +237,38 @@ fun NutritionScreen(
                         }
                         generativeState.response.takeIf { it != FoodAnalysisResult() }?.let {
                             Text(
-                                text = it.toString(),
+                                text = it.foodName,
                                 modifier = Modifier.padding(8.dp)
                             )
+
                             Text(
-                                text = mealTypesState.selectedNutrition.toString(),
+                                text = "Serving Size: ${it.servingSize}g",
                                 modifier = Modifier.padding(8.dp)
                             )
+
+                            Text(
+                                text = "Calories: ${it.kcal}",
+                                modifier = Modifier.padding(8.dp)
+                            )
+
+                            Text(
+                                text = "Protein: ${it.protein}g",
+                                modifier = Modifier.padding(8.dp)
+                            )
+
+                            Text(
+                                text = "Carbs: ${it.carb}g",
+                                modifier = Modifier.padding(8.dp)
+                            )
+
+                            Text(
+                                text = "Fat: ${it.fat}g",
+                                modifier = Modifier.padding(8.dp)
+                            )
+
                             MealTypeSelector(
-                                selectedMealType = mealTypesState.selectedMealTitle
+                                selectedMealType = mealTypesState.selectedMealTitle,
+                                enabled = mealTypesState.selectedNutrition != Nutrition()
                             ) {
                                 mealTypesViewModel.onEvent(MealTypesEvent.MealTypeSelected(it))
                             }
@@ -258,13 +282,20 @@ fun NutritionScreen(
                                         )
                                     )
                                 },
-                                enabled = mealTypesState.selectedNutrition != null,
+                                enabled = mealTypesState.selectedNutrition != Nutrition(),
                                 modifier = Modifier.fillMaxWidth(0.5f)
                             ) {
                                 Text(
                                     text = "Consume Meal"
                                 )
                             }
+                        }
+                        generativeState.wrongResponse.takeIf { it }?.let {
+                            Text(
+                                text = "Sorry I couldn't recognize the food",
+                                color = Color.Red,
+                                modifier = Modifier.padding(8.dp)
+                            )
                         }
                     }
                 }
@@ -276,6 +307,7 @@ fun NutritionScreen(
 @Composable
 fun MealTypeSelector(
     selectedMealType: String,
+    enabled: Boolean,
     onMealTypeSelected: (String) -> Unit
 ) {
 
@@ -292,10 +324,13 @@ fun MealTypeSelector(
 
     Box {
         Text(
-            text = mealTypes.entries.find { it.value == selectedMealType }?.key ?: "Select Meal Type",
+            text = mealTypes.entries.find { it.value == selectedMealType }?.value?.replace("_", " ") ?: "Select Meal Type",
             modifier = Modifier
                 .padding(16.dp)
-                .clickable { expanded = true }
+                .clickable {
+                    if (enabled)
+                        expanded = true
+                }
                 .fillMaxWidth(0.5f)
                 .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
                 .padding(8.dp),
@@ -309,7 +344,9 @@ fun MealTypeSelector(
         ) {
             mealTypes.forEach { (mealType, mealTypeShort) ->
                 DropdownMenuItem(
-                    text = { Text(text = mealType) },
+                    text = { Text(
+                        text = mealTypeShort.replace("_", " "),
+                    ) },
                     onClick = {
                         onMealTypeSelected(mealTypeShort)
                         expanded = false

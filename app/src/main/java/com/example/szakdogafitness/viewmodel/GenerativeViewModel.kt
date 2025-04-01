@@ -2,6 +2,7 @@ package com.example.szakdogafitness.viewmodel
 
 import android.R.attr.prompt
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.FoodAnalysisResult
@@ -55,10 +56,21 @@ class GenerativeViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             try {
                 val response = sendPromptUseCase(bitmap, defaultPrompt)
-                _state.update { it.copy(
-                    response = response,
-                    isLoading = false
-                ) }
+                if (response.servingSize == 0 || (response.kcal == 0 && response.fat == 0 && response.carb == 0 && response.protein == 0)) {
+                    Log.d("GenerativeViewModel", "sendPrompt: Wrong response")
+                    _state.update { it.copy( //If wrong answer (all values are 0)
+                        wrongResponse = true,
+                        isLoading = false,
+                        response = FoodAnalysisResult()
+                    ) }
+                } else {
+                    Log.d("GenerativeViewModel", "sendPrompt: $response")
+                    _state.update { it.copy(
+                        response = response,
+                        isLoading = false,
+                        wrongResponse = false
+                    ) }
+                }
             } catch (e: Exception) {
                 _state.update { it.copy(
                     error = e.message ?: "An unexpected error occurred",
@@ -75,6 +87,7 @@ class GenerativeViewModel @Inject constructor(
 data class GenerativeState(
     val isLoading: Boolean = false,
     val response: FoodAnalysisResult = FoodAnalysisResult(),
+    val wrongResponse: Boolean = false,
     val error: String = ""
 )
 
