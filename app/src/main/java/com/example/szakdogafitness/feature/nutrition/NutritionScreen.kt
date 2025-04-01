@@ -8,8 +8,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -38,9 +40,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.szakdogafitness.domain.model.FoodAnalysisResult
@@ -238,33 +242,48 @@ fun NutritionScreen(
                         generativeState.response.takeIf { it != FoodAnalysisResult() }?.let {
                             Text(
                                 text = it.foodName,
-                                modifier = Modifier.padding(8.dp)
+                                modifier = Modifier
+                                    .padding(top = 4.dp),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
                             )
-
-                            Text(
-                                text = "Serving Size: ${it.servingSize}g",
-                                modifier = Modifier.padding(8.dp)
-                            )
-
-                            Text(
-                                text = "Calories: ${it.kcal}",
-                                modifier = Modifier.padding(8.dp)
-                            )
-
-                            Text(
-                                text = "Protein: ${it.protein}g",
-                                modifier = Modifier.padding(8.dp)
-                            )
-
-                            Text(
-                                text = "Carbs: ${it.carb}g",
-                                modifier = Modifier.padding(8.dp)
-                            )
-
-                            Text(
-                                text = "Fat: ${it.fat}g",
-                                modifier = Modifier.padding(8.dp)
-                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Column (
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                Text(
+                                    text = "${it.kcal} kcal",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = "Total portion",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = "${it.servingSize} g",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = "\t - ${it.protein} g protein",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = "\t - ${it.carb} g carbs",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = "\t - ${it.fat} g fat",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
 
                             MealTypeSelector(
                                 selectedMealType = mealTypesState.selectedMealTitle,
@@ -282,7 +301,9 @@ fun NutritionScreen(
                                         )
                                     )
                                 },
-                                enabled = mealTypesState.selectedNutrition != Nutrition(),
+                                enabled = mealTypesState.selectedNutrition != Nutrition() &&
+                                        mealTypesState.selectedMealTitle != "bf"
+                                ,
                                 modifier = Modifier.fillMaxWidth(0.5f)
                             ) {
                                 Text(
