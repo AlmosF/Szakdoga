@@ -150,9 +150,10 @@ class DailyDatasViewModel @Inject constructor(
                                     isLoading = false
                                 )
                             }
+                            generateNewDailyData()
                         }
                         buttonsAvailability()
-                        generateNewDailyData() //??
+                        //generateNewDailyData() //?? - itt volt 04.02
                     }
                 }
             } catch (e: Exception) {
@@ -169,6 +170,7 @@ class DailyDatasViewModel @Inject constructor(
                 generateNewDailyData.invoke()
                 val latestDailyData = _state.value.dailyDataList.last()
                 val latestDate = latestDailyData.date.toDate().toString().substring(4, 10)
+                Log.d("DailyDatas", "GENERATING: $latestDailyData")
                 _state.update { it.copy(
                     isLoading = false,
                     currentDailyData = latestDailyData,
