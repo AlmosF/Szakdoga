@@ -4,6 +4,7 @@ import com.example.szakdogafitness.domain.model.DailyData
 import com.example.szakdogafitness.domain.model.Rating
 import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.flow.Flow
 
 interface IMainService{
@@ -20,6 +21,9 @@ interface IMainService{
 
     suspend fun deleteRequest(traineeId: String)
     suspend fun acceptRequest(traineeId: String)
+
+    //Modify targetKcal
+    suspend fun modifyTargetKcal(targetKcal: Int, date: Timestamp = Timestamp.now())
 
     suspend fun getAcceptedTrainers(): Flow<List<Pair<Requests, User>>>
 

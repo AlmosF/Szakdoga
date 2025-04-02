@@ -9,6 +9,7 @@ import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasUseC
 import com.example.szakdogafitness.domain.usecases.main.GenerateNewDailyDataUseCase
 import com.example.szakdogafitness.domain.usecases.mealLog.MealConsumedUseCase
 import com.example.szakdogafitness.domain.usecases.mealLog.MealReplenishedUseCase
+import com.example.szakdogafitness.domain.usecases.mealLog.TargetKcalModifyUseCase
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +24,7 @@ class DailyDatasViewModel @Inject constructor(
     private val generateNewDailyData: GenerateNewDailyDataUseCase,
     private val mealConsumedUseCase: MealConsumedUseCase,
     private val mealReplenishedUseCase: MealReplenishedUseCase,
+    private val targetKcalModifyUseCase: TargetKcalModifyUseCase
 ) : ViewModel(){
 
     private val _state = MutableStateFlow(DailyDatasState())
@@ -67,6 +69,23 @@ class DailyDatasViewModel @Inject constructor(
                     currentDailyData = state.value.dailyDataList.last(),
                 ) }
             }
+
+            is DailyDatasEvent.UpdateTargetKcal -> {
+                updateTargetKcal(event.targetKcal, event.date)
+            }
+        }
+    }
+
+    private fun updateTargetKcal(targetKcal: Int, timestamp: Timestamp) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                targetKcalModifyUseCase.invoke(targetKcal, timestamp)
+                _state.update { it.copy(isLoading = false) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _state.update { it.copy(isLoading = false) }
+            }
         }
     }
 
@@ -107,7 +126,10 @@ class DailyDatasViewModel @Inject constructor(
                         if (state.value.dailyDataList.isNotEmpty()){
                             Log.d("DailyDatas", "DailyDataList is not empty - Just updating")
                             val currentDailyData = dailyDataList.find { it.date.toDate() == state.value.currentDailyData.date.toDate() } ?: dailyDataList.last()
+
                             val latestDate = currentDailyData.date.toDate().toString().substring(4, 10)
+                            Log.d("DailyDatas", "CurrentDailyData: $currentDailyData")
+                            Log.d("DailyDatas", "LatestDate: $latestDate")
                             _state.update {
                                 it.copy(
                                     dailyDataList = dailyDataList,
@@ -177,6 +199,7 @@ class DailyDatasViewModel @Inject constructor(
 sealed class DailyDatasEvent{
     data class AddNutrition(val nutritionID: Int, val mealType: String) : DailyDatasEvent()
     data class ReplenishNutrition(val nutritionID: Int, val mealType: String, val date: Timestamp) : DailyDatasEvent()
+    data class UpdateTargetKcal(val targetKcal: Int, val date: Timestamp) : DailyDatasEvent()
     object LoadDailyDatas: DailyDatasEvent()
     object NextDay: DailyDatasEvent()
     object PreviousDay: DailyDatasEvent()

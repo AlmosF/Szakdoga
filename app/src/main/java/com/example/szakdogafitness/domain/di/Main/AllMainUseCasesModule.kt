@@ -19,6 +19,7 @@ import com.example.szakdogafitness.domain.usecases.main.LoadAllTrainersAllRateUs
 import com.example.szakdogafitness.domain.usecases.main.LoadTrainersRateUseCase
 import com.example.szakdogafitness.domain.usecases.main.RateTrainerUseCase
 import com.example.szakdogafitness.domain.usecases.main.UpdateUserUseCase
+import com.example.szakdogafitness.domain.usecases.mealLog.TargetKcalModifyUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -114,6 +115,11 @@ object AllMainUseCasesModule {
     @Singleton
     fun provideFetchUsersDailyDatasByIdUseCase(repository: IMainService): FetchUsersDailyDatasByIdUseCase =
         FetchUsersDailyDatasByIdUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideTargetKcalModifyUseCase(repository: IMainService): TargetKcalModifyUseCase =
+        TargetKcalModifyUseCase(repository)
 
     @Provides
     @Singleton

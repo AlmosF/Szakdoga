@@ -181,10 +181,22 @@ fun NutritionScreen(
             targetKcal = dailyDatasState.currentDailyData.targetKcal,
             maxKcal = maxKcal,
             onIncrease = {
-                targetKcal += it
+                //targetKcal += it
+                dailyDatasViewModel.onEvent(
+                    DailyDatasEvent.UpdateTargetKcal(
+                        dailyDatasState.currentDailyData.targetKcal + it,
+                        dailyDatasState.currentDailyData.date
+                    )
+                )
             },
             onDecrease = {
-                targetKcal -= it
+                //targetKcal -= it
+                dailyDatasViewModel.onEvent(
+                    DailyDatasEvent.UpdateTargetKcal(
+                        dailyDatasState.currentDailyData.targetKcal - it,
+                        dailyDatasState.currentDailyData.date
+                    )
+                )
             }
         )
         LogBlock(
@@ -300,6 +312,12 @@ fun NutritionScreen(
                                             mealType = mealTypesState.selectedMealTitle
                                         )
                                     )
+                                    coroutineScope.launch {
+                                        sheetState.hide()
+                                        bottomSheetVisible = false
+                                        cameraViewModel.onEvent(CameraEvent.ResetState)
+                                        generativeViewModel.onEvent(GenerativeEvent.ResetState)
+                                    }
                                 },
                                 enabled = mealTypesState.selectedNutrition != Nutrition() &&
                                         mealTypesState.selectedMealTitle != "bf"
