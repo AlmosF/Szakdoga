@@ -53,6 +53,7 @@ import com.example.szakdogafitness.feature.nutrition.ModifyNutritionScreen
 import com.example.szakdogafitness.feature.nutrition.NutritionScreen
 import com.example.szakdogafitness.feature.nutrition.SearchNutritionScreen
 import com.example.szakdogafitness.feature.profile.ProfileScreen
+import com.example.szakdogafitness.feature.request.RequestDetailScreen
 import com.example.szakdogafitness.feature.request.RequestScreen
 import com.example.szakdogafitness.feature.search.SearchTrainerScreen
 import com.example.szakdogafitness.feature.setup.SetupScreenBox
@@ -457,36 +458,24 @@ fun NewRootNavigation(
 
 
             composable(RootScreenRoute.Requests.route){
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            TopBar(
-                                title = {
-                                    Text("Request(s)")
-                                },
-                            )
-                        }
-                    )
-                )
                 RequestScreen(
                     traineesViewModel = traineesViewModel,
+                    appBarViewModel = appBarViewModel,
                 ){ id ->
                     navController.navigate(RootScreenRoute.RequestDetail.createRoute(id))
                 }
             }
 
             composable(RootScreenRoute.RequestDetail.route) { entry ->
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            BackNavWithTitle("Request Details") {
-                                navController.popBackStack()
-                            }
-                        }
-                    )
-                )
                 val id = entry.arguments?.getString("id")
-                Text(
+                RequestDetailScreen(
+                    traineesViewModel = traineesViewModel,
+                    appBarViewModel = appBarViewModel,
+                    traineeId = id!!
+                ) {
+                    navController.popBackStack()
+                }
+                /*Text(
                     text = "RequestDetail: $id",
                     modifier = Modifier
                         .clickable{
@@ -497,7 +486,7 @@ fun NewRootNavigation(
                             )
                             navController.popBackStack()
                         }
-                )
+                )*/
             }
 
 

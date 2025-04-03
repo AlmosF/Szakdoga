@@ -10,8 +10,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,16 +31,21 @@ import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.feature.search.list
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.TrainerCard
+import com.example.szakdogafitness.ui.common.appbars.TopBar
 import com.example.szakdogafitness.ui.common.request.TraineeRequestCard
+import com.example.szakdogafitness.viewmodel.AppBarEvent
+import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.TraineesEvent
 import com.example.szakdogafitness.viewmodel.TraineesViewModel
 import com.google.common.collect.Multimaps.index
 import com.google.firebase.Timestamp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RequestScreen(
     modifier: Modifier = Modifier,
     traineesViewModel: TraineesViewModel = hiltViewModel(),
+    appBarViewModel: AppBarViewModel = hiltViewModel(),
     onClick: (String) -> Unit = {}
     //VMs
 ) {
@@ -47,6 +54,17 @@ fun RequestScreen(
 
     LaunchedEffect(Unit) {
         traineesViewModel.onEvent(TraineesEvent.LoadPendingRequests)
+        appBarViewModel.onEvent(
+            AppBarEvent.TopBarComposableChanged(
+                {
+                    TopBar(
+                        title = {
+                            Text("Request(s)")
+                        },
+                    )
+                }
+            )
+        )
     }
     LaunchedEffect(traineesState.pendingRequests) {
         Log.d("RequestScreen", "PendingRequests: ${traineesState.pendingRequests}")

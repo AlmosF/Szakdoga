@@ -12,6 +12,11 @@
     <string name="success_registration">Registration successful</string>
     <string name="success_logout">Successfully signed out</string>
     <string name="success_recovery_email">Recovery email successfully sent</string>
+    <string-array name="trainer_preference">
+        <item>No trainer preference</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
     <string-array name="fitness_goal">
        <item>Lose Weight</item>
         <item>Gain Muscle</item>

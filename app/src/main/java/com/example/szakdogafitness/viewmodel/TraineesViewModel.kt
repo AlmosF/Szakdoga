@@ -68,6 +68,12 @@ class TraineesViewModel @Inject constructor(
             is TraineesEvent.FetchTraineesDailyData -> {
                 fetchTraineeDailyData(event.userId)
             }
+
+            is TraineesEvent.AppointmentsToCalendar -> {
+                _state.update { it.copy(
+                    appointmentsToCalendar = event.status
+                ) }
+            }
         }
     }
 
@@ -88,12 +94,29 @@ class TraineesViewModel @Inject constructor(
     }
 
     private fun selectTrainee(traineeId: String){
-        val trainee = state.value.acceptedRequests.find {
+        /*val trainee = state.value.acceptedRequests.find {
             it.first.traineeId == traineeId
-        } ?: error("Error finding trainee")
-        _state.update { it.copy(
-            selectedTrainee = trainee
-        ) }
+        } ?: error("Error finding trainee")*/
+        Log.d("TraineesViewModel", "selectTrainee: $traineeId")
+        _state.update { it.copy(isLoading = true) }
+        try {
+            val trainee = state.value.acceptedRequests.find {
+                it.second.userId == traineeId
+            } ?: state.value.pendingRequests.find { //fixme: Might be not safe
+                it.second.userId == traineeId
+            } ?: error("Error finding trainee")
+            _state.update { it.copy(
+                selectedTrainee = trainee,
+                isLoading = false
+            ) }
+
+        } catch (e: Exception) {
+            _state.update { it.copy(isLoading = false) }
+            Log.e(
+                "TraineesViewModel",
+                "selectTrainee: ${e.message}"
+            )
+        }
     }
 
     private fun loadPendingRequests(
@@ -121,6 +144,9 @@ class TraineesViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             try {
                 acceptRequest.invoke(traineeId)
+                if (state.value.appointmentsToCalendar){
+
+                }
                 _state.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
                 Log.e(
@@ -192,7 +218,8 @@ data class TraineesState(
     val acceptedRequests: List<Pair<Requests, User>> = emptyList(),
     val detailMode: Boolean = false,
     val selectedTrainee: Pair<Requests, User>? = null,
-    val traineesDailyDataList: List<DailyData> = emptyList()
+    val traineesDailyDataList: List<DailyData> = emptyList(),
+    val appointmentsToCalendar: Boolean = false,
 )
 
 sealed class TraineesEvent {
@@ -204,6 +231,7 @@ sealed class TraineesEvent {
     data class SelectTrainee(val userId: String) : TraineesEvent()
     data class AcceptRequest(val userId: String): TraineesEvent()
     data class DeclineRequest(val userId: String): TraineesEvent()
+    data class AppointmentsToCalendar(val status: Boolean): TraineesEvent()
 }
 
 fun calculateAge(birthTimestamp: Timestamp): Int {
