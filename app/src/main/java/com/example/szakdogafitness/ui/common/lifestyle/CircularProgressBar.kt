@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.ui.common.lifestyle
 
+import android.R.attr.fontWeight
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -26,6 +27,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.absoluteValue
+import kotlin.math.roundToInt
 
 @Composable
 fun CircularProgressBar(
@@ -82,13 +85,16 @@ fun CircularProgressBar(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "${ (number * (1 - percentage)).toInt() }",
+                text = if(percentage >= 1f)
+                    "${(number * (1 - percentage)).roundToInt().absoluteValue}"
+                else
+                    "${ (number * (1 - percentage)).roundToInt() }",
                 fontSize = fontSize,
                 color = Color.Black,
                 fontWeight = Bold
             )
             Text(
-                text = "Kcal left",
+                text = if(percentage >= 1f) "Over target" else "Kcal left",
                 color = Color.Black,
                 fontSize = 18.sp
             )
