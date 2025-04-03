@@ -29,6 +29,13 @@ interface IMainService{
     //Modify targetKcal
     suspend fun modifyTargetKcal(targetKcal: Int, date: Timestamp = Timestamp.now())
 
+    //Modify targetWater
+    suspend fun modifyTargetWater(targetWater: Double, date: Timestamp = Timestamp.now())
+
+    //Update waterIntake
+    suspend fun updateWaterIntake(waterIntake: Double, date: Timestamp = Timestamp.now())
+
+
     suspend fun getAcceptedTrainers(): Flow<List<Pair<Requests, User>>>
 
     //suspend fun fetchPendingRequests(status: String): Flow<List<Requests>>

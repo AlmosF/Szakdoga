@@ -19,7 +19,9 @@ import com.example.szakdogafitness.domain.usecases.main.GetTrainersUseCase
 import com.example.szakdogafitness.domain.usecases.main.LoadAllTrainersAllRateUseCase
 import com.example.szakdogafitness.domain.usecases.main.LoadTrainersRateUseCase
 import com.example.szakdogafitness.domain.usecases.main.RateTrainerUseCase
+import com.example.szakdogafitness.domain.usecases.main.TargetWaterModifyUseCase
 import com.example.szakdogafitness.domain.usecases.main.UpdateUserUseCase
+import com.example.szakdogafitness.domain.usecases.main.WaterIntakeModifyUseCase
 import com.example.szakdogafitness.domain.usecases.mealLog.TargetKcalModifyUseCase
 import dagger.Module
 import dagger.Provides
@@ -121,6 +123,16 @@ object AllMainUseCasesModule {
     @Singleton
     fun provideTargetKcalModifyUseCase(repository: IMainService): TargetKcalModifyUseCase =
         TargetKcalModifyUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideTargetWaterModifyUseCase(repository: IMainService): TargetWaterModifyUseCase =
+        TargetWaterModifyUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideUpdateWaterIntakeUseCase(repository: IMainService): WaterIntakeModifyUseCase =
+        WaterIntakeModifyUseCase(repository)
 
     @Provides
     @Singleton

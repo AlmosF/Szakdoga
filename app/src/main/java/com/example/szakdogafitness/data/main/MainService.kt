@@ -458,6 +458,44 @@ class MainService @Inject constructor(
         }
     }
 
+    override suspend fun modifyTargetWater(
+        targetWater: Double,
+        date: Timestamp
+    ) {
+        val userId = userIdUseCase()
+        val dateFormated = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date.toDate())
+        try {
+            val dailyDataRef = firestore.collection("dailyDatas")
+                .document(userId!!)
+                .collection("dailyData")
+                .document(dateFormated)
+            firestore.runTransaction { transaction ->
+                transaction.update(dailyDataRef, "targetWater", targetWater)
+            }
+        } catch (e: Exception) {
+            Log.e("MainService", "Error modifying target water: ${e.message}", e)
+        }
+    }
+
+    override suspend fun updateWaterIntake(
+        waterIntake: Double,
+        date: Timestamp
+    ) {
+        val userId = userIdUseCase()
+        val dateFormated = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date.toDate())
+        try {
+            val dailyDataRef = firestore.collection("dailyDatas")
+                .document(userId!!)
+                .collection("dailyData")
+                .document(dateFormated)
+            firestore.runTransaction { transaction ->
+                transaction.update(dailyDataRef, "waterIntake", waterIntake)
+            }
+        } catch (e: Exception) {
+            Log.e("MainService", "Error updating water intake: ${e.message}", e)
+        }
+    }
+
     override suspend fun fetchRequests(status: String): Flow<List<Pair<Requests, User>>> =
         firestore.collection("requests")
             .document(userIdUseCase() ?: "")

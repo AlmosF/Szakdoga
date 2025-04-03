@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.DailyData
 import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasUseCase
 import com.example.szakdogafitness.domain.usecases.main.GenerateNewDailyDataUseCase
+import com.example.szakdogafitness.domain.usecases.main.TargetWaterModifyUseCase
+import com.example.szakdogafitness.domain.usecases.main.WaterIntakeModifyUseCase
 import com.example.szakdogafitness.domain.usecases.mealLog.MealConsumedUseCase
 import com.example.szakdogafitness.domain.usecases.mealLog.MealReplenishedUseCase
 import com.example.szakdogafitness.domain.usecases.mealLog.TargetKcalModifyUseCase
@@ -24,7 +26,9 @@ class DailyDatasViewModel @Inject constructor(
     private val generateNewDailyData: GenerateNewDailyDataUseCase,
     private val mealConsumedUseCase: MealConsumedUseCase,
     private val mealReplenishedUseCase: MealReplenishedUseCase,
-    private val targetKcalModifyUseCase: TargetKcalModifyUseCase
+    private val targetKcalModifyUseCase: TargetKcalModifyUseCase,
+    private val targetWaterModifyUseCase: TargetWaterModifyUseCase,
+    private val waterIntakeModifyUseCase: WaterIntakeModifyUseCase,
 ) : ViewModel(){
 
     private val _state = MutableStateFlow(DailyDatasState())
@@ -72,6 +76,40 @@ class DailyDatasViewModel @Inject constructor(
 
             is DailyDatasEvent.UpdateTargetKcal -> {
                 updateTargetKcal(event.targetKcal, event.date)
+            }
+
+            is DailyDatasEvent.UpdateTargetWater -> {
+                updateTargetWater(event.targetWater, event.date)
+            }
+
+            is DailyDatasEvent.UpdateWaterIntake -> {
+                updateWaterIntake(event.waterIntake, event.date)
+            }
+        }
+    }
+
+    private fun updateWaterIntake(waterIntake: Double, timestamp: Timestamp) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                waterIntakeModifyUseCase.invoke(waterIntake, timestamp)
+                _state.update { it.copy(isLoading = false) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    private fun updateTargetWater(targetWater: Double, timestamp: Timestamp) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                targetWaterModifyUseCase.invoke(targetWater, timestamp)
+                _state.update { it.copy(isLoading = false) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _state.update { it.copy(isLoading = false) }
             }
         }
     }
@@ -202,6 +240,8 @@ sealed class DailyDatasEvent{
     data class AddNutrition(val nutritionID: Int, val mealType: String) : DailyDatasEvent()
     data class ReplenishNutrition(val nutritionID: Int, val mealType: String, val date: Timestamp) : DailyDatasEvent()
     data class UpdateTargetKcal(val targetKcal: Int, val date: Timestamp) : DailyDatasEvent()
+    data class UpdateTargetWater(val targetWater: Double, val date: Timestamp) : DailyDatasEvent()
+    data class UpdateWaterIntake(val waterIntake: Double, val date: Timestamp) : DailyDatasEvent()
     object LoadDailyDatas: DailyDatasEvent()
     object NextDay: DailyDatasEvent()
     object PreviousDay: DailyDatasEvent()

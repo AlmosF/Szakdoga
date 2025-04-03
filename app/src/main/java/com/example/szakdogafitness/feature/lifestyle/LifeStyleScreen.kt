@@ -1,22 +1,14 @@
 package com.example.szakdogafitness.feature.lifestyle
 
-import android.R.attr.end
-import android.R.attr.top
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,7 +25,6 @@ import com.example.szakdogafitness.ui.common.lifestyle.WaterIntakeBlock
 import com.example.szakdogafitness.ui.common.lifestyle.WeightControlBlock
 import com.example.szakdogafitness.viewmodel.AppBarEvent
 import com.example.szakdogafitness.viewmodel.AppBarViewModel
-import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.DailyDatasEvent
 import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
 import com.example.szakdogafitness.viewmodel.MealTypesEvent
@@ -213,7 +204,23 @@ fun LifeStyleScreen(
                 }
                 .fillMaxWidth(0.9f),
             consumedWater = dailyDatasState.currentDailyData.waterIntake,
-            goalWater = dailyDatasState.currentDailyData.targetWater
+            goalWater = dailyDatasState.currentDailyData.targetWater,
+            onModifyTarget = {
+                dailyDatasViewModel.onEvent(
+                    DailyDatasEvent.UpdateTargetWater(
+                        dailyDatasState.currentDailyData.targetWater + it,
+                        dailyDatasState.currentDailyData.date
+                    )
+                )
+            },
+            onModifyIntake = {
+                dailyDatasViewModel.onEvent(
+                    DailyDatasEvent.UpdateWaterIntake(
+                        dailyDatasState.currentDailyData.waterIntake + it,
+                        dailyDatasState.currentDailyData.date
+                    )
+                )
+            }
         )
         /*WeightControlBlock( //WITH MAINSTATE
             modifier = Modifier
