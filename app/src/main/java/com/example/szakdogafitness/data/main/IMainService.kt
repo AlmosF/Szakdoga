@@ -6,6 +6,7 @@ import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.flow.Flow
+import java.time.DayOfWeek
 
 interface IMainService{
     suspend fun getUser() : Flow<User?>
@@ -21,6 +22,9 @@ interface IMainService{
 
     suspend fun deleteRequest(traineeId: String)
     suspend fun acceptRequest(traineeId: String)
+
+    //AddToCalendar
+    fun addEventToCalendar(event: Map<String, List<Int>>, title: String, description: String)
 
     //Modify targetKcal
     suspend fun modifyTargetKcal(targetKcal: Int, date: Timestamp = Timestamp.now())

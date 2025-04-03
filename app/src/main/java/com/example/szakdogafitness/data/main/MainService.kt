@@ -1,6 +1,11 @@
 package com.example.szakdogafitness.data.main
 
 import android.R.attr.rating
+import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.CalendarContract
 import android.util.Log
 import android.util.Log.e
 import com.example.szakdogafitness.domain.model.DailyData
@@ -19,6 +24,7 @@ import com.example.szakdogafitness.domain.usecases.auth.CurrentUserIdUseCase
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.dataObjects
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -36,45 +42,19 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
+import java.time.DayOfWeek
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import javax.inject.Inject
 
 class MainService @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val userIdUseCase: CurrentUserIdUseCase
+    private val userIdUseCase: CurrentUserIdUseCase,
+    @ApplicationContext private val context: Context
 ) : IMainService {
 
-    /*@OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun getUser(): Flow<User?> =
-        firestore.collection("users")
-            .whereEqualTo("uid", userIdUseCase())
-            .limit(1)
-            .dataObjects<FirestoreUser>()
-            .flatMapLatest { userList->
-                val user = userList.firstOrNull() ?: return@flatMapLatest flowOf(User())
-                if (user.role == 1) {
-                    firestore.collection("trainers")
-                        .whereEqualTo("uid", userIdUseCase())
-                        .limit(1)
-                        .dataObjects<FirestoreTrainer>()
-                        .map { trainers ->
-                            val trainer = trainers.firstOrNull() ?: FirestoreTrainer()
-                            Log.d("MainService", "Trainer: ${user.toUser(trainer)}")
-                            user.toUser(trainer)
-                        }
-                } else {
-                    firestore.collection("trainees")
-                        .whereEqualTo("uid", userIdUseCase())
-                        .limit(1)
-                        .dataObjects<FirestoreTrainee>()
-                        .map { trainees ->
-                            val trainee = trainees.firstOrNull() ?: FirestoreTrainee()
-                            Log.d("MainService", "Trainee: ${user.toUser(trainee)}")
-                            user.toUser(trainee)
-                        }
-                }
-            }.flowOn(Dispatchers.IO)*/
     @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getUser(): Flow<User?> =
         firestore.collection("users")
@@ -105,38 +85,6 @@ class MainService @Inject constructor(
                         }
                 }
             }.flowOn(Dispatchers.IO)
-
-
-    /*override suspend fun fetchPendingRequests(status: String): Flow<List<Pair<Requests, User>>> =
-        firestore.collection("requests")
-            .document(userIdUseCase() ?: "")
-            .collection("traineeRequests")
-            .whereEqualTo("status", status)
-            .dataObjects<Requests>()
-            .flatMapLatest { requests ->
-                val requestFlows = requests.map { request ->
-                    getUserById(request.traineeId)
-                        .mapNotNull { user ->
-                            if (user != null) {
-                                request to user
-                            } else {
-                                null
-                            }
-                        }
-                }
-                combine(requestFlows) { it.toList() }
-            }.flowOn(Dispatchers.IO)*/
-
-
-
-    /*override suspend fun fetchPendingRequests(status: String): Flow<List<Requests>> =
-        firestore.collection("requests")
-            .document(userIdUseCase()!!)
-            .collection("traineeRequests")
-            .whereEqualTo("status", status)
-            .dataObjects<Requests>()
-            .flowOn(Dispatchers.IO)*/
-
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun getUserById(userId: String): Flow<User?> =
@@ -215,41 +163,6 @@ class MainService @Inject constructor(
                 }
                 combine(trainerFlows) { it.toList() }
             }.flowOn(Dispatchers.IO)
-
-    /*override suspend fun getUsersDailyDatas(): Flow<DailyDatas?> =
-        firestore.collection("dailyDatas")
-            .whereEqualTo("uid", userIdUseCase())
-            .limit(1)
-            .dataObjects<DailyDatas>()
-            .map {
-                val result = it.firstOrNull()
-                Log.d("MainService", "Inside: $result")
-                Log.d("MainService", "Inside: ${userIdUseCase()}")
-                result
-            }
-            .flowOn(Dispatchers.IO)*/
-
-    /*override suspend fun getUsersDailyDatas(): Flow<DailyDatas?> = //Fixme("WorkingOne")
-        flow {
-            val userId = userIdUseCase()
-            Log.d("MainService", "userId: $userId")
-            firestore.collection("dailyDatas")
-                .whereEqualTo("uid", userIdUseCase())
-                .limit(1)
-                .dataObjects<DailyDatas>()
-                .collect{ list ->
-                    val result = list.firstOrNull()
-                    Log.d("MainService", "Inside: $result")
-                    emit(result)
-                }
-                /*.map {
-                    val result = it.firstOrNull()
-                    Log.d("MainService", "Inside: $result")
-                    Log.d("MainService", "Inside: ${userIdUseCase()}")
-                    emit(result)
-                }*/
-
-        }.flowOn(Dispatchers.IO)*/
 
     override suspend fun getUsersDailyDatas(): Flow<List<DailyData>> = flow {
         val userId = userIdUseCase()
@@ -460,6 +373,72 @@ class MainService @Inject constructor(
         }
     }
 
+    override fun addEventToCalendar(event: Map<String, List<Int>>, title: String, description: String) {
+        val contentResolver = context.contentResolver
+        val eventUris = mutableListOf<Uri>()
+
+        event.forEach { (day, hours) ->
+            val dayOfWeek = stringToDayOfWeek(day) ?: return@forEach
+
+            hours.forEach { hour ->
+                val calendar = Calendar.getInstance().apply {
+                    add(Calendar.WEEK_OF_YEAR, 1)
+                    set(Calendar.DAY_OF_WEEK, dayToCalendar(dayOfWeek))
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                }
+
+                val values = ContentValues().apply {
+                    put(CalendarContract.Events.CALENDAR_ID, 1)
+                    put(CalendarContract.Events.TITLE, title)
+                    put(CalendarContract.Events.DESCRIPTION, description)
+                    put(CalendarContract.Events.DTSTART, calendar.timeInMillis)
+                    put(CalendarContract.Events.DTEND, calendar.timeInMillis + (60 * 60 * 1000))
+                    put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
+                    put(CalendarContract.Events.RRULE, "FREQ=WEEKLY")
+                }
+
+                val uri = contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
+                uri?.let { eventUris.add(it) }
+            }
+        }
+
+        if (eventUris.isNotEmpty()) {
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                data = eventUris.first()
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+
+            context.startActivity(intent)
+        }
+    }
+
+    private fun stringToDayOfWeek(day: String): DayOfWeek? {
+        return when (day.lowercase()) {
+            "monday" -> DayOfWeek.MONDAY
+            "tuesday" -> DayOfWeek.TUESDAY
+            "wednesday" -> DayOfWeek.WEDNESDAY
+            "thursday" -> DayOfWeek.THURSDAY
+            "friday" -> DayOfWeek.FRIDAY
+            "saturday" -> DayOfWeek.SATURDAY
+            "sunday" -> DayOfWeek.SUNDAY
+            else -> null
+        }
+    }
+
+    private fun dayToCalendar(day: DayOfWeek): Int {
+        return when (day) {
+            DayOfWeek.MONDAY -> Calendar.MONDAY
+            DayOfWeek.TUESDAY -> Calendar.TUESDAY
+            DayOfWeek.WEDNESDAY -> Calendar.WEDNESDAY
+            DayOfWeek.THURSDAY -> Calendar.THURSDAY
+            DayOfWeek.FRIDAY -> Calendar.FRIDAY
+            DayOfWeek.SATURDAY -> Calendar.SATURDAY
+            DayOfWeek.SUNDAY -> Calendar.SUNDAY
+        }
+    }
+
     override suspend fun modifyTargetKcal(
         targetKcal: Int,
         date: Timestamp
@@ -646,35 +625,4 @@ class MainService @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-
-
-    /*override suspend fun getUsersDailyDatas(): Flow<DailyDatas?> {
-        val userId = userIdUseCase()
-        Log.d("MainServiceOverride", "userId: $userId")
-        val query = firestore.collection("dailyDatas")
-            .whereEqualTo("uid", userId)
-            .limit(1)
-
-        try {
-            val snapshot = query.get().await()
-            val dailyDatasList = snapshot.toObjects(DailyDatas::class.java)
-            Log.d("MainServiceOverride", "dailyDatasList: $dailyDatasList")
-        } catch (e: Exception) {
-            Log.e("MainServiceOverride", "Error getting daily data: ${e.message}", e)
-        }
-
-
-
-        return query.dataObjects<DailyDatas>()
-            .onEach {
-                Log.d("MainServiceOverride", "Inside: $it")
-            }
-            .map {
-                val result = it.firstOrNull()
-                Log.d("MainServiceOverride", "InsideOverride: $result")
-                result
-            }
-            .flowOn(Dispatchers.IO)
-
-    }*/
 }

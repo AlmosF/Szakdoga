@@ -46,8 +46,12 @@ import com.example.szakdogafitness.viewmodel.AppBarEvent
 import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.TraineesEvent
 import com.example.szakdogafitness.viewmodel.TraineesViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.accompanist.permissions.rememberPermissionState
 import com.google.common.collect.Multimaps.index
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun RequestDetailScreen(
     modifier: Modifier = Modifier,
@@ -57,6 +61,12 @@ fun RequestDetailScreen(
     onBackClick: () -> Unit = {},
 ) {
     val traineesState by traineesViewModel.state.collectAsStateWithLifecycle()
+    val calendarPermission = rememberMultiplePermissionsState(
+        listOf(
+            android.Manifest.permission.WRITE_CALENDAR,
+            android.Manifest.permission.READ_CALENDAR
+        )
+    )
 
     LaunchedEffect(Unit) {
         traineesViewModel.onEvent(TraineesEvent.AppointmentsToCalendar(false))
@@ -234,9 +244,13 @@ fun RequestDetailScreen(
                 Checkbox(
                     checked = traineesState.appointmentsToCalendar,
                     onCheckedChange = {
-                        traineesViewModel.onEvent(
-                            TraineesEvent.AppointmentsToCalendar(it)
-                        )
+                        if (calendarPermission.allPermissionsGranted){
+                            traineesViewModel.onEvent(
+                                TraineesEvent.AppointmentsToCalendar(it)
+                            )
+                        } else {
+                            calendarPermission.launchMultiplePermissionRequest()
+                        }
                     }
                 )
                 Text(

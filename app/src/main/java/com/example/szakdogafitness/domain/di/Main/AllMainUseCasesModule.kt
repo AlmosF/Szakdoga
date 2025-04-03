@@ -2,6 +2,7 @@ package com.example.szakdogafitness.domain.di.Main
 
 import com.example.szakdogafitness.data.main.IMainService
 import com.example.szakdogafitness.domain.usecases.main.AcceptRequestUseCase
+import com.example.szakdogafitness.domain.usecases.main.AddEventToCalendarUseCase
 import com.example.szakdogafitness.domain.usecases.main.AllMainUseCases
 import com.example.szakdogafitness.domain.usecases.main.ApplyToTrainerAppointmentUseCase
 import com.example.szakdogafitness.domain.usecases.main.DeleteRequestUseCase
@@ -120,6 +121,12 @@ object AllMainUseCasesModule {
     @Singleton
     fun provideTargetKcalModifyUseCase(repository: IMainService): TargetKcalModifyUseCase =
         TargetKcalModifyUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideAddEventToCalendarUseCase(repository: IMainService): AddEventToCalendarUseCase {
+        return AddEventToCalendarUseCase(repository)
+    }
 
     @Provides
     @Singleton

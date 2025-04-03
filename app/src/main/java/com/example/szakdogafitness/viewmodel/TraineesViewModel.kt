@@ -7,6 +7,7 @@ import com.example.szakdogafitness.domain.model.DailyData
 import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.usecases.main.AcceptRequestUseCase
+import com.example.szakdogafitness.domain.usecases.main.AddEventToCalendarUseCase
 import com.example.szakdogafitness.domain.usecases.main.DeleteRequestUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasByIdUseCase
@@ -29,7 +30,8 @@ class TraineesViewModel @Inject constructor(
     private val fetchRequests: FetchRequestsUseCase,
     private val declineRequest: DeleteRequestUseCase,
     private val acceptRequest: AcceptRequestUseCase,
-    private val fetchTraineesDailyData: FetchUsersDailyDatasByIdUseCase
+    private val fetchTraineesDailyData: FetchUsersDailyDatasByIdUseCase,
+    private val addEventToCalendar: AddEventToCalendarUseCase
 ) : ViewModel() {
 
 
@@ -145,7 +147,11 @@ class TraineesViewModel @Inject constructor(
             try {
                 acceptRequest.invoke(traineeId)
                 if (state.value.appointmentsToCalendar){
-
+                    addEventToCalendar.invoke(
+                        state.value.selectedTrainee?.first?.appointment ?: emptyMap(),
+                        "Appointment",
+                        "Appointment with ${state.value.selectedTrainee?.second?.firstName} ${state.value.selectedTrainee?.second?.lastName}"
+                    )
                 }
                 _state.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
