@@ -132,8 +132,9 @@ fun TraineeBioScreen(
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
+                val trainerPreferenceArray = context.resources.getStringArray(R.array.trainer_preference).toList()
                 Text(
-                    text = data.trainee.trainingPreference.toString(),
+                    text = data.trainee.trainingPreference.let { trainerPreferenceArray[it] } ?: "",
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )

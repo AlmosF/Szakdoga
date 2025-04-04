@@ -52,7 +52,7 @@ class DailyDatasViewModel @Inject constructor(
                     buttonsAvailability()
                 }
             }
-            DailyDatasEvent.PreviousDay -> {
+            DailyDatasEvent.PreviousDay -> { // FIXME: No check here..??
                 val previousDailyData = state.value.dailyDataList[state.value.dailyDataList.indexOf(state.value.currentDailyData) - 1]
                 _state.update { it.copy(
                     lifeStyleTitle = previousDailyData.date.toDate().toString().substring(4, 10),

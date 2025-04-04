@@ -38,6 +38,7 @@ fun WaterIntakeBlock(
     modifier: Modifier = Modifier,
     consumedWater: Double,
     goalWater: Double,
+    personal: Boolean = true,
     onModifyTarget: (Double) -> Unit = {},
     onModifyIntake: (Double) -> Unit = {},
 ) {
@@ -68,18 +69,20 @@ fun WaterIntakeBlock(
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
-            IconButton(
-                onClick = {
-                    isOpen = !isOpen
+            if (personal){
+                IconButton(
+                    onClick = {
+                        isOpen = !isOpen
+                    }
+                ) {
+                    Icon(
+                        imageVector = if (isOpen) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                        contentDescription = "Edit",
+                        tint = Color.Cyan,
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
                 }
-            ) {
-                Icon(
-                    imageVector = if (isOpen) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
-                    contentDescription = "Filter",
-                    tint = Color.Cyan,
-                    modifier = Modifier
-                        .size(30.dp)
-                )
             }
         }
         AnimatedVisibility(isOpen){
@@ -159,38 +162,40 @@ fun WaterIntakeBlock(
                     fontSize = 20.sp,
                 )
             }
-            Row (
-                modifier = Modifier
-                    .padding(end = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                IconButton(
-                    onClick = {
-                        if (consumedWater > 0.0) {
-                            onModifyIntake(-0.25)
-                        }
-                    },
-                    enabled = consumedWater > 0.0
+            if (personal){
+                Row (
+                    modifier = Modifier
+                        .padding(end = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Remove,
-                        contentDescription = "Decrease"
+                    IconButton(
+                        onClick = {
+                            if (consumedWater > 0.0) {
+                                onModifyIntake(-0.25)
+                            }
+                        },
+                        enabled = consumedWater > 0.0
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Remove,
+                            contentDescription = "Decrease"
+                        )
+                    }
+                    Text(
+                        text = "0.25L",
+                        fontSize = 20.sp,
                     )
-                }
-                Text(
-                    text = "0.25L",
-                    fontSize = 20.sp,
-                )
-                IconButton(
-                    onClick = {
-                        onModifyIntake(0.25)
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Increase"
-                    )
+                    IconButton(
+                        onClick = {
+                            onModifyIntake(0.25)
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Increase"
+                        )
+                    }
                 }
             }
         }

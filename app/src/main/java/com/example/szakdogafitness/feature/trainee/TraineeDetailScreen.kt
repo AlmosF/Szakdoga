@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.feature.trainee
 
+import android.R.attr.data
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
 import com.example.szakdogafitness.viewmodel.AppBarEvent
 import com.example.szakdogafitness.viewmodel.AppBarViewModel
+import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 import com.example.szakdogafitness.viewmodel.TraineesEvent
 import com.example.szakdogafitness.viewmodel.TraineesViewModel
 import kotlinx.coroutines.delay
@@ -36,6 +38,7 @@ fun TraineeDetailScreen(
     modifier: Modifier = Modifier,
     traineesViewModel: TraineesViewModel = hiltViewModel(),
     appBarViewModel: AppBarViewModel = hiltViewModel(),
+    mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
     id: String,
     onNavigateBack: () -> Unit
 ){
@@ -53,6 +56,7 @@ fun TraineeDetailScreen(
                     ) {
                         onNavigateBack()
                         traineesViewModel.onEvent(TraineesEvent.ClearSelectedTrainee)
+                        traineesViewModel.onEvent(TraineesEvent.DetailModeChanged(false))
                     }
                 }
             )
@@ -88,9 +92,10 @@ fun TraineeDetailScreen(
         if (!traineesState.isLoading){
             Box(modifier = Modifier.fillMaxSize()) {
                 if (!traineesState.detailMode) {
-
-                    Text(
-                        text = traineesState.traineesDailyDataList.toString()
+                    TraineeLifestyleScreen(
+                        traineesViewModel = traineesViewModel,
+                        mealTypesViewModel = mealTypesViewModel,
+                        data = traineesState.selectedTrainee?.second ?: error("Selected trainee is null"),
                     )
                 } else {
                     TraineeBioScreen(

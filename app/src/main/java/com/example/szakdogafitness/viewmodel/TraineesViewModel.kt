@@ -76,6 +76,44 @@ class TraineesViewModel @Inject constructor(
                     appointmentsToCalendar = event.status
                 ) }
             }
+
+            TraineesEvent.NextDailyDataDay -> {
+                if (state.value.isNextDayAvailable){
+                    val nextDailyData = state.value.traineesDailyDataList[state.value.traineesDailyDataList.indexOf(state.value.selectedTraineesDailyData) + 1]
+                    _state.update {
+                        it.copy(
+                            selectedTraineesDailyData = nextDailyData,
+                            lifeStyleTitle = nextDailyData.date.toDate().toString().substring(4, 10)
+                        )
+                    }
+                    buttonsAvailable()
+                }
+            }
+            TraineesEvent.PreviousDailyDataDay -> {
+                if (state.value.isPreviousDayAvailable){
+                    val previousDailyData = state.value.traineesDailyDataList[state.value.traineesDailyDataList.indexOf(state.value.selectedTraineesDailyData) - 1]
+                    _state.update {
+                        it.copy(
+                            selectedTraineesDailyData = previousDailyData,
+                            lifeStyleTitle = previousDailyData.date.toDate().toString().substring(4, 10)
+                        )
+                    }
+                    buttonsAvailable()
+                }
+            }
+        }
+    }
+
+    private fun buttonsAvailable(){
+        val dailyDatas = state.value.traineesDailyDataList
+        val currentDailyData = state.value.selectedTraineesDailyData
+        val isNextDayAvailable = dailyDatas.indexOf(currentDailyData) < dailyDatas.size - 1
+        val isPreviousDayAvailable = dailyDatas.indexOf(currentDailyData) > 0
+        _state.update {
+            it.copy(
+                isNextDayAvailable = isNextDayAvailable,
+                isPreviousDayAvailable = isPreviousDayAvailable
+            )
         }
     }
 
@@ -84,10 +122,47 @@ class TraineesViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             try{
                 fetchTraineesDailyData.invoke(traineeId).collect { traineeDailyDataList ->
-                    _state.update { it.copy(
+                    if (traineeDailyDataList.isNotEmpty()){
+                        if (state.value.traineesDailyDataList.isNotEmpty()) { //Just Update
+                            Log.d("TraineesViewModel", "Just update")
+                            val currentDailyData = traineeDailyDataList.find { it.date.toDate() == state.value.selectedTraineesDailyData?.date?.toDate() } ?: traineeDailyDataList.last()
+
+                            val latestDate = currentDailyData.date.toDate().toString().substring(4, 10)
+                            _state.update {
+                                it.copy(
+                                    selectedTraineesDailyData = currentDailyData,
+                                    traineesDailyDataList = traineeDailyDataList,
+                                    lifeStyleTitle = latestDate,
+                                    isLoading = false
+                                )
+                            }
+                        }else { //First Load
+                            Log.d("TraineesViewModel", "First Load")
+                            val currentDailyData = traineeDailyDataList.last()
+                            val latestDate = currentDailyData.date.toDate().toString().substring(4, 10)
+                            _state.update {
+                                it.copy(
+                                    selectedTraineesDailyData = currentDailyData,
+                                    traineesDailyDataList = traineeDailyDataList,
+                                    lifeStyleTitle = latestDate,
+                                    isLoading = false
+                                )
+                            }
+                            _state.update {
+                                it.copy(
+                                    selectedTraineesDailyData = currentDailyData,
+                                    traineesDailyDataList = traineeDailyDataList,
+                                    isLoading = false
+                                )
+                            }
+
+                        }
+                        buttonsAvailable()
+                    }
+                    /*_state.update { it.copy(
                         traineesDailyDataList = traineeDailyDataList,
                         isLoading = false
-                    ) }
+                    ) }*/
                 }
             } catch (e: Exception) {
                 _state.update { it.copy(isLoading = false) }
@@ -225,13 +300,19 @@ data class TraineesState(
     val detailMode: Boolean = false,
     val selectedTrainee: Pair<Requests, User>? = null,
     val traineesDailyDataList: List<DailyData> = emptyList(),
+    val selectedTraineesDailyData: DailyData? = null,
     val appointmentsToCalendar: Boolean = false,
+    val isNextDayAvailable: Boolean = false,
+    val isPreviousDayAvailable: Boolean = false,
+    val lifeStyleTitle : String = "",
 )
 
 sealed class TraineesEvent {
     object LoadPendingRequests: TraineesEvent()
     object ClearSelectedTrainee: TraineesEvent()
     object LoadAcceptedRequests: TraineesEvent()
+    object PreviousDailyDataDay: TraineesEvent()
+    object NextDailyDataDay: TraineesEvent()
     data class DetailModeChanged(val lifestyle: Boolean): TraineesEvent()
     data class FetchTraineesDailyData(val userId: String): TraineesEvent()
     data class SelectTrainee(val userId: String) : TraineesEvent()

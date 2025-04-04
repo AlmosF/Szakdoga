@@ -226,10 +226,7 @@ fun NewRootNavigation(
             }
             composable(RootScreenRoute.LifeStyle.route) {
                 LifeStyleScreen(
-                    modifier = Modifier
-                        .clickable{
-                            authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
-                        },
+                    modifier = Modifier,
                     profileViewModel = profileViewModel,
                     appBarViewModel = appBarViewModel,
                     navController = navController,
@@ -445,6 +442,7 @@ fun NewRootNavigation(
                 TraineeDetailScreen(
                     traineesViewModel = traineesViewModel,
                     appBarViewModel = appBarViewModel,
+                    mealTypesViewModel = mealTypesViewModel,
                     id = id!!,
                     onNavigateBack = {
                         navController.navigate(RootScreenRoute.Trainees.route){

@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun WeightControlBlock(
     modifier: Modifier = Modifier,
+    personal: Boolean = true,
     weight: Double = 80.0
 ) {
     Column (
@@ -70,20 +71,22 @@ fun WeightControlBlock(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column (
-                modifier = Modifier
-                    .weight(4f),
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.Start
-            ) {
-                OutlinedButton(
-                    onClick = {},
-                    shape = RoundedCornerShape(16.dp)
+            if (personal){
+                Column (
+                    modifier = Modifier
+                        .weight(4f),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.Start
                 ) {
-                    Text(
-                        text = "Enter",
-                        fontSize = 20.sp
-                    )
+                    OutlinedButton(
+                        onClick = {},
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Text(
+                            text = "Enter",
+                            fontSize = 20.sp
+                        )
+                    }
                 }
             }
             Column (
