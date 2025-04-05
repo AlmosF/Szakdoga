@@ -1,6 +1,7 @@
 package com.example.szakdogafitness.data.main
 
 import android.R.attr.rating
+import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -439,6 +440,64 @@ class MainService @Inject constructor(
             context.startActivity(intent)
         }
     }
+
+    override fun removeEventFromCalendar(
+        event: Map<String, List<Int>>,
+        title: String,
+        description: String
+    ) {
+        val contentResolver = context.contentResolver
+
+        val projection = arrayOf(
+            CalendarContract.Events._ID,
+            CalendarContract.Events.TITLE,
+            CalendarContract.Events.DESCRIPTION,
+            CalendarContract.Events.DTSTART,
+            CalendarContract.Events.RRULE
+        )
+
+        val now = System.currentTimeMillis()
+
+        val selection = ("(${CalendarContract.Events.TITLE} = ?) AND " +
+                "(${CalendarContract.Events.DESCRIPTION} = ?) AND " +
+                "(${CalendarContract.Events.DTSTART} >= ?)")
+        val selectionArgs = arrayOf(title, description, now.toString())
+
+        val cursor = contentResolver.query(
+            CalendarContract.Events.CONTENT_URI,
+            projection,
+            selection,
+            selectionArgs,
+            null
+        )
+
+        cursor?.use {
+            while (it.moveToNext()) {
+                val eventId = it.getLong(it.getColumnIndexOrThrow(CalendarContract.Events._ID))
+                val eventStart = it.getLong(it.getColumnIndexOrThrow(CalendarContract.Events.DTSTART))
+                val rrule = it.getString(it.getColumnIndexOrThrow(CalendarContract.Events.RRULE)) ?: ""
+
+                val calendar = Calendar.getInstance().apply {
+                    timeInMillis = eventStart
+                }
+
+                val day = calendar.get(Calendar.DAY_OF_WEEK)
+                val hour = calendar.get(Calendar.HOUR_OF_DAY)
+
+                val matches = event.any { (dayStr, hours) ->
+                    stringToDayOfWeek(dayStr)?.let { dow ->
+                        dayToCalendar(dow) == day && hours.contains(hour)
+                    } ?: false
+                }
+
+                if (matches) {
+                    val deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId)
+                    contentResolver.delete(deleteUri, null, null)
+                }
+            }
+        }
+    }
+
 
     private fun stringToDayOfWeek(day: String): DayOfWeek? {
         return when (day.lowercase()) {

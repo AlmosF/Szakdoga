@@ -28,6 +28,10 @@ interface IMainService{
     //AddToCalendar
     fun addEventToCalendar(event: Map<String, List<Int>>, title: String, description: String)
 
+    //RemoveFromCalendar
+    fun removeEventFromCalendar(event: Map<String, List<Int>>, title: String, description: String)
+
+
     //Modify targetKcal
     suspend fun modifyTargetKcal(targetKcal: Int, date: Timestamp = Timestamp.now())
 

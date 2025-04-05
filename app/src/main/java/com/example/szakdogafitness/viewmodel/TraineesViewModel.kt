@@ -11,6 +11,7 @@ import com.example.szakdogafitness.domain.usecases.main.AddEventToCalendarUseCas
 import com.example.szakdogafitness.domain.usecases.main.DeleteRequestUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasByIdUseCase
+import com.example.szakdogafitness.domain.usecases.main.RemoveEventFromCalendarUseCase
 import com.example.szakdogafitness.domain.usecases.main.RemoveTraineeUseCase
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +34,8 @@ class TraineesViewModel @Inject constructor(
     private val acceptRequest: AcceptRequestUseCase,
     private val removeTrainee: RemoveTraineeUseCase,
     private val fetchTraineesDailyData: FetchUsersDailyDatasByIdUseCase,
-    private val addEventToCalendar: AddEventToCalendarUseCase
+    private val addEventToCalendar: AddEventToCalendarUseCase,
+    private val removeEventFromCalendar: RemoveEventFromCalendarUseCase
 ) : ViewModel() {
 
 
@@ -115,6 +117,11 @@ class TraineesViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             try {
                 removeTrainee.invoke(traineeId)
+                removeEventFromCalendar.invoke(
+                    state.value.selectedTrainee?.first?.appointment ?: emptyMap(),
+                    "Appointment",
+                    "Appointment with ${state.value.selectedTrainee?.second?.firstName} ${state.value.selectedTrainee?.second?.lastName}"
+                )
                 _state.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
                 Log.e(

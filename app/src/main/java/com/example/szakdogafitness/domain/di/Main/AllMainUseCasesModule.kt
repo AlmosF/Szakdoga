@@ -19,6 +19,7 @@ import com.example.szakdogafitness.domain.usecases.main.GetTrainersUseCase
 import com.example.szakdogafitness.domain.usecases.main.LoadAllTrainersAllRateUseCase
 import com.example.szakdogafitness.domain.usecases.main.LoadTrainersRateUseCase
 import com.example.szakdogafitness.domain.usecases.main.RateTrainerUseCase
+import com.example.szakdogafitness.domain.usecases.main.RemoveEventFromCalendarUseCase
 import com.example.szakdogafitness.domain.usecases.main.RemoveTraineeUseCase
 import com.example.szakdogafitness.domain.usecases.main.TargetWaterModifyUseCase
 import com.example.szakdogafitness.domain.usecases.main.UpdateUserUseCase
@@ -139,6 +140,12 @@ object AllMainUseCasesModule {
     @Singleton
     fun provideAddEventToCalendarUseCase(repository: IMainService): AddEventToCalendarUseCase {
         return AddEventToCalendarUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRemoveEventFromCalendarUseCase(repository: IMainService): RemoveEventFromCalendarUseCase {
+        return RemoveEventFromCalendarUseCase(repository)
     }
 
     @Provides
