@@ -3,6 +3,7 @@ package com.example.szakdogafitness.feature.trainer
 import android.R.attr.bottom
 import android.R.attr.text
 import android.R.attr.top
+import android.R.attr.visible
 import android.graphics.Paint
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
@@ -211,28 +212,32 @@ fun TrainerDetailsScreen(
                 }
             }
             Spacer(modifier = Modifier.size(16.dp))
-            Row (
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+            AnimatedVisibility(
+                visible = trainerState.requestedAppoint.first.appointment.isEmpty()
             ) {
-                Text(
-                    text = "Select training schedules",
-                    fontSize = 16.sp
-                )
-                IconButton(
-                    onClick = { scheduleOpened = !scheduleOpened }
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = if (scheduleOpened)  Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Toggle schedule"
+                    Text(
+                        text = "Select training schedules",
+                        fontSize = 16.sp
                     )
+                    IconButton(
+                        onClick = { scheduleOpened = !scheduleOpened }
+                    ) {
+                        Icon(
+                            imageVector = if (scheduleOpened)  Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                            contentDescription = "Toggle schedule"
+                        )
+                    }
                 }
             }
             var selectedSchedules by remember { mutableStateOf(mapOf<String, List<Int>>()) }
             AnimatedVisibility(
-                visible = scheduleOpened
+                visible = scheduleOpened && trainerState.requestedAppoint.first.appointment.isEmpty(),
             ) {
                 Log.e("TrainerDetailsScreen", "AVAILABLE: ${trainerState.trainersRequests}")
                 Log.e("TrainerDetailsScreen", "SELECTED: ${trainerState.requestedAppointments}")
@@ -277,7 +282,8 @@ fun TrainerDetailsScreen(
                         )
                     },
                     //enabled = trainerState.requestedAppointments.isEmpty(),
-                    enabled = trainerState.requestedAppoint.first.appointment.isEmpty(),
+                    enabled = trainerState.requestedAppoint.first.appointment.isEmpty() &&
+                    selectedSchedules.isNotEmpty(),
                 ) {
                     /*Text(
                         //text = if (trainerState.requestedAppointments.isEmpty()) "Request as Trainer" else "You already requested an appointment",
