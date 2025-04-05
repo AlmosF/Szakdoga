@@ -58,6 +58,9 @@ android {
 }
 dependencies {
 
+    //Location
+    implementation(libs.play.services.location)
+
     //Camera
     val camerax_version = "1.3.0" // or the latest version
 
