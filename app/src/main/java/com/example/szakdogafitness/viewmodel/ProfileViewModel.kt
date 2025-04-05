@@ -5,6 +5,7 @@ import android.util.Log.e
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.User
+import com.example.szakdogafitness.domain.usecases.location.RequestLocationUpdatesUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchUserUseCase
 import com.example.szakdogafitness.domain.usecases.main.UpdateUserUseCase
 import com.example.szakdogafitness.domain.usecases.profile.AllProfileUseCases
@@ -26,7 +27,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val profileUseCases: AllProfileUseCases,
     private val fetchUserUseCase: FetchUserUseCase,
-    private val updateUserUseCase: UpdateUserUseCase
+    private val updateUserUseCase: UpdateUserUseCase,
 ) : ViewModel(){
 
     private val _state = MutableStateFlow(ProfileState())

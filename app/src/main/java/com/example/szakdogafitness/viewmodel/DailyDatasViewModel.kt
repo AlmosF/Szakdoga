@@ -1,10 +1,10 @@
 package com.example.szakdogafitness.viewmodel
 
 import android.util.Log
-import android.util.Log.e
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.DailyData
+import com.example.szakdogafitness.domain.usecases.location.RequestLocationUpdatesUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasUseCase
 import com.example.szakdogafitness.domain.usecases.main.GenerateNewDailyDataUseCase
 import com.example.szakdogafitness.domain.usecases.main.TargetWaterModifyUseCase
@@ -16,6 +16,7 @@ import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,6 +30,7 @@ class DailyDatasViewModel @Inject constructor(
     private val targetKcalModifyUseCase: TargetKcalModifyUseCase,
     private val targetWaterModifyUseCase: TargetWaterModifyUseCase,
     private val waterIntakeModifyUseCase: WaterIntakeModifyUseCase,
+    private val location: RequestLocationUpdatesUseCase
 ) : ViewModel(){
 
     private val _state = MutableStateFlow(DailyDatasState())
@@ -84,6 +86,18 @@ class DailyDatasViewModel @Inject constructor(
 
             is DailyDatasEvent.UpdateWaterIntake -> {
                 updateWaterIntake(event.waterIntake, event.date)
+            }
+
+            DailyDatasEvent.StartLocationMonitoring -> {
+                startLocationMonitoring()
+            }
+        }
+    }
+
+    fun startLocationMonitoring(){
+        viewModelScope.launch {
+            location().collectLatest { pos ->
+                Log.d("Location", "Location: $pos")
             }
         }
     }
@@ -243,6 +257,7 @@ sealed class DailyDatasEvent{
     data class UpdateTargetWater(val targetWater: Double, val date: Timestamp) : DailyDatasEvent()
     data class UpdateWaterIntake(val waterIntake: Double, val date: Timestamp) : DailyDatasEvent()
     object LoadDailyDatas: DailyDatasEvent()
+    object StartLocationMonitoring: DailyDatasEvent()
     object NextDay: DailyDatasEvent()
     object PreviousDay: DailyDatasEvent()
     object GenerateNewDailyData: DailyDatasEvent()

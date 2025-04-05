@@ -30,9 +30,11 @@ import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
 import com.example.szakdogafitness.viewmodel.MealTypesEvent
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 import com.example.szakdogafitness.viewmodel.ProfileViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun LifeStyleScreen(
     modifier: Modifier = Modifier,
@@ -80,6 +82,22 @@ fun LifeStyleScreen(
     val profileState by profileViewModel.state.collectAsStateWithLifecycle()
 
     val mealTypesState by mealTypesViewModel.state.collectAsStateWithLifecycle()
+
+    val locationPermission = rememberMultiplePermissionsState(
+        listOf(
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    )
+
+    val permissionsGranted = locationPermission.allPermissionsGranted
+    LaunchedEffect(Unit, permissionsGranted) {
+        if (permissionsGranted){
+            dailyDatasViewModel.onEvent(DailyDatasEvent.StartLocationMonitoring)
+        } else {
+            locationPermission.launchMultiplePermissionRequest()
+        }
+    }
 
     LaunchedEffect(Unit) {
         dailyDatasViewModel.onEvent(DailyDatasEvent.LoadDailyDatas)
