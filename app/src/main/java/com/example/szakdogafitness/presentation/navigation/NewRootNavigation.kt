@@ -309,6 +309,7 @@ fun NewRootNavigation(
                         }
                     },
                     onLogout = {
+                        profileViewModel.onEvent(ProfileEvent.StopLocationMonitoring)
                         authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
                     }
                 ){

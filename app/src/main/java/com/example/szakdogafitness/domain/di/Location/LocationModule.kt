@@ -5,6 +5,7 @@ import com.example.szakdogafitness.data.location.ILocationService
 import com.example.szakdogafitness.data.location.LocationService
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +20,7 @@ object LocationModule{
     @Singleton
     @Provides
     fun provideLocationService(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
     ): ILocationService = LocationService(
         context,
         LocationServices.getFusedLocationProviderClient(context)

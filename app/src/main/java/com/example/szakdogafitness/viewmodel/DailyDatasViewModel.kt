@@ -30,7 +30,6 @@ class DailyDatasViewModel @Inject constructor(
     private val targetKcalModifyUseCase: TargetKcalModifyUseCase,
     private val targetWaterModifyUseCase: TargetWaterModifyUseCase,
     private val waterIntakeModifyUseCase: WaterIntakeModifyUseCase,
-    private val location: RequestLocationUpdatesUseCase
 ) : ViewModel(){
 
     private val _state = MutableStateFlow(DailyDatasState())
@@ -87,20 +86,10 @@ class DailyDatasViewModel @Inject constructor(
             is DailyDatasEvent.UpdateWaterIntake -> {
                 updateWaterIntake(event.waterIntake, event.date)
             }
-
-            DailyDatasEvent.StartLocationMonitoring -> {
-                startLocationMonitoring()
-            }
         }
     }
 
-    fun startLocationMonitoring(){
-        viewModelScope.launch {
-            location().collectLatest { pos ->
-                Log.d("Location", "Location: $pos")
-            }
-        }
-    }
+
 
     private fun updateWaterIntake(waterIntake: Double, timestamp: Timestamp) {
         viewModelScope.launch {
@@ -257,7 +246,6 @@ sealed class DailyDatasEvent{
     data class UpdateTargetWater(val targetWater: Double, val date: Timestamp) : DailyDatasEvent()
     data class UpdateWaterIntake(val waterIntake: Double, val date: Timestamp) : DailyDatasEvent()
     object LoadDailyDatas: DailyDatasEvent()
-    object StartLocationMonitoring: DailyDatasEvent()
     object NextDay: DailyDatasEvent()
     object PreviousDay: DailyDatasEvent()
     object GenerateNewDailyData: DailyDatasEvent()

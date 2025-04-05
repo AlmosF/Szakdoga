@@ -29,6 +29,7 @@ import com.example.szakdogafitness.viewmodel.DailyDatasEvent
 import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
 import com.example.szakdogafitness.viewmodel.MealTypesEvent
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
+import com.example.szakdogafitness.viewmodel.ProfileEvent
 import com.example.szakdogafitness.viewmodel.ProfileViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -93,7 +94,8 @@ fun LifeStyleScreen(
     val permissionsGranted = locationPermission.allPermissionsGranted
     LaunchedEffect(Unit, permissionsGranted) {
         if (permissionsGranted){
-            dailyDatasViewModel.onEvent(DailyDatasEvent.StartLocationMonitoring)
+            //dailyDatasViewModel.onEvent(DailyDatasEvent.StartLocationMonitoring)
+            profileViewModel.onEvent(ProfileEvent.StartLocationMonitoring)
         } else {
             locationPermission.launchMultiplePermissionRequest()
         }
