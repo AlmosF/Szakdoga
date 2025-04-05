@@ -117,7 +117,7 @@ fun TraineeCard(
                     text = data.phoneNumber
                 )
             }
-            Column (
+            /*Column (
                 modifier = Modifier
                     .weight(1f),
                 verticalArrangement = Arrangement.Center,
@@ -133,7 +133,7 @@ fun TraineeCard(
                         contentDescription = "Message",
                     )
                 }
-            }
+            }*/
         }
     }
 }
