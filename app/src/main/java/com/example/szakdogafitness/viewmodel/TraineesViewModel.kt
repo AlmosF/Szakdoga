@@ -11,6 +11,7 @@ import com.example.szakdogafitness.domain.usecases.main.AddEventToCalendarUseCas
 import com.example.szakdogafitness.domain.usecases.main.DeleteRequestUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasByIdUseCase
+import com.example.szakdogafitness.domain.usecases.main.RemoveTraineeUseCase
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +31,7 @@ class TraineesViewModel @Inject constructor(
     private val fetchRequests: FetchRequestsUseCase,
     private val declineRequest: DeleteRequestUseCase,
     private val acceptRequest: AcceptRequestUseCase,
+    private val removeTrainee: RemoveTraineeUseCase,
     private val fetchTraineesDailyData: FetchUsersDailyDatasByIdUseCase,
     private val addEventToCalendar: AddEventToCalendarUseCase
 ) : ViewModel() {
@@ -100,6 +102,26 @@ class TraineesViewModel @Inject constructor(
                     }
                     buttonsAvailable()
                 }
+            }
+
+            is TraineesEvent.RemoveTrainee -> {
+                removeTrainee(event.userId)
+            }
+        }
+    }
+
+    private fun removeTrainee(traineeId: String){
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                removeTrainee.invoke(traineeId)
+                _state.update { it.copy(isLoading = false) }
+            } catch (e: Exception) {
+                Log.e(
+                    "TraineesViewModel",
+                    "removeTrainee: ${e.message}"
+                )
+                _state.update { it.copy(isLoading = false) }
             }
         }
     }
@@ -318,6 +340,7 @@ sealed class TraineesEvent {
     data class SelectTrainee(val userId: String) : TraineesEvent()
     data class AcceptRequest(val userId: String): TraineesEvent()
     data class DeclineRequest(val userId: String): TraineesEvent()
+    data class RemoveTrainee(val userId: String): TraineesEvent()
     data class AppointmentsToCalendar(val status: Boolean): TraineesEvent()
 }
 

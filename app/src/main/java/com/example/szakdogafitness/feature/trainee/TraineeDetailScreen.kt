@@ -100,7 +100,10 @@ fun TraineeDetailScreen(
                 } else {
                     TraineeBioScreen(
                         data = traineesState.selectedTrainee?.second ?: error("Selected trainee is null")
-                    )
+                    ) {
+                        traineesViewModel.onEvent(TraineesEvent.RemoveTrainee(it))
+                        onNavigateBack()
+                    }
                 }
             }
         } else {

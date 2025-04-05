@@ -22,6 +22,8 @@ interface IMainService{
 
     suspend fun deleteRequest(traineeId: String)
     suspend fun acceptRequest(traineeId: String)
+    //Remove Current Trainee
+    suspend fun removeTrainee(traineeId: String)
 
     //AddToCalendar
     fun addEventToCalendar(event: Map<String, List<Int>>, title: String, description: String)
@@ -34,6 +36,8 @@ interface IMainService{
 
     //Update waterIntake
     suspend fun updateWaterIntake(waterIntake: Double, date: Timestamp = Timestamp.now())
+
+
 
 
     suspend fun getAcceptedTrainers(): Flow<List<Pair<Requests, User>>>

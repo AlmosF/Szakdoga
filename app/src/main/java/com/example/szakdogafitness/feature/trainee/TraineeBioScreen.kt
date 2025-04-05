@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -44,7 +45,8 @@ import com.google.firebase.Timestamp
 @Composable
 fun TraineeBioScreen(
     modifier: Modifier = Modifier,
-    data: User
+    data: User,
+    onTraineeRemoved: (String) -> Unit,
 ) {
 
     val painter = rememberAsyncImagePainter(data.profileImageUrl)
@@ -154,6 +156,18 @@ fun TraineeBioScreen(
         ) {
             Text(
                 text = data.bio,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+        Spacer(modifier = Modifier.size(32.dp))
+        OutlinedButton(
+            onClick = {
+                onTraineeRemoved(data.userId)
+            }
+        ) {
+            Text(
+                text = "Remove Trainee",
                 fontSize = 16.sp,
                 modifier = Modifier.padding(8.dp)
             )

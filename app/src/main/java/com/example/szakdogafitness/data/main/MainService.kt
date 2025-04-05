@@ -373,6 +373,32 @@ class MainService @Inject constructor(
         }
     }
 
+    override suspend fun removeTrainee(traineeId: String) {
+        val userId = userIdUseCase()
+        if (userId == null) {
+            Log.e("MainService", "Error accepting request: User ID is null")
+            return
+        }
+        try {
+            firestore.collection("requests")
+                .document(userId)
+                .collection("traineeRequests")
+                .document(traineeId)
+                .delete()
+                .await()
+
+            firestore.collection("requests")
+                .document(traineeId)
+                .collection("trainers")
+                .document(userId)
+                .delete()
+                .await()
+
+        } catch (e: Exception) {
+            Log.e("MainService", "Error removing trainee: ${e.message}", e)
+        }
+    }
+
     override fun addEventToCalendar(event: Map<String, List<Int>>, title: String, description: String) {
         val contentResolver = context.contentResolver
         val eventUris = mutableListOf<Uri>()
