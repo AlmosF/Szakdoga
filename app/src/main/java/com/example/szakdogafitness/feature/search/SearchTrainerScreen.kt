@@ -1,7 +1,5 @@
 package com.example.szakdogafitness.feature.search
 
-import android.R.attr.data
-import android.R.attr.rating
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,26 +18,28 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.TrainerCard
 import com.example.szakdogafitness.ui.common.TrainerDemo
+import com.example.szakdogafitness.util.calculateDistance
 import com.example.szakdogafitness.viewmodel.TrainersEvent
 import com.example.szakdogafitness.viewmodel.TrainersViewModel
+import com.google.firebase.firestore.GeoPoint
 
 @Composable
 fun SearchTrainerScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     trainersViewModel: TrainersViewModel = hiltViewModel(),
+    currentUser: User,
     onTrainerClick: (String) -> Unit
     //VMs
 ) {
@@ -96,44 +97,50 @@ fun SearchTrainerScreen(
                 disabledContainerColor = MaterialTheme.colorScheme.surface,
             )
         )
-        if (trainersState.trainers.isEmpty()) {
-            Column (
-                modifier = Modifier
-                    .fillMaxWidth(0.95f)
-            ) {
-                Text("No trainers found")
-            }
-        } else {
-            LazyColumn (
-                modifier = Modifier
-                    .fillMaxWidth(0.95f),
-            ) {
-                /*items(list.size) {
-                    TrainerCard(
-                        data = list[it],
-                    )
-                }*/
+        if (trainersState.isLoading){
+            CircularProgressIndicator()
+        }else {
+            if (trainersState.trainers.isEmpty()) {
+                Column (
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f)
+                ) {
+                    Text("No trainers found")
+                }
+            } else {
+                LazyColumn (
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f),
+                ) {
+                    /*items(list.size) {
+                        TrainerCard(
+                            data = list[it],
+                        )
+                    }*/
 
-                items(trainersState.trainers.size) {
-                    val user = trainersState.trainers[it]!!
-                    val rating = trainersState.allTrainersAllRating.find { rating ->
-                        rating?.first == user.userId
-                    }?.second?.sumOf {
-                        it.rating
-                    }?.div(
-                        trainersState.allTrainersAllRating.find { rating ->
+                    items(trainersState.trainers.size) {
+                        val user = trainersState.trainers[it]!!
+                        val rating = trainersState.allTrainersAllRating.find { rating ->
                             rating?.first == user.userId
-                        }?.second?.size ?: 1
-                    )
-                    Log.d("SearchTrainerScreen", "Rating: $rating")
-                    TrainerCard(
-                        data = trainersState.trainers[it]!!,
-                        ratingData = rating ?: 0,
-                        rateSize = trainersState.allTrainersAllRating.find { rating ->
-                            rating?.first == user.userId
-                        }?.second?.size ?: 0
-                    ) { userId ->
-                        onTrainerClick(userId)
+                        }?.second?.sumOf {
+                            it.rating
+                        }?.div(
+                            trainersState.allTrainersAllRating.find { rating ->
+                                rating?.first == user.userId
+                            }?.second?.size ?: 1
+                        )
+                        val distance = user.location?.calculateDistance(currentUser.location ?: GeoPoint(0.0,0.0))
+                        Log.d("SearchTrainerScreen", "Rating: $rating")
+                        TrainerCard(
+                            currentTrainer = trainersState.trainers[it]!!,
+                            ratingData = rating ?: 0,
+                            rateSize = trainersState.allTrainersAllRating.find { rating ->
+                                rating?.first == user.userId
+                            }?.second?.size ?: 0,
+                            locationDistance = distance
+                        ) { userId ->
+                            onTrainerClick(userId)
+                        }
                     }
                 }
             }

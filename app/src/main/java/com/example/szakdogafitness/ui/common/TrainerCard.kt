@@ -1,7 +1,7 @@
 package com.example.szakdogafitness.ui.common
 
 import android.R.attr.fontWeight
-import android.R.attr.text
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,12 +20,14 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
@@ -39,6 +41,8 @@ import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.model.User
+import com.example.szakdogafitness.util.calculateDistance
+import com.google.firebase.firestore.GeoPoint
 
 
 data class TrainerDemo (
@@ -58,20 +62,22 @@ data class TrainerDemo (
 @Composable
 fun TrainerCard(
     //data : TrainerDemo
-    data : User,
+    currentTrainer : User,
     ratingData: Int,
     rateSize: Int,
+    locationDistance: Pair<Int?, Int?>?,
     onClick: (String) -> Unit
 ) {
     //val painter = rememberAsyncImagePainter(data.image)
-    val painter = rememberAsyncImagePainter(data.profileImageUrl)
+    val painter = rememberAsyncImagePainter(currentTrainer.profileImageUrl)
     val painterState = painter.state.collectAsState()
+    val context = LocalContext.current
     Card (
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         onClick = {
-            onClick(data.userId)
+            onClick(currentTrainer.userId)
         }
     ) {
         ConstraintLayout (
@@ -132,7 +138,7 @@ fun TrainerCard(
             }
             Text(
                 //text = "${data.Fname} ${data.Lname}",
-                text = "${data.firstName} ${data.lastName}",
+                text = "${currentTrainer.firstName} ${currentTrainer.lastName}",
                 modifier = Modifier
                     .constrainAs(name) {
                         top.linkTo(parent.top, margin = 8.dp)
@@ -143,10 +149,10 @@ fun TrainerCard(
                 fontWeight = Bold
             )
             //data.specializations.forEach {
-            data.trainer.specializations.forEach {
+            currentTrainer.trainer.specializations.forEach {
                 Text(
                     //text = data.specializations.joinToString(", "),
-                    text = data.trainer.specializations.joinToString(", "),
+                    text = currentTrainer.trainer.specializations.joinToString(", "),
                     modifier = Modifier
                         .constrainAs(specializations){
                             top.linkTo(name.bottom, margin = 8.dp)
@@ -162,12 +168,12 @@ fun TrainerCard(
             Row (
                 modifier = Modifier
                     .fillMaxWidth()
-                    .constrainAs(rating){
+                    .constrainAs(rating) {
                         top.linkTo(image.bottom, margin = 15.dp)
                         start.linkTo(parent.start, margin = 8.dp)
                         end.linkTo(parent.end, margin = 8.dp)
                         bottom.linkTo(parent.bottom, margin = 8.dp)
-                },
+                    },
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -182,9 +188,9 @@ fun TrainerCard(
                 )
                 Text(
                     //text = "$${data.price} / session",
-                    text = "$${data.trainer.pricing} / session",
+                    text = "$${currentTrainer.trainer.pricing} / \nsession",
                     modifier = Modifier.weight(1f),
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     color = Color.Black,
                     fontWeight = Bold,
                     textAlign = TextAlign.Center
@@ -195,14 +201,14 @@ fun TrainerCard(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        //text = "${data.distance} miles away",
-                        text = "${data.location} miles away",
-                        fontSize = 18.sp,
+                        text = if (locationDistance?.first != null) "${locationDistance.first} km away" else "N/A",
+                        fontSize = 16.sp,
                         color = Color.Black,
                         fontWeight = Bold
                     )
+                    val genderList = context.resources.getStringArray(R.array.trainer_preference).toList()
                     Text(
-                        text = data.gender.toString(),
+                        text = genderList[currentTrainer.gender],
                         fontSize = 18.sp,
                         color = Color.Black,
                         fontWeight = Bold

@@ -58,14 +58,17 @@ import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.ui.common.RatingStarsTen
 import com.example.szakdogafitness.ui.common.TraineeTimetableView
+import com.example.szakdogafitness.util.calculateDistance
 import com.example.szakdogafitness.viewmodel.TrainersEvent
 import com.example.szakdogafitness.viewmodel.TrainersViewModel
+import com.google.firebase.firestore.GeoPoint
 
 @Composable
 fun TrainerDetailsScreen(
     modifier: Modifier = Modifier,
     //data: TrainerDemo
     data: User,
+    currentUser: User,
     trainersViewModel: TrainersViewModel = hiltViewModel(),
     //VMs
 ) {
@@ -147,8 +150,9 @@ fun TrainerDetailsScreen(
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
+                val distance = data.location?.calculateDistance(currentUser.location)
                 Text(
-                    text = "x miles away",
+                    text = if (distance?.first != null) "${distance.first} km" else "N/A",
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
@@ -358,6 +362,7 @@ fun TrainerDetailsScreenPreview() {
     )
     TrainerDetailsScreen(
         data = User(),
+        currentUser = User(),
         trainersViewModel = hiltViewModel(),
     )
 }

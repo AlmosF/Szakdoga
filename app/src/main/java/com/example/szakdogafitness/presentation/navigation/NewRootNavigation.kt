@@ -44,6 +44,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.feature.CameraScan.CameraScreen
 import com.example.szakdogafitness.feature.auth.AuthenticateScreen
 import com.example.szakdogafitness.feature.lifestyle.LifeStyleScreen
@@ -357,6 +358,7 @@ fun NewRootNavigation(
                 SearchTrainerScreen( //fixme: TrainersVM needed
                     navController = navController,
                     trainersViewModel = trainersViewModel,
+                    currentUser = profileState.user ?: User() // FIXME: WONT BE NULL ANYWAYS
                     //mainViewModel = mainViewModel, //With MainVM
                 ) { userId ->
                     navController.navigate(RootScreenRoute.SearchDetail.createRoute(userId))
@@ -378,6 +380,7 @@ fun NewRootNavigation(
                 //Text(text = "SearchDetail: ${trainer}")
                 TrainerDetailsScreen(
                     data = trainer!!,
+                    currentUser = profileState.user!!,
                     trainersViewModel = trainersViewModel,
                 ) // FIXME: !! is not safe
             }
