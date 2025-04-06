@@ -140,14 +140,16 @@ fun NewRootNavigation(
     }
 
 
-    /*val startDestination = when {
+    val startDestination = when {
         authState.isLoggedIn -> RootScreenRoute.Loading.route
         else -> RootScreenRoute.Authentication.route
-    }*/
-    val startDestination = when {
+    }
+
+    /*val startDestination = when {
         authState.isLoggedIn && authState.isOnline -> RootScreenRoute.Loading.route
         else -> RootScreenRoute.Authentication.route
-    }
+    }*/
+
     LaunchedEffect(authState.isLoggedIn) {
         Log.d("RootNavigation", "isLoggedIn: ${authState.isLoggedIn}")
         if (!authState.isLoggedIn){

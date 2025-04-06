@@ -19,6 +19,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.RoundingMode
 import javax.inject.Inject
@@ -448,7 +449,6 @@ class SetupViewModel @Inject constructor(
                 )*/
             }
             SetupEvent.FinishButtonClicked -> {
-                Log.d("SetupViewModel", "FinishButtonClicked")
                 onFinishButton(_state.value)
             }
             SetupEvent.SaveButtonClicked -> TODO()
@@ -461,7 +461,13 @@ class SetupViewModel @Inject constructor(
 
     private fun onFinishButton(state: SetupProfileState) {
         viewModelScope.launch(Dispatchers.IO){
-            setupUseCase.finishButton(state)
+            _state.update { it.copy(isLoading = true) }
+            try {
+                setupUseCase.finishButton(state)
+                _state.update { it.copy(isLoading = false) }
+            } catch (e: Exception) {
+                _state.update { it.copy(isLoading = false) }
+            }
         }
     }
 
@@ -581,6 +587,7 @@ data class SetupProfileState(
     var healthInformation: List<String> = emptyList(),
     var dietaryPreferences: List<String> = emptyList(),
     var availableEquipment: List<String> = emptyList(),*/
+    var isLoading: Boolean = false,
     var user: User = User(),
     //screen
     var currentScreen: Int = 0, //0: RoleSelection, 1: TrainerOne, 2: TrainerTwo, 3: TraineeOne, 4: TraineeTwo

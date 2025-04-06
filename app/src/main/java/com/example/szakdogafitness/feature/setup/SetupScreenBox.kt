@@ -83,6 +83,13 @@ fun SetupScreenBox(
         Log.d("SetupScreenBoxLE", "SetupScreenBox: ${setupViewModel.state.value}")
     }
 
+    var finishClicked by remember { mutableStateOf(false) }
+    LaunchedEffect(finishClicked, state.value.isLoading) {
+        if (finishClicked && !state.value.isLoading) {
+            onMainNavigate()
+        }
+    }
+
     /*LaunchedEffect(profileState.value.user.isSetupDone == true, Unit) {
         onMainNavigate()
     }*/
@@ -233,7 +240,8 @@ fun SetupScreenBox(
                         when (nextButtonLabel.value) {
                             "Finish" -> {
                                 setupViewModel.onEvent(SetupEvent.FinishButtonClicked)
-                                onMainNavigate()
+                                //onMainNavigate()
+                                finishClicked = true
                             }
 
                             "Next" -> {
