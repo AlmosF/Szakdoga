@@ -314,6 +314,7 @@ fun NewRootNavigation(
                     onLogout = {
                         profileViewModel.onEvent(ProfileEvent.StopLocationMonitoring)
                         authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
+                        dailyDatasViewModel.onEvent(DailyDatasEvent.ResetDailyData)
                     }
                 ){
                     navController.navigate(RootScreenRoute.EditFoods.route){

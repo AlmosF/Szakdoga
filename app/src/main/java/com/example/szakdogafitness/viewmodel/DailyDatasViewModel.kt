@@ -86,6 +86,12 @@ class DailyDatasViewModel @Inject constructor(
             is DailyDatasEvent.UpdateWaterIntake -> {
                 updateWaterIntake(event.waterIntake, event.date)
             }
+
+            DailyDatasEvent.ResetDailyData -> {
+                _state.update {
+                    DailyDatasState()
+                }
+            }
         }
     }
 
@@ -245,6 +251,7 @@ sealed class DailyDatasEvent{
     data class UpdateTargetKcal(val targetKcal: Int, val date: Timestamp) : DailyDatasEvent()
     data class UpdateTargetWater(val targetWater: Double, val date: Timestamp) : DailyDatasEvent()
     data class UpdateWaterIntake(val waterIntake: Double, val date: Timestamp) : DailyDatasEvent()
+    object ResetDailyData : DailyDatasEvent()
     object LoadDailyDatas: DailyDatasEvent()
     object NextDay: DailyDatasEvent()
     object PreviousDay: DailyDatasEvent()
