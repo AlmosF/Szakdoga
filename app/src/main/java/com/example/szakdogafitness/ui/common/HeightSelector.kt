@@ -133,7 +133,8 @@ fun HeightSelector(
             width = width,
             itemHeight = itemHeight,
             items = (100..250).toList(),
-            initialItem = selectedHeight.intValue,
+            //initialItem = selectedHeight.intValue,
+            initialItem = heightCm,
             textStyle = textStyle,
             textColor = textColor,
             selectedTextColor = selectedTextColor,
@@ -145,7 +146,7 @@ fun HeightSelector(
         )
     } else {
         // Imperial (inches)
-        val totalInches = selectedHeight.intValue
+        val totalInches = selectedHeight.intValue.div(2.54).toInt()
         val feet = totalInches / 12
         val inches = totalInches % 12
         Log.d("HeightSelector", "selectedHeight: ${selectedHeight.intValue}, totalInches: $totalInches, feet: $feet, inches: $inches")

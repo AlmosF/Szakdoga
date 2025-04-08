@@ -24,6 +24,7 @@ import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +34,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -64,6 +66,7 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -84,6 +87,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -94,20 +98,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImagePainter
 import coil3.compose.AsyncImagePainter.State.Empty.painter
 import coil3.compose.rememberAsyncImagePainter
+import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.model.Trainer
 import com.example.szakdogafitness.feature.setup.DatePick
 import com.example.szakdogafitness.feature.setup.toMillis
 import com.example.szakdogafitness.feature.setup.toTimestamp
 import com.example.szakdogafitness.feature.setup.toTriple
+import com.example.szakdogafitness.ui.common.HeightSelector
 import com.example.szakdogafitness.ui.common.LargeDropdownMenu
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.SocialMediaSelector
 import com.example.szakdogafitness.ui.common.TrainerTimetableView
+import com.example.szakdogafitness.ui.common.WeightSelector
 import com.example.szakdogafitness.ui.common.appbars.TopBar
 import com.example.szakdogafitness.ui.components.PhoneNumberVisualTransformation
 import com.example.szakdogafitness.ui.components.countryCodeToFlagEmoji
@@ -749,6 +757,10 @@ fun ProfileScreenTrainee(
 ){
 
     val profileState by profileViewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    var heightOpened by remember { mutableStateOf(false) }
+    var weightOpened by remember { mutableStateOf(false) }
 
     Column (
         modifier = Modifier
@@ -762,8 +774,18 @@ fun ProfileScreenTrainee(
         ) {
             SegmentedButton(
                 //selected = state.unit == 1,
-                selected = profileState.user?.trainee?.unit == 1,
-                onClick = {},
+                selected = profileState.editUser?.trainee?.unit == 1,
+                onClick = {
+                    profileViewModel.onEvent(
+                        ProfileEvent.EditUser(
+                            profileState.editUser?.copy(
+                                trainee = profileState.editUser?.trainee?.copy(
+                                    unit = 1
+                                )!!
+                            )!!
+                        )
+                    )
+                },
                 enabled = profileState.switchEdit,
                 shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
             ) {
@@ -771,8 +793,18 @@ fun ProfileScreenTrainee(
             }
             Spacer(modifier = Modifier.width(48.dp))
             SegmentedButton(
-                selected = profileState.user?.trainee?.unit == 2,
-                onClick = {},
+                selected = profileState.editUser?.trainee?.unit == 2,
+                onClick = {
+                    profileViewModel.onEvent(
+                        ProfileEvent.EditUser(
+                            profileState.editUser?.copy(
+                                trainee = profileState.editUser?.trainee?.copy(
+                                    unit = 2
+                                )!!
+                            )!!
+                        )
+                    )
+                },
                 enabled = profileState.switchEdit,
                 shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
             ) {
@@ -784,20 +816,85 @@ fun ProfileScreenTrainee(
                 .padding(8.dp)
                 .fillMaxWidth()
         ) {
+            if(heightOpened){
+                var heightDialog by remember { mutableStateOf(profileState.editUser?.trainee?.height?:0) }
+                Dialog(
+                    onDismissRequest = {heightOpened = false},
+                ) {
+
+                    Column (
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.White)
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        HeightSelector(
+                            width = 100.dp,
+                            itemHeight = 50.dp,
+                            textStyle = MaterialTheme.typography.bodyLarge,
+                            textColor = Color.Gray,
+                            selectedTextColor = Color.Black,
+                            unit = profileState.editUser?.trainee?.unit == 1,
+                            onHeightSelected = { cm ->
+                                heightDialog = cm
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp),
+                            heightCm = profileState.editUser?.trainee?.height ?: 0,
+                        )
+                        Row (
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            TextButton(
+                                onClick = {
+                                    heightOpened = false
+                                }
+                            ) {
+                                Text("Cancel")
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            TextButton(
+                                onClick = {
+                                    profileViewModel.onEvent(
+                                        ProfileEvent.EditUser(
+                                            profileState.editUser?.copy(
+                                                trainee = profileState.editUser?.trainee?.copy(
+                                                    height = heightDialog
+                                                )!!
+                                            )!!
+                                        )
+                                    )
+                                    heightOpened = false
+                                }
+                            ) {
+                                Text("Ok")
+                            }
+                        }
+                    }
+
+                }
+            }
             NormalTextField(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable(onClick = {}),
+                    .clickable(onClick = {
+                        if (profileState.switchEdit)
+                            heightOpened = true
+                    }),
                 label = "Height",
                 onValueChange = {},
-                value = if (profileState.user?.trainee?.height == 0)
+                value = if (profileState.editUser?.trainee?.height == 0)
                     ""
-                else if (profileState.user?.trainee?.unit == 1)
-                    "${profileState.user?.trainee?.height} cm"
-                else if (profileState.user?.trainee?.unit == 2) {
-                    val totalInches = (profileState.user?.trainee?.height?.div(2.54))?.toInt() ?: 0
+                else if (profileState.editUser?.trainee?.unit == 1)
+                    "${profileState.editUser?.trainee?.height} cm"
+                else if (profileState.editUser?.trainee?.unit == 2) {
+                    val totalInches = (profileState.editUser?.trainee?.height?.div(2.54))?.toInt() ?: 0
                     val feet = totalInches / 12
-                    val inches = totalInches % 12 + 1
+                    val inches = totalInches % 12
                     "$feet ft $inches in"
                 } else {
                     ""
@@ -824,10 +921,16 @@ fun ProfileScreenTrainee(
             NormalTextField(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable(onClick = {}),
+                    .clickable(onClick = {
+                        if (profileState.switchEdit)
+                            weightOpened = true
+                    }),
                 label = "Weight",
                 onValueChange = {},
-                value = profileState.user?.trainee?.weight.toString(),
+                value = if (profileState.editUser?.trainee?.unit == 1)
+                    (profileState.editUser?.trainee?.weight?.let { String.format("%.1f", it) }) ?: ""
+                        else
+                    (profileState.editUser?.trainee?.weight?.times(2.2)?.let { String.format("%.1f", it) }) ?: "",
                 singleLine = true,
                 enabled = false,
                 readOnly = true,
@@ -835,9 +938,9 @@ fun ProfileScreenTrainee(
                 leadingIcon = null,
                 trailingIcon = {
                     Text(
-                        text = if (profileState.user?.trainee?.weight == 0.0)
+                        text = if (profileState.editUser?.trainee?.weight == 0.0)
                             ""
-                        else if (profileState.user?.trainee?.unit == 1)
+                        else if (profileState.editUser?.trainee?.unit == 1)
                             "kg"
                         else
                             "lb",
@@ -855,8 +958,89 @@ fun ProfileScreenTrainee(
                     fontWeight = Bold
                 )
             )
+            if (weightOpened){
+                Dialog(
+                    onDismissRequest = {weightOpened = false}
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.White)
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        var weightDialog by remember { mutableStateOf(profileState.editUser?.trainee?.weight) }
+                        WeightSelector(
+                            width = 75.dp,
+                            itemHeight = 50.dp,
+                            textStyle = MaterialTheme.typography.bodyLarge,
+                            textColor = Color.Gray,
+                            unit = profileState.editUser?.trainee?.unit == 1,
+                            weight = profileState.editUser?.trainee?.weight ?: 0.0,
+                            onWeightSelected = {
+                                weightDialog = it
+                            }
+                        )
+                        Row (
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            TextButton(
+                                onClick = {
+                                    weightOpened = false
+                                }
+                            ) {
+                                Text("Cancel")
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            TextButton(
+                                onClick = {
+                                    Log.d("ProfileScreen", "Weight: $weightDialog")
+                                    profileViewModel.onEvent(
+                                        ProfileEvent.EditUser(
+                                            profileState.editUser?.copy(
+                                                trainee = profileState.editUser?.trainee?.copy(
+                                                    weight = (if (profileState.editUser?.trainee?.unit?.equals(1) == true) weightDialog
+                                                        else
+                                                        weightDialog?.div(2.2))?.let {String.format("%.1f", it).toDouble()}
+                                                            ?: 0.0
+                                                )!!
+                                            )!!
+                                        )
+                                    )
+                                    weightOpened = false
+                                }
+                            ) {
+                                Text("Ok")
+                            }
+                        }
+                    }
+                }
+            }
             Spacer(modifier = Modifier.width(8.dp))
-            NormalTextField(
+            val trainingItems = listOf("1", "2", "3", "4", "5")
+
+            LargeDropdownMenu( //TODO: Nincs kész rossz a paraméter
+                modifier = Modifier
+                    .weight(1f),
+                label = "Training / Week",
+                items = trainingItems,
+                enabled = profileState.switchEdit,
+                selectedIndices = profileState.editUser?.trainee?.trainings.let { listOf(it?.minus(1) ?: 0) },
+                onItemSelected = { index, items ->
+                    profileViewModel.onEvent(
+                        ProfileEvent.EditUser(
+                            profileState.editUser?.copy(
+                                trainee = profileState.editUser?.trainee?.copy(
+                                    trainings = index + 1
+                                )!!
+                            )!!
+                        )
+                    )
+                },
+            )
+            /*NormalTextField(
                 modifier = Modifier
                     .weight(1f)
                     .clickable(onClick = {}),
@@ -879,9 +1063,9 @@ fun ProfileScreenTrainee(
                     color = Color.Black,
                     fontWeight = Bold
                 )
-            )
+            )*/
         }
-        val fitnessGoalItems = listOf("Lose Weight", "Gain Muscle", "Improve Endurance", "Improve Flexibility", "Improve Strength", "Improve Speed", "Improve Power", "Improve Agility", "Improve Balance", "Improve Coordination", "Improve Accuracy", "Improve Stamina", "Improve Cardiovascular Health", "Improve Mental Health", "Improve Sleep", "Improve Nutrition", "Improve Hydration", "Improve Recovery", "Improve Mobility", "Improve Posture", "Improve Technique", "Improve Form", "Improve Breathing", "Improve Confidence", "Improve Discipline", "Improve Consistency", "Improve Patience", "Improve Focus", "Improve Mindfulness", "Improve Awareness", "Improve Presence", "Improve Resilience", "Improve Grit", "Improve Determination", "Improve Perseverance", "Improve Dedication", "Improve Commitment", "Improve Passion", "Improve Love", "Improve Joy", "Improve Happiness", "Improve Fulfillment", "Improve Purpose", "Improve Meaning", "Improve Connection", "Improve Community", "Improve Relationships", "Improve Communication", "Improve Collaboration", "Improve Teamwork", "Improve Leadership", "Improve Management", "Improve Organization", "Improve Planning", "Improve Preparation", "Improve Execution", "Improve Performance", "Improve Results", "Improve Success", "Improve Achievement", "Improve Progress", "Improve Growth", "Improve Development", "Improve Evolution", "Improve Transformation", "Improve Change", "Improve Adaptation", "Improve Innovation", "Improve Creativity", "Improve Imagination", "Improve Inspiration", "Improve Motivation", "Improve Encouragement", "Improve Support", "Improve Empowerment", "Improve Influence", "Improve Impact", "Improve Contribution", "Improve Service", "Improve Value", "Improve Quality", "Improve Excellence", "Improve Greatness", "Improve Mastery", "Improve Wisdom", "Improve Knowledge", "Improve Understanding", "Improve Awareness", "Improve Consciousness", "Improve Spirituality", "Improve Religion", "Improve")
+        val fitnessGoalList = context.resources.getStringArray(R.array.fitness_goal).toList()
         LargeDropdownMenu(
             modifier = Modifier
                 .padding(8.dp)
@@ -889,7 +1073,7 @@ fun ProfileScreenTrainee(
             label = "Fitness Goals",
             multiSelect = true,
             enabled = profileState.switchEdit,
-            items = fitnessGoalItems,
+            items = fitnessGoalList,
             selectedIndices = profileState.editUser?.trainee?.fitnessGoals ?: emptyList(),
             onItemsSelected = { index, item ->
                 profileState.editUser?.let { user ->
@@ -910,7 +1094,7 @@ fun ProfileScreenTrainee(
                 }
             },
         )
-        val currentFitnessLevelItems = listOf("Beginner", "Intermediate", "Advanced", "Professional", "Elite", "Olympian")
+        val currentFitnessLevelList = context.resources.getStringArray(R.array.current_fitness_level).toList()
         LargeDropdownMenu(
             //TODO: Nincs kész rossz a paraméter
             modifier = Modifier
@@ -918,7 +1102,7 @@ fun ProfileScreenTrainee(
                 .fillMaxWidth(),
             label = "Current Fitness Level",
             enabled = profileState.switchEdit,
-            items = currentFitnessLevelItems,
+            items = currentFitnessLevelList,
             selectedIndices = profileState.editUser?.trainee?.currentFitnessLevel?.let { listOf(it) }
                 ?: emptyList(),
             onItemSelected = { index, item ->
@@ -1002,13 +1186,13 @@ fun ProfileScreenTrainee(
                 Text(text = "Female")
             }
         }
-        var healthInformation = listOf("Healthy", "Cardiovascular Disease", "Respiratory Conditions", "Musculoskeletal Issues", "Endocrine Disorders", "Neurological Conditions", "Digestive Disorders", "Mental Health Conditions", "Allergies", "Autoimmune Diseases", "Back Pain", "Knee Problems", "Shoulder Pain", "Neck Pain", "Plantar Fasciitis", "Carpal Tunnel Syndrome", "Pregnancy", "Postpartum", "History of Injuries", "Surgeries", "Medications", "Smoking Status", "Alcohol Consumption")
+        val healtInformationList = context.resources.getStringArray(R.array.health_information).toList()
         LargeDropdownMenu(
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth(),
             label = "Health Information",
-            items = healthInformation,
+            items = healtInformationList,
             selectedIndices = profileState.editUser?.trainee?.healthInformation ?: emptyList(),
             multiSelect = true,
             onItemsSelected = { index, item ->
@@ -1030,13 +1214,13 @@ fun ProfileScreenTrainee(
                 }
             },
         )
-        var dietInf = listOf("None", "Vegetarian", "Vegan", "Gluten-Free", "Dairy-Free", "Lactose Intolerant", "Nut Allergy", "Peanut Allergy", "Tree Nut Allergy", "Soy Allergy", "Egg Allergy", "Shellfish Allergy", "Fish Allergy", "Wheat Allergy", "Other Allergies", "Low-Carb", "Ketogenic (Keto)", "Paleo", "Whole30", "Low-Sodium", "Low-Sugar", "High-Protein", "Kosher", "Halal", "Weight Watchers", "Other Restrictions", "Prefer Not to Say")
+        val dietInfList = context.resources.getStringArray(R.array.diet_information).toList()
         LargeDropdownMenu(
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth(),
             label = "Dietary Information / Restrictions",
-            items = dietInf,
+            items = dietInfList,
             selectedIndices = profileState.editUser?.trainee?.dietaryPreferences ?: emptyList(),
             multiSelect = true,
             onItemsSelected = { index, item ->
@@ -1058,13 +1242,13 @@ fun ProfileScreenTrainee(
                 }
             },
         )
-        var equipment = listOf("None", "Dumbbells", "Kettlebells", "Barbell", "Bench", "Pull-Up Bar", "Resistance Bands", "Medicine Ball", "Stability Ball", "Yoga Mat", "Foam Roller", "TRX", "Box", "Bosu Ball", "Plyo Box", "Jump Rope", "Treadmill", "Stationary Bike", "Rowing Machine", "Elliptical", "Stair Climber", "Other Cardio Equipment", "Other Strength Equipment", "Other")
+        val equipmentList = context.resources.getStringArray(R.array.equipment).toList()
         LargeDropdownMenu(
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth(),
             label = "Equipment Available",
-            items = equipment,
+            items = equipmentList,
             selectedIndices = profileState.editUser?.trainee?.availableEquipment ?: emptyList(),
             multiSelect = true,
             onItemsSelected = { index, item ->

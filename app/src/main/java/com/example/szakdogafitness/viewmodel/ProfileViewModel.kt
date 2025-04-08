@@ -47,6 +47,7 @@ class ProfileViewModel @Inject constructor(
                     "onEvent: EditUser ${event.user}"
                 )
                 _state.update { it.copy(editUser = event.user) }
+                Log.d("ProfileViewModel", "onEvent: EditUser ${_state.value.editUser?.trainee?.height}")
             }
             ProfileEvent.GetUser -> {
                 Log.d("ProfileViewModel", "onEvent: GetUser")

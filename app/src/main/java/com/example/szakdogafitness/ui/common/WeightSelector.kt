@@ -36,14 +36,16 @@ fun WeightSelector(
         if (unit) { //kg
             ((weight * 10) % 10).toInt()
         } else { //lbs
-            ((weight * 10 * 2.20462) % 10).toInt()
+            //((weight * 10 * 2.20462) % 10).toInt()
+            ((weight * 10 * 2.2) % 10).toInt()
         }
     ) }
     val sWeight = remember { mutableIntStateOf(
         if (unit) { //kg
             weight.toInt()
         } else { //lbs
-            (weight * 2.20462).toInt()
+            //(weight * 2.20462).toInt()
+            (weight * 2.2).toInt()
         }
     ) }
 
