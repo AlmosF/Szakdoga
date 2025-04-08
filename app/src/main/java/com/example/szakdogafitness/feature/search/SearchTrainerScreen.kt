@@ -1,6 +1,7 @@
 package com.example.szakdogafitness.feature.search
 
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -50,7 +51,9 @@ fun SearchTrainerScreen(
     LaunchedEffect(Unit) {
         //mainViewModel.onEvent(MainEvent.FetchTrainers)
         trainersViewModel.onEvent(TrainersEvent.LoadTrainers)
-        trainersViewModel.onEvent(TrainersEvent.LoadAllTrainersAllRating)
+        if (trainersState.allTrainersAllRating.isEmpty()){
+            trainersViewModel.onEvent(TrainersEvent.LoadAllTrainersAllRating)
+        }
         Log.d("SearchTrainerScreen", "AllTrainersAllRating: ${trainersState.allTrainersAllRating}")
 
     }
@@ -98,7 +101,19 @@ fun SearchTrainerScreen(
             )
         )
         if (trainersState.isLoading){
-            CircularProgressIndicator()
+            Column (
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxSize(
+                            0.95f
+                        )
+                )
+            }
         }else {
             if (trainersState.trainers.isEmpty()) {
                 Column (

@@ -389,18 +389,11 @@ fun NewRootNavigation(
             }
 
             composable(RootScreenRoute.Trainer.route){
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            TopBar(
-                                title = {
-                                    Text("Trainer(s)")
-                                },
-                            )
-                        }
-                    )
+                TrainerScreen(
+                    currentUser = profileState.user ?: User(),
+                    appBarViewModel = appBarViewModel,
+                    trainersViewModel = trainersViewModel
                 )
-                TrainerScreen()
             }
 
             composable (RootScreenRoute.TrainerDetail.route) { entry ->
