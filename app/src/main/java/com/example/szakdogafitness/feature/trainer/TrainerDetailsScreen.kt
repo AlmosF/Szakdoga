@@ -1,6 +1,7 @@
 package com.example.szakdogafitness.feature.trainer
 
 import android.R.attr.bottom
+import android.R.attr.onClick
 import android.R.attr.text
 import android.R.attr.top
 import android.R.attr.visible
@@ -9,6 +10,7 @@ import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,7 +46,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,10 +59,14 @@ import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.ui.common.RatingStars
 import com.example.szakdogafitness.ui.common.TrainerDemo
 import com.example.szakdogafitness.R
+import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.ui.common.RatingStarsTen
 import com.example.szakdogafitness.ui.common.TraineeTimetableView
+import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
 import com.example.szakdogafitness.util.calculateDistance
+import com.example.szakdogafitness.viewmodel.AppBarEvent
+import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.TrainersEvent
 import com.example.szakdogafitness.viewmodel.TrainersViewModel
 import com.google.firebase.firestore.GeoPoint
@@ -66,26 +74,35 @@ import com.google.firebase.firestore.GeoPoint
 @Composable
 fun TrainerDetailsScreen(
     modifier: Modifier = Modifier,
-    //data: TrainerDemo
-    data: User,
+    data: Pair<Requests, User>,
     currentUser: User,
     trainersViewModel: TrainersViewModel = hiltViewModel(),
-    //VMs
+    appBarViewModel: AppBarViewModel = hiltViewModel(),
+    onNavBack: () -> Unit = {},
 ) {
 
     LaunchedEffect(Unit) {
-        trainersViewModel.onEvent(TrainersEvent.FetchTrainersRequests(data.userId))
-        //trainersViewModel.onEvent(TrainersEvent.FetchRequestedAppointments(data.userId))
-        trainersViewModel.onEvent(TrainersEvent.FetchRequestedAppoint(data.userId))
+        appBarViewModel.onEvent(
+            AppBarEvent.TopBarComposableChanged(
+                {
+                    BackNavWithTitle("${data.second.firstName} ${data.second.lastName}") {
+                        onNavBack()
+                    }
+                }
+            )
+        )
+        trainersViewModel.onEvent(
+            TrainersEvent.LoadTrainersRate(
+                trainerId = data.second.userId
+            )
+        )
     }
 
     val trainerState by trainersViewModel.state.collectAsStateWithLifecycle()
 
-    val painter = rememberAsyncImagePainter(data.profileImageUrl)
+    val painter = rememberAsyncImagePainter(data.second.profileImageUrl)
     val painterState = painter.state.collectAsState()
-
-
-    var scheduleOpened by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     Column (
         modifier = modifier
             .verticalScroll(rememberScrollState())
@@ -145,26 +162,54 @@ fun TrainerDetailsScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.Start
             ) {
-                Text(
-                    text = data.trainer.specializations.joinToString(", "),
+                val specializationsList = context.resources.getStringArray(R.array.specializations).toList()
+                /*Text(
+                    text = data.trainer.specializations.joinToString(", ") {specializationsList[it]},
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
+                )*/
+                val specializationsText = remember { mutableStateOf(false) }
+                Text(
+                    text = if (specializationsText.value) {
+                        data.second.trainer.specializations.joinToString(", ") { specializationsList[it] }
+                    } else {
+                        data.second.trainer.specializations.joinToString(", ") { specializationsList[it] }.take(50) + "..."
+                    },
+                    modifier = Modifier
+                        .padding(top = 4.dp, bottom = 4.dp)
+                        .clickable { specializationsText.value = !specializationsText.value },
+                    fontSize = 16.sp,
+                    maxLines = if (specializationsText.value) Int.MAX_VALUE else 1,
+                    overflow = TextOverflow.Ellipsis
                 )
-                val distance = data.location?.calculateDistance(currentUser.location)
+                val distance = data.second.location?.calculateDistance(currentUser.location)
                 Text(
                     text = if (distance?.first != null) "${distance.first} km" else "N/A",
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
+                val genderList = context.resources.getStringArray(R.array.gender).toList()
                 Text(
-                    text = data.gender.toString(),
+                    text = data.second.gender.let { genderList[it-1] },
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
+                val trainerRating = trainerState.allTrainersAllRating.find {
+                    it?.first == data.second.userId
+                }?.second?.sumOf {
+                    it.rating
+                }?.div(
+                    trainerState.allTrainersAllRating.find { rating ->
+                        rating?.first == data.second.userId
+                    }?.second?.size ?: 1
+                )
+                val trainerRatingSize = trainerState.allTrainersAllRating.find {
+                    it?.first == data.second.userId
+                }?.second?.size ?: 1
                 RatingStars(
-                    rating = data.trainer.rating,
+                    rating = trainerRating ?: 0,
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
-                    rateSize = 0
+                    rateSize = trainerRatingSize,
                 )
             }
         }
@@ -175,7 +220,7 @@ fun TrainerDetailsScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = data.bio,
+                text = data.second.bio,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(8.dp)
             )
@@ -184,16 +229,9 @@ fun TrainerDetailsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                //items(data.socialMediaLinks.size) {
-                items(data.trainer.socialMediaLinks.size) {
-                    val socialMedia = data.trainer.socialMediaLinks.keys.toList()[it]
-                    val link = data.trainer.socialMediaLinks.values.toList()[it]
-                    /*val painter = when (socialMedia.lowercase()) {
-                        "facebook" -> painterResource(id = R.drawable.facebook)
-                        "instagram" -> painterResource(id = R.drawable.instagram)
-                        "x" -> painterResource(id = R.drawable.twitter)
-                        else -> painterResource(id = R.drawable.tiktok)
-                    }*/
+                items(data.second.trainer.socialMediaLinks.size) {
+                    val socialMedia = data.second.trainer.socialMediaLinks.keys.toList()[it]
+                    val link = data.second.trainer.socialMediaLinks.values.toList()[it]
                     val painter = when {
                         socialMedia.equals("facebook", ignoreCase = true) -> painterResource(id = R.drawable.facebook)
                         socialMedia.equals("instagram", ignoreCase = true) -> painterResource(id = R.drawable.instagram)
@@ -216,118 +254,39 @@ fun TrainerDetailsScreen(
                 }
             }
             Spacer(modifier = Modifier.size(16.dp))
-            AnimatedVisibility(
-                visible = trainerState.requestedAppoint.first.appointment.isEmpty()
-            ) {
-                Row (
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Select training schedules",
-                        fontSize = 16.sp
-                    )
-                    IconButton(
-                        onClick = { scheduleOpened = !scheduleOpened }
-                    ) {
-                        Icon(
-                            imageVector = if (scheduleOpened)  Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Toggle schedule"
-                        )
-                    }
-                }
-            }
-            var selectedSchedules by remember { mutableStateOf(mapOf<String, List<Int>>()) }
-            AnimatedVisibility(
-                visible = scheduleOpened && trainerState.requestedAppoint.first.appointment.isEmpty(),
-            ) {
-                Log.e("TrainerDetailsScreen", "AVAILABLE: ${trainerState.trainersRequests}")
-                Log.e("TrainerDetailsScreen", "SELECTED: ${trainerState.requestedAppointments}")
-                Log.e("TrainerDetailsScreen", "SELECTED: ${trainerState.requestedAppoint.first.appointment}")
-                TraineeTimetableView(
-                    availableHours = data.trainer.availability.mapValues { (day, hours) ->
-                        hours - (trainerState.trainersRequests[day] ?: emptyList())
-                    },
-                    selectedHours = selectedSchedules
-                ) { key, value ->
-                    val updatedSchedules = selectedSchedules.toMutableMap().apply {
-                        val hours = getOrDefault(key, emptyList()).toMutableList()
-                        if (hours.contains(value)) {
-                            hours.remove(value)
-                            if (hours.isEmpty()) {
-                                remove(key)
-                            } else {
-                                put(key, hours)
-                            }
-                        } else {
-                            hours.add(value)
-                            put(key, hours)
-                        }
-                    }
-                    selectedSchedules = updatedSchedules
-                }
-            }
-            Spacer(modifier = Modifier.size(16.dp))
             Text(
-                text = "${data.trainer.pricing}$ / session",
+                text = "${data.second.trainer.pricing}$ / session",
                 fontSize = 16.sp
             )
             Spacer(modifier = Modifier.size(16.dp))
-            if (trainerState.requestedAppoint.first.status != "accepted") {
-                OutlinedButton(
-                    onClick = {
-                        trainersViewModel.onEvent(
-                            TrainersEvent.ApplyForAppointment(
-                                trainer = data.userId,
-                                appointment = selectedSchedules, //fixme: NOT THIS VAR
-                            )
-                        )
-                    },
-                    //enabled = trainerState.requestedAppointments.isEmpty(),
-                    enabled = trainerState.requestedAppoint.first.appointment.isEmpty() &&
-                    selectedSchedules.isNotEmpty(),
-                ) {
-                    /*Text(
-                        //text = if (trainerState.requestedAppointments.isEmpty()) "Request as Trainer" else "You already requested an appointment",
-                        text = if (trainerState.requestedAppoint.first.appointment.isEmpty())
-                            "Request as Trainer"
-                        else if(trainerState.requestedAppoint.first.status == "pending")
-                            "You already requested an appointment"
-                        else
-                            "You already have an appointment",
-                    )*/
-                    Text(
-                        //text = if (trainerState.requestedAppointments.isEmpty()) "Request as Trainer" else "You already requested an appointment",
-                        text = if (trainerState.requestedAppoint.first.appointment.isEmpty())
-                            "Request as Trainer"
-                        else
-                            "You already requested an appointment",
-                    )
-                }
-            } else {
-                LaunchedEffect(Unit) {
-                    trainersViewModel.onEvent(
-                        TrainersEvent.LoadTrainersRate(
-                            trainerId = data.userId
-                        )
-                    )
-                }
-                Text(
-                    "Rate the trainer:",
-                )
-                RatingStarsTen(
-                    rating = trainerState.trainersRate.rating,
-                ) { rating ->
-                    trainersViewModel.onEvent(
-                        TrainersEvent.RateTrainer(
-                            trainerId = data.userId,
-                            rate = rating
-                        )
-                    )
-                }
 
+            Text(
+                "Rate the trainer:",
+            )
+            RatingStarsTen(
+                rating = trainerState.trainersRate.rating,
+            ) { rating ->
+                trainersViewModel.onEvent(
+                    TrainersEvent.RateTrainer(
+                        trainerId = data.second.userId,
+                        rate = rating
+                    )
+                )
+            }
+            Spacer(modifier = Modifier.size(16.dp))
+            Text(
+                text = "Your appointment(s):",
+                fontSize = 20.sp
+            )
+            data.first.appointment.keys.forEach {
+                Text(
+                    text = buildString {
+                        append("$it: ")
+                        data.first.appointment[it]?.forEach { appointment ->
+                            append("$appointment:00")
+                        }
+                    }
+                )
             }
         }
 
@@ -361,7 +320,7 @@ fun TrainerDetailsScreenPreview() {
         )
     )
     TrainerDetailsScreen(
-        data = User(),
+        data = Pair(Requests(), User()),
         currentUser = User(),
         trainersViewModel = hiltViewModel(),
     )

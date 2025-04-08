@@ -49,7 +49,8 @@ fun TrainerScreen(
     modifier : Modifier = Modifier,
     currentUser: User,
     appBarViewModel: AppBarViewModel = hiltViewModel(),
-    trainersViewModel: TrainersViewModel = hiltViewModel()
+    trainersViewModel: TrainersViewModel = hiltViewModel(),
+    onTrainerClick: (String) -> Unit = {},
     //VMs
 ) {
 
@@ -68,9 +69,9 @@ fun TrainerScreen(
             )
         )
         trainersViewModel.onEvent(TrainersEvent.LoadAcceptedTrainers)
-        if (trainersState.allTrainersAllRating.isEmpty()) {
-            trainersViewModel.onEvent(TrainersEvent.LoadAllTrainersAllRating)
-        }
+        //if (trainersState.allTrainersAllRating.isEmpty()) {
+        //    trainersViewModel.onEvent(TrainersEvent.LoadAllTrainersAllRating)
+        //} //removed same for same reason as SearchTrainerScreen line 74
     }
 
     Column (
@@ -158,14 +159,10 @@ fun TrainerScreen(
                             rating?.first == currentTrainer.second.userId
                         }?.second?.size ?: 0,
                         locationDistance = distance
-                    ) {}
+                    ) { userId ->
+                        onTrainerClick(userId)
+                    }
                 }
-                /*items(trainersState.acceptedTrainers.size) {
-                    Text(
-                        text = trainersState.acceptedTrainers[it].toString()
-                    )
-                    HorizontalDivider()
-                }*/
             }
 
         }

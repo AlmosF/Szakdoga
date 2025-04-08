@@ -47,7 +47,7 @@ fun TraineeDetailScreen(
         traineesViewModel.onEvent(TraineesEvent.FetchTraineesDailyData(
             traineesState.selectedTrainee?.second?.userId ?: error("Selected trainee is null")
         ))
-        delay(100)
+        delay(100) //fixme: WITHOUT DELAY
         appBarViewModel.onEvent(
             AppBarEvent.TopBarComposableChanged(
                 {

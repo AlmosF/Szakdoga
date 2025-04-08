@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,16 +31,21 @@ import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.TrainerCard
 import com.example.szakdogafitness.ui.common.TrainerDemo
+import com.example.szakdogafitness.ui.common.appbars.TopBar
 import com.example.szakdogafitness.util.calculateDistance
+import com.example.szakdogafitness.viewmodel.AppBarEvent
+import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.TrainersEvent
 import com.example.szakdogafitness.viewmodel.TrainersViewModel
 import com.google.firebase.firestore.GeoPoint
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchTrainerScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     trainersViewModel: TrainersViewModel = hiltViewModel(),
+    appBarViewModel: AppBarViewModel = hiltViewModel(),
     currentUser: User,
     onTrainerClick: (String) -> Unit
     //VMs
@@ -49,21 +55,27 @@ fun SearchTrainerScreen(
 
 
     LaunchedEffect(Unit) {
+        appBarViewModel.onEvent(
+            AppBarEvent.TopBarComposableChanged(
+                {
+                    TopBar(
+                        title = {
+                            Text("Search Trainer")
+                        },
+                    )
+                }
+            )
+        )
         //mainViewModel.onEvent(MainEvent.FetchTrainers)
         trainersViewModel.onEvent(TrainersEvent.LoadTrainers)
-        if (trainersState.allTrainersAllRating.isEmpty()){
-            trainersViewModel.onEvent(TrainersEvent.LoadAllTrainersAllRating)
-        }
+        //if (trainersState.allTrainersAllRating.isEmpty()){
+        //    trainersViewModel.onEvent(TrainersEvent.LoadAllTrainersAllRating)
+        //} //removed because its loading with the loadtrainers fun, bercause it was stopping the loading var.
         Log.d("SearchTrainerScreen", "AllTrainersAllRating: ${trainersState.allTrainersAllRating}")
 
     }
 
     //val mainState by mainViewModel.state.collectAsStateWithLifecycle()
-
-    LaunchedEffect(trainersState.allTrainersAllRating) {
-        Log.d("SearchTrainerScreen", "AllTrainersAllRating: ${trainersState.allTrainersAllRating}")
-    }
-
     Column (
         modifier = modifier
             .fillMaxSize(),

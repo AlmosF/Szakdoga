@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.presentation.navigation
 
+import android.R.attr.data
 import android.R.attr.text
 import android.R.attr.visible
 import android.util.Log
@@ -56,6 +57,7 @@ import com.example.szakdogafitness.feature.nutrition.SearchNutritionScreen
 import com.example.szakdogafitness.feature.profile.ProfileScreen
 import com.example.szakdogafitness.feature.request.RequestDetailScreen
 import com.example.szakdogafitness.feature.request.RequestScreen
+import com.example.szakdogafitness.feature.search.SearchTrainerDetailsScreen
 import com.example.szakdogafitness.feature.search.SearchTrainerScreen
 import com.example.szakdogafitness.feature.setup.SetupScreenBox
 import com.example.szakdogafitness.feature.trainee.TraineeDetailScreen
@@ -346,22 +348,12 @@ fun NewRootNavigation(
             }
 
             composable(RootScreenRoute.Search.route){
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            TopBar(
-                                title = {
-                                    Text("Search Trainer")
-                                },
-                            )
-                        }
-                    )
-                )
                 //Text(text = "Search")
                 SearchTrainerScreen( //fixme: TrainersVM needed
                     navController = navController,
                     trainersViewModel = trainersViewModel,
-                    currentUser = profileState.user ?: User() // FIXME: WONT BE NULL ANYWAYS
+                    currentUser = profileState.user ?: User(), // FIXME: WONT BE NULL ANYWAYS
+                    appBarViewModel = appBarViewModel,
                     //mainViewModel = mainViewModel, //With MainVM
                 ) { userId ->
                     navController.navigate(RootScreenRoute.SearchDetail.createRoute(userId))
@@ -371,21 +363,16 @@ fun NewRootNavigation(
             composable(RootScreenRoute.SearchDetail.route) { entry ->
                 val id = entry.arguments?.getString("id")
                 val trainer = trainersSate.trainers.find { it?.userId == id } //With MainVM
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            BackNavWithTitle("${trainer?.firstName} ${trainer?.lastName}") {
-                                navController.popBackStack()
-                            }
-                        }
-                    )
-                )
+
                 //Text(text = "SearchDetail: ${trainer}")
-                TrainerDetailsScreen(
+                SearchTrainerDetailsScreen(
                     data = trainer!!,
                     currentUser = profileState.user!!,
                     trainersViewModel = trainersViewModel,
-                ) // FIXME: !! is not safe
+                    appBarViewModel = appBarViewModel,
+                ){
+                    navController.popBackStack()
+                } // FIXME: !! is not safe
             }
 
             composable(RootScreenRoute.Trainer.route){
@@ -393,21 +380,23 @@ fun NewRootNavigation(
                     currentUser = profileState.user ?: User(),
                     appBarViewModel = appBarViewModel,
                     trainersViewModel = trainersViewModel
-                )
+                ) { userId ->
+                    navController.navigate(RootScreenRoute.TrainerDetail.createRoute(userId))
+                }
             }
 
             composable (RootScreenRoute.TrainerDetail.route) { entry ->
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            BackNavWithTitle("Trainer Details") {
-                                navController.popBackStack()
-                            }
-                        }
-                    )
-                )
                 val id = entry.arguments?.getString("id")
-                Text(text = "TrainerDetail: $id")
+                TrainerDetailsScreen(
+                    data = trainersSate.acceptedTrainers.find {
+                        it.second.userId == id
+                    }!!,
+                    currentUser = profileState.user!!,
+                    trainersViewModel = trainersViewModel,
+                    appBarViewModel = appBarViewModel,
+                ) {
+                    navController.popBackStack()
+                }
             }
 
 

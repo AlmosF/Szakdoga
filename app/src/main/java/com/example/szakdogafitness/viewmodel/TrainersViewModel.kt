@@ -84,6 +84,8 @@ class TrainersViewModel @Inject constructor(
             TrainersEvent.LoadAllTrainersAllRating -> {
                 loadAllTrainersAllRating()
             }
+
+
         }
     }
 
@@ -96,6 +98,7 @@ class TrainersViewModel @Inject constructor(
                         allTrainersAllRating = allTrainersAllRating,
                         isLoading = false
                     ) }
+                    Log.d("TrainersViewModel", "Rating Star Loaded")
                 }
             } catch (e: Exception) {
                 _state.update { it.copy(isLoading = false) }
@@ -164,11 +167,16 @@ class TrainersViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             try {
                 getAcceptedTrainersUseCase.invoke().collect { accepted->
-                    _state.update {
-                        it.copy(
+                    if (_state.value.allTrainersAllRating.isEmpty()){
+                        loadAllTrainersAllRating()
+                        _state.update { it.copy(
+                            acceptedTrainers = accepted
+                        ) }
+                    } else {
+                        _state.update { it.copy(
                             acceptedTrainers = accepted,
                             isLoading = false
-                        )
+                        ) }
                     }
                 }
             } catch (e: Exception) {
@@ -237,10 +245,17 @@ class TrainersViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             try {
                 getTrainersUseCase.invoke().collect { trainers ->
-                    _state.update { it.copy(
-                        trainers = trainers,
-                        isLoading = false
-                    ) }
+                    if (_state.value.allTrainersAllRating.isEmpty()){
+                        loadAllTrainersAllRating()
+                        _state.update { it.copy(
+                            trainers = trainers
+                        ) }
+                    } else {
+                        _state.update { it.copy(
+                            trainers = trainers,
+                            isLoading = false
+                        ) }
+                    }
                 }
             } catch (e: Exception){
                 _state.update { it.copy(isLoading = false) }
