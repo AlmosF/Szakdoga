@@ -69,6 +69,10 @@ dependencies {
     implementation ("androidx.camera:camera-lifecycle:${camerax_version}")
     implementation ("androidx.camera:camera-view:${camerax_version}")
 
+
+    //Firebase Storage
+    implementation("com.google.firebase:firebase-storage-ktx")
+
     //Permission
     implementation ("com.google.accompanist:accompanist-permissions:0.36.0")
 

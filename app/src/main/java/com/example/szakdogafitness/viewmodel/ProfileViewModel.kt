@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import android.util.Log.e
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.usecases.location.RequestLocationUpdatesUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchUserUseCase
 import com.example.szakdogafitness.domain.usecases.main.UpdateUserUseCase
+import com.example.szakdogafitness.domain.usecases.main.UploadProfilePictureUseCase
 import com.example.szakdogafitness.domain.usecases.profile.AllProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +32,8 @@ class ProfileViewModel @Inject constructor(
     private val profileUseCases: AllProfileUseCases,
     private val fetchUserUseCase: FetchUserUseCase,
     private val updateUserUseCase: UpdateUserUseCase,
-    private val location: RequestLocationUpdatesUseCase
+    private val location: RequestLocationUpdatesUseCase,
+    private val uploadProfilePicture: UploadProfilePictureUseCase
 ) : ViewModel(){
 
     private val _state = MutableStateFlow(ProfileState())
@@ -81,6 +84,22 @@ class ProfileViewModel @Inject constructor(
             }
             ProfileEvent.StopLocationMonitoring -> {
                 stopLocationMonitoring()
+            }
+
+            is ProfileEvent.UploadProfilePicture -> {
+                uploadProfilePic(event.uri)
+            }
+        }
+    }
+    private fun uploadProfilePic(uri: Uri){
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                uploadProfilePicture(uri)
+                _state.update { it.copy(isLoading = false) }
+            } catch (e: Exception){
+                Log.e("ProfileViewModel", "uploadProfilePic: ${e.message}")
+                _state.update { it.copy(isLoading = false) }
             }
         }
     }
@@ -174,6 +193,7 @@ class ProfileViewModel @Inject constructor(
 
 sealed class ProfileEvent{
     data class EditUser(val user: User): ProfileEvent()
+    data class UploadProfilePicture(val uri: Uri): ProfileEvent()
     data object GetUser: ProfileEvent()
     data object DropDownChanged: ProfileEvent()
     data object SwitchEdit: ProfileEvent()

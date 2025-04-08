@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.data.main
 
+import android.net.Uri
 import com.example.szakdogafitness.domain.model.DailyData
 import com.example.szakdogafitness.domain.model.Rating
 import com.example.szakdogafitness.domain.model.Requests
@@ -11,6 +12,10 @@ import java.time.DayOfWeek
 interface IMainService{
     suspend fun getUser() : Flow<User?>
     suspend fun updateUser(user: User)
+
+    //PFP
+    suspend fun uploadProfilePicture(imageUri: Uri): String
+
     suspend fun getTrainers(): Flow<List<User?>>
     //suspend fun getUsersDailyDatas(): Flow<DailyDatas?> //fixme("Workingone")
     suspend fun getUsersDailyDatas(): Flow<List<DailyData>> //fixme("Workingone20250326")

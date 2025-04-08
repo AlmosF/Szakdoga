@@ -25,6 +25,7 @@ import com.example.szakdogafitness.domain.usecases.auth.CurrentUserIdUseCase
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.dataObjects
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -53,7 +54,8 @@ import javax.inject.Inject
 class MainService @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val userIdUseCase: CurrentUserIdUseCase,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val storage: FirebaseStorage
 ) : IMainService {
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -146,6 +148,18 @@ class MainService @Inject constructor(
                 .await()
         }
 
+    }
+
+    override suspend fun uploadProfilePicture(imageUri: Uri): String {
+        val userId = userIdUseCase()
+        val storageRef = storage.reference.child("profile_pictures/$userId.jpg")
+        storageRef.putFile(imageUri).await()
+
+        val downloadUrl = storageRef.downloadUrl.await().toString()
+        firestore.collection("users").document(userId!!)
+            .update("profileImageUrl", downloadUrl)
+            .await()
+        return downloadUrl
     }
 
     override suspend fun getTrainers(): Flow<List<User?>> =

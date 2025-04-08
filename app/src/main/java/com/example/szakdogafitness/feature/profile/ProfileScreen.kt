@@ -10,9 +10,13 @@ import android.R.attr.singleLine
 import android.R.attr.text
 import android.R.attr.textStyle
 import android.R.attr.top
+import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.widget.GridLayout.spec
 import android.widget.Space
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -125,11 +129,15 @@ import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.ProfileEvent
 import com.example.szakdogafitness.viewmodel.ProfileViewModel
 import com.example.szakdogafitness.viewmodel.SetupEvent
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import com.google.android.play.integrity.internal.f
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
@@ -141,6 +149,24 @@ fun ProfileScreen(
 ) {
 
     val profileState by profileViewModel.state.collectAsState()
+
+    val permissionState = rememberPermissionState(
+        permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            android.Manifest.permission.READ_MEDIA_IMAGES
+        } else {
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+    )
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri: Uri? ->
+            uri?.let {
+                profileViewModel.onEvent(
+                    ProfileEvent.UploadProfilePicture(it)
+                )
+            }
+        }
+    )
 
     LaunchedEffect(Unit) {
         profileViewModel.onEvent(ProfileEvent.GetUser)
@@ -304,6 +330,19 @@ fun ProfileScreen(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .clickable{
+                                when {
+                                    permissionState.status.isGranted -> {
+                                        launcher.launch("image/*")
+                                    }
+                                    permissionState.status.shouldShowRationale -> {
+                                        permissionState.launchPermissionRequest()
+                                    }
+                                    else -> {
+                                        permissionState.launchPermissionRequest()
+                                    }
+                                }
+                            }
                     ) {
                         Image(
                             painter = painter,
@@ -315,6 +354,7 @@ fun ProfileScreen(
                         )
                     }
                 }
+
                 Text(
                     text = profileState.user?.firstName + " " + profileState.user?.lastName,
                     fontSize = 24.sp,

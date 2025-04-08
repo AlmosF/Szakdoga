@@ -23,6 +23,7 @@ import com.example.szakdogafitness.domain.usecases.main.RemoveEventFromCalendarU
 import com.example.szakdogafitness.domain.usecases.main.RemoveTraineeUseCase
 import com.example.szakdogafitness.domain.usecases.main.TargetWaterModifyUseCase
 import com.example.szakdogafitness.domain.usecases.main.UpdateUserUseCase
+import com.example.szakdogafitness.domain.usecases.main.UploadProfilePictureUseCase
 import com.example.szakdogafitness.domain.usecases.main.WaterIntakeModifyUseCase
 import com.example.szakdogafitness.domain.usecases.mealLog.TargetKcalModifyUseCase
 import dagger.Module
@@ -152,6 +153,11 @@ object AllMainUseCasesModule {
     @Singleton
     fun provideRemoveTraineeUseCase(repository: IMainService): RemoveTraineeUseCase =
         RemoveTraineeUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideUploadProfilePictureUseCase(repository: IMainService): UploadProfilePictureUseCase =
+        UploadProfilePictureUseCase(repository)
 
     @Provides
     @Singleton
