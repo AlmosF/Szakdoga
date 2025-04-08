@@ -325,35 +325,96 @@ fun ProfileScreen(
                     .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (painterState is AsyncImagePainter.State.Success){
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable{
-                                when {
-                                    permissionState.status.isGranted -> {
-                                        launcher.launch("image/*")
-                                    }
-                                    permissionState.status.shouldShowRationale -> {
-                                        permissionState.launchPermissionRequest()
-                                    }
-                                    else -> {
-                                        permissionState.launchPermissionRequest()
-                                    }
+//                if (painterState is AsyncImagePainter.State.Success){
+//                    Box(
+//                        contentAlignment = Alignment.Center,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .clickable{
+//                                when {
+//                                    permissionState.status.isGranted -> {
+//                                        launcher.launch("image/*")
+//                                    }
+//                                    permissionState.status.shouldShowRationale -> {
+//                                        permissionState.launchPermissionRequest()
+//                                    }
+//                                    else -> {
+//                                        permissionState.launchPermissionRequest()
+//                                    }
+//                                }
+//                            }
+//                    ) {
+//                        Image(
+//                            painter = painter,
+//                            contentDescription = "Profile Image",
+//                            modifier = Modifier
+//                                .size(100.dp)
+//                                .clip(CircleShape),
+//                            contentScale = ContentScale.Crop
+//                        )
+//                    }
+//                }
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+                        .clickable{
+                            when {
+                                permissionState.status.isGranted -> {
+                                    launcher.launch("image/*")
+                                }
+                                permissionState.status.shouldShowRationale -> {
+                                    permissionState.launchPermissionRequest()
+                                }
+                                else -> {
+                                    permissionState.launchPermissionRequest()
                                 }
                             }
-                    ) {
-                        Image(
-                            painter = painter,
-                            contentDescription = "Profile Image",
-                            modifier = Modifier
-                                .size(100.dp)
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
+                        }
+                ) {
+                    when(painterState){
+                        AsyncImagePainter.State.Empty -> {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_profile),
+                                contentDescription = "Profile Image",
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        is AsyncImagePainter.State.Error -> {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_error),
+                                contentDescription = "Profile Image",
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        is AsyncImagePainter.State.Loading -> {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clip(CircleShape)
+                            )
+                        }
+                        is AsyncImagePainter.State.Success -> {
+                            Image(
+                                painter = painter,
+                                contentDescription = "Profile Image",
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
+
                 }
+
 
                 Text(
                     text = profileState.user?.firstName + " " + profileState.user?.lastName,
@@ -461,7 +522,9 @@ fun ProfileScreen(
                         ,
                         label = "Date of Birth",
                         onValueChange = {},
-                        value = profileState.editUser?.dateOfBirth?.toTriple().toString(),
+                        value = profileState.editUser?.dateOfBirth?.toTriple()?.let { (first, second, third) ->
+                            "$first / $second / $third"
+                        } ?: "",
                         enabled = false,
                         singleLine = true,
                         readOnly = !profileState.switchEdit,
