@@ -85,23 +85,7 @@ fun LifeStyleScreen(
 
     val stepCountState by stepCountViewModel.steps.collectAsStateWithLifecycle()
 
-    val permissionState = rememberPermissionState(android.Manifest.permission.ACTIVITY_RECOGNITION)
-    LaunchedEffect(Unit) {
-        if (!permissionState.status.isGranted) {
-            permissionState.launchPermissionRequest()
-        }
-    }
 
-    LaunchedEffect(Unit) {
-        stepCountViewModel.loadSteps()
-        context.startStepService()
-        stepCountViewModel.syncSteps()
-    }
-
-
-    LaunchedEffect(stepCountState) {
-        Log.d("RootNavigation", "StepCountState: $stepCountState")
-    }
 
     val appBarState by appBarViewModel.state.collectAsStateWithLifecycle()
 
@@ -113,6 +97,23 @@ fun LifeStyleScreen(
 
     val mealTypesState by mealTypesViewModel.state.collectAsStateWithLifecycle()
 
+    val permissionState = rememberPermissionState(android.Manifest.permission.ACTIVITY_RECOGNITION)
+    val activityPermissionGranted = permissionState.status.isGranted
+    /*LaunchedEffect(Unit, activityPermissionGranted) {
+        if (!activityPermissionGranted) {
+            permissionState.launchPermissionRequest()
+        } else {
+            stepCountViewModel.loadSteps()
+            context.startStepService()
+            stepCountViewModel.syncSteps()
+        }
+    }*/
+
+    /*LaunchedEffect(Unit) {
+        stepCountViewModel.loadSteps()
+        context.startStepService()
+        stepCountViewModel.syncSteps()
+    }*/
     val locationPermission = rememberMultiplePermissionsState(
         listOf(
             android.Manifest.permission.ACCESS_FINE_LOCATION,
@@ -121,14 +122,35 @@ fun LifeStyleScreen(
     )
 
     val permissionsGranted = locationPermission.allPermissionsGranted
-    LaunchedEffect(Unit, permissionsGranted) {
+    LaunchedEffect(Unit, permissionsGranted, activityPermissionGranted) {
+        // Request both permissions
+        if (!permissionState.status.isGranted) {
+            permissionState.launchPermissionRequest()
+        }
+        if (!locationPermission.allPermissionsGranted) {
+            locationPermission.launchMultiplePermissionRequest()
+        }
+
+        // Handle activity recognition permission
+        if (permissionState.status.isGranted) {
+            stepCountViewModel.loadSteps()
+            context.startStepService()
+            stepCountViewModel.syncSteps()
+        }
+
+        // Handle location permissions
+        if (locationPermission.allPermissionsGranted) {
+            profileViewModel.onEvent(ProfileEvent.StartLocationMonitoring)
+        }
+    }
+    /*LaunchedEffect(Unit, permissionsGranted) {
         if (permissionsGranted){
             //dailyDatasViewModel.onEvent(DailyDatasEvent.StartLocationMonitoring)
             profileViewModel.onEvent(ProfileEvent.StartLocationMonitoring)
         } else {
             locationPermission.launchMultiplePermissionRequest()
         }
-    }
+    }*/
 
     LaunchedEffect(Unit) {
         dailyDatasViewModel.onEvent(DailyDatasEvent.LoadDailyDatas)
