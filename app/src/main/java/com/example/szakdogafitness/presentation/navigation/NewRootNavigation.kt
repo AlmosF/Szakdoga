@@ -3,6 +3,8 @@ package com.example.szakdogafitness.presentation.navigation
 import android.R.attr.data
 import android.R.attr.text
 import android.R.attr.visible
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandIn
@@ -45,6 +47,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.szakdogafitness.StepCountService
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.feature.CameraScan.CameraScreen
 import com.example.szakdogafitness.feature.auth.AuthenticateScreen
@@ -81,11 +84,27 @@ import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 import com.example.szakdogafitness.viewmodel.ProfileEvent
 import com.example.szakdogafitness.viewmodel.ProfileViewModel
+import com.example.szakdogafitness.viewmodel.StepCountViewModel
 import com.example.szakdogafitness.viewmodel.TraineesEvent
 import com.example.szakdogafitness.viewmodel.TraineesViewModel
 import com.example.szakdogafitness.viewmodel.TrainersViewModel
 import kotlinx.coroutines.launch
 import java.lang.System.exit
+
+
+fun Context.startStepService(){
+    val intent = Intent(this, StepCountService::class.java)
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        startForegroundService(intent)
+    } else {
+        startService(intent)
+    }
+}
+
+fun Context.stopStepService(){
+    val intent = Intent(this, StepCountService::class.java)
+    stopService(intent)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,7 +119,8 @@ fun NewRootNavigation(
     dailyDatasViewModel: DailyDatasViewModel = hiltViewModel(),
     trainersViewModel: TrainersViewModel = hiltViewModel(),
     traineesViewModel: TraineesViewModel = hiltViewModel(),
-    cameraViewModel: CameraViewModel = hiltViewModel()
+    cameraViewModel: CameraViewModel = hiltViewModel(),
+    stepCountViewModel: StepCountViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -113,6 +133,8 @@ fun NewRootNavigation(
     val dailyDatasState by dailyDatasViewModel.state.collectAsStateWithLifecycle()
     val trainersSate by trainersViewModel.state.collectAsStateWithLifecycle()
     val cameraState by cameraViewModel.state.collectAsStateWithLifecycle()
+
+
 
 
     LaunchedEffect(networkOn) {
@@ -251,7 +273,8 @@ fun NewRootNavigation(
                     appBarViewModel = appBarViewModel,
                     navController = navController,
                     dailyDatasViewModel = dailyDatasViewModel,
-                    mealTypesViewModel = mealTypesViewModel
+                    mealTypesViewModel = mealTypesViewModel,
+                    stepCountViewModel = stepCountViewModel,
                 )
 
             }
@@ -329,6 +352,8 @@ fun NewRootNavigation(
                         }
                     },
                     onLogout = {
+                        context.stopStepService()
+                        stepCountViewModel.resetOnLogout()
                         profileViewModel.onEvent(ProfileEvent.StopLocationMonitoring)
                         authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
                         dailyDatasViewModel.onEvent(DailyDatasEvent.ResetDailyData)

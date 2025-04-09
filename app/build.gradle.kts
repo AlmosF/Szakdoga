@@ -69,6 +69,14 @@ dependencies {
     implementation ("androidx.camera:camera-lifecycle:${camerax_version}")
     implementation ("androidx.camera:camera-view:${camerax_version}")
 
+    // Sensor API
+    implementation("androidx.core:core-ktx:1.15.0")
+
+    // Background Processing (WorkManager)
+    implementation("androidx.work:work-runtime-ktx:2.10.0")
+
+    //Datastore
+    implementation("androidx.datastore:datastore-preferences:1.1.4")
 
     //Firebase Storage
     implementation("com.google.firebase:firebase-storage-ktx")

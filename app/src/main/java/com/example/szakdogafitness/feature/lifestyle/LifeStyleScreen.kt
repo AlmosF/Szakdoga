@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.feature.lifestyle
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
@@ -9,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
+import com.example.szakdogafitness.presentation.navigation.startStepService
 import com.example.szakdogafitness.ui.common.appbars.LifeStyleAction
 import com.example.szakdogafitness.ui.common.appbars.LifeStyleTitle
 import com.example.szakdogafitness.ui.common.appbars.TopBar
@@ -31,8 +34,11 @@ import com.example.szakdogafitness.viewmodel.MealTypesEvent
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 import com.example.szakdogafitness.viewmodel.ProfileEvent
 import com.example.szakdogafitness.viewmodel.ProfileViewModel
+import com.example.szakdogafitness.viewmodel.StepCountViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
@@ -45,6 +51,7 @@ fun LifeStyleScreen(
     dailyDatasViewModel: DailyDatasViewModel = hiltViewModel(),
     profileViewModel: ProfileViewModel = hiltViewModel(), //Mimic of the MainVM
     mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
+    stepCountViewModel: StepCountViewModel = hiltViewModel(),
     //VMs
 ){
     /*Scaffold (
@@ -73,6 +80,28 @@ fun LifeStyleScreen(
             )
         }
     ){ innerPadding ->*/
+
+    val context = LocalContext.current
+
+    val stepCountState by stepCountViewModel.steps.collectAsStateWithLifecycle()
+
+    val permissionState = rememberPermissionState(android.Manifest.permission.ACTIVITY_RECOGNITION)
+    LaunchedEffect(Unit) {
+        if (!permissionState.status.isGranted) {
+            permissionState.launchPermissionRequest()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        stepCountViewModel.loadSteps()
+        context.startStepService()
+        stepCountViewModel.syncSteps()
+    }
+
+
+    LaunchedEffect(stepCountState) {
+        Log.d("RootNavigation", "StepCountState: $stepCountState")
+    }
 
     val appBarState by appBarViewModel.state.collectAsStateWithLifecycle()
 
