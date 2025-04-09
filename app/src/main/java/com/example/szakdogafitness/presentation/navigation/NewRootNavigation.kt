@@ -92,6 +92,7 @@ import java.lang.System.exit
 fun NewRootNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController,
+    networkOn: Boolean,
     authViewModel: AuthenticationViewModel = hiltViewModel(),
     appBarViewModel: AppBarViewModel = hiltViewModel(),
     profileViewModel: ProfileViewModel = hiltViewModel(key = authViewModel.getUserId()), //Mimic of the mainVM
@@ -112,6 +113,20 @@ fun NewRootNavigation(
     val dailyDatasState by dailyDatasViewModel.state.collectAsStateWithLifecycle()
     val trainersSate by trainersViewModel.state.collectAsStateWithLifecycle()
     val cameraState by cameraViewModel.state.collectAsStateWithLifecycle()
+
+
+    LaunchedEffect(networkOn) {
+        authViewModel.checkOnlineState(context)
+        scope.launch {
+            snackbarHostState.showSnackbar(
+                message = if (networkOn) {
+                    "Online"
+                } else {
+                    "Offline"
+                }
+            )
+        }
+    }
 
     LaunchedEffect(navBackStackEntry?.destination?.route) { //AppBarVisibility - Settings
         appBarViewModel.onEvent(AppBarEvent.AppBarVisibility(navBackStackEntry?.destination?.route ?: ""))
@@ -142,15 +157,15 @@ fun NewRootNavigation(
     }
 
 
-    val startDestination = when {
+    /*val startDestination = when {
         authState.isLoggedIn -> RootScreenRoute.Loading.route
         else -> RootScreenRoute.Authentication.route
-    }
+    }*/
 
-    /*val startDestination = when {
+    val startDestination = when { //Changed to the top one at 2025.04.06 - Changed again.
         authState.isLoggedIn && authState.isOnline -> RootScreenRoute.Loading.route
         else -> RootScreenRoute.Authentication.route
-    }*/
+    }
 
     LaunchedEffect(authState.isLoggedIn) {
         Log.d("RootNavigation", "isLoggedIn: ${authState.isLoggedIn}")
