@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SzakdogaFitnessTheme {
-                Scaffold(
+                Scaffold( //UI might be good with column and the system bars, but it bugs the double scaffold at profile screen
                     contentWindowInsets = WindowInsets.systemBars.union(WindowInsets.displayCutout),
                     modifier = Modifier
                         .fillMaxSize()

@@ -98,8 +98,14 @@ fun TraineeDetailScreen(
                         data = traineesState.selectedTrainee?.second ?: error("Selected trainee is null"),
                     )
                 } else {
-                    TraineeBioScreen(
+                    /*TraineeBioScreen(
                         data = traineesState.selectedTrainee?.second ?: error("Selected trainee is null")
+                    ) {
+                        traineesViewModel.onEvent(TraineesEvent.RemoveTrainee(it))
+                        onNavigateBack()
+                    }*/
+                    TraineeBioScreen(
+                        data = traineesState.selectedTrainee ?: error("Selected trainee is null")
                     ) {
                         traineesViewModel.onEvent(TraineesEvent.RemoveTrainee(it))
                         onNavigateBack()

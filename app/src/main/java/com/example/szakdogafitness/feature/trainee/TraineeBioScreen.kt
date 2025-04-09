@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.feature.trainee
 
+import android.R.attr.data
 import android.R.attr.text
 import android.R.attr.top
 import android.util.Log
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.R
+import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.feature.setup.toTriple
 import com.example.szakdogafitness.viewmodel.calculateAge
@@ -45,11 +47,12 @@ import com.google.firebase.Timestamp
 @Composable
 fun TraineeBioScreen(
     modifier: Modifier = Modifier,
-    data: User,
+    //data: User,
+    data: Pair<Requests, User>,
     onTraineeRemoved: (String) -> Unit,
 ) {
 
-    val painter = rememberAsyncImagePainter(data.profileImageUrl)
+    val painter = rememberAsyncImagePainter(data.second.profileImageUrl)
     val painterState by painter.state.collectAsState()
     val context = LocalContext.current
 
@@ -107,7 +110,7 @@ fun TraineeBioScreen(
                         )
                     }
                 } // FIXME: ERROR IMAGE REPLACE
-                val tripleDOB = data.dateOfBirth?.toTriple()
+                val tripleDOB = data.second.dateOfBirth?.toTriple()
                 Spacer(modifier = Modifier.size(8.dp))
                 Text(
                     text = "${tripleDOB?.third}. ${tripleDOB?.second}. ${tripleDOB?.first}",
@@ -124,25 +127,25 @@ fun TraineeBioScreen(
             ) {
                 val fitnessGoalsList = context.resources.getStringArray(R.array.fitness_goal).toList()
                 Text(
-                    text = data.trainee.fitnessGoals.joinToString(", ") { fitnessGoalsList[it] },
+                    text = data.second.trainee.fitnessGoals.joinToString(", ") { fitnessGoalsList[it] },
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
                 val fitnessLevelList = context.resources.getStringArray(R.array.current_fitness_level).toList()
                 Text(
-                    text = data.trainee.currentFitnessLevel.toString().let { fitnessLevelList[it.toInt()] },
+                    text = data.second.trainee.currentFitnessLevel.toString().let { fitnessLevelList[it.toInt()] },
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
                 val trainerPreferenceArray = context.resources.getStringArray(R.array.trainer_preference).toList()
                 Text(
-                    text = data.trainee.trainingPreference.let { trainerPreferenceArray[it] } ?: "",
+                    text = data.second.trainee.trainingPreference.let { trainerPreferenceArray[it] } ?: "",
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
                 val availableEquipmentList = context.resources.getStringArray(R.array.equipment).toList()
                 Text(
-                    text = data.trainee.availableEquipment.joinToString(", ") { availableEquipmentList[it] },
+                    text = data.second.trainee.availableEquipment.joinToString(", ") { availableEquipmentList[it] },
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
@@ -155,15 +158,30 @@ fun TraineeBioScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = data.bio,
+                text = data.second.bio,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(8.dp)
+            )
+        }
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(
+            text = "Appointment(s):",
+            fontSize = 20.sp
+        )
+        data.first.appointment.keys.forEach {
+            Text(
+                text = buildString {
+                    append("$it: ")
+                    data.first.appointment[it]?.forEach { appointment ->
+                        append("$appointment:00")
+                    }
+                }
             )
         }
         Spacer(modifier = Modifier.size(32.dp))
         OutlinedButton(
             onClick = {
-                onTraineeRemoved(data.userId)
+                onTraineeRemoved(data.second.userId)
             }
         ) {
             Text(
