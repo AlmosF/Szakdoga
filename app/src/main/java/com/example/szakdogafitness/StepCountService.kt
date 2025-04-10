@@ -149,7 +149,7 @@ class StepCountService : Service(), SensorEventListener {
         return NotificationCompat.Builder(this, channelId)
             .setContentTitle("Step Counter Running")
             .setContentText("Counting your steps")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .build()
     }
 }
