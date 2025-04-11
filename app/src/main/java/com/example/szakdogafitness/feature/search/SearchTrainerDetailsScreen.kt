@@ -161,10 +161,22 @@ fun SearchTrainerDetailsScreen(
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
+                val rating = trainerState.allTrainersAllRating.find { rating ->
+                    rating?.first == data.userId
+                }?.second?.sumOf {
+                    it.rating
+                }?.div(
+                    trainerState.allTrainersAllRating.find { rating ->
+                        rating?.first == data.userId
+                    }?.second?.size ?: 1
+                )
+                val trainerRatingSize = trainerState.allTrainersAllRating.find {
+                    it?.first == data.userId
+                }?.second?.size ?: 1
                 RatingStars(
-                    rating = data.trainer.rating,
+                    rating = rating ?: 0,
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
-                    rateSize = 0
+                    rateSize = trainerRatingSize
                 )
             }
         }
