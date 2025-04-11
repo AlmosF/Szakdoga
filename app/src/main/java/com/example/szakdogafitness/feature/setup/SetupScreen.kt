@@ -178,7 +178,9 @@ fun SetupScreen(
                 if (it.length <= 8) testDOB = it
             },
             //value = state.dateOfBirth?.toTriple().toString(),
-            value = state.user.dateOfBirth?.toTriple().toString(),
+            value = state.user.dateOfBirth?.toTriple()?.let { (first, second, third) ->
+                "$first / $second / $third"
+            } ?: "",
             //value = testDOB,
             singleLine = true,
             enabled = false,
