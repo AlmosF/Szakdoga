@@ -44,6 +44,7 @@ import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.model.User
+import com.example.szakdogafitness.feature.trainer.SocialMediaLazyRow
 import com.example.szakdogafitness.ui.common.RatingStars
 import com.example.szakdogafitness.ui.common.RatingStarsTen
 import com.example.szakdogafitness.ui.common.TraineeTimetableView
@@ -179,7 +180,7 @@ fun SearchTrainerDetailsScreen(
                 modifier = Modifier.padding(8.dp)
             )
             Spacer(modifier = Modifier.size(16.dp))
-            LazyRow (
+            /*LazyRow (
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
@@ -213,7 +214,10 @@ fun SearchTrainerDetailsScreen(
                         )
                     }
                 }
-            }
+            }*/
+            SocialMediaLazyRow(
+                socialMediaLinks = data.trainer.socialMediaLinks,
+            )
             Spacer(modifier = Modifier.size(16.dp))
             AnimatedVisibility(
                 visible = trainerState.requestedAppoint.first.appointment.isEmpty()

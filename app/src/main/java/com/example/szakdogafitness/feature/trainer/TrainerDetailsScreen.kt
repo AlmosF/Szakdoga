@@ -1,18 +1,11 @@
 package com.example.szakdogafitness.feature.trainer
 
-import android.R.attr.bottom
-import android.R.attr.onClick
-import android.R.attr.text
-import android.R.attr.top
-import android.R.attr.visible
-import android.graphics.Paint
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,26 +15,18 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Money
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,20 +41,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
-import com.example.szakdogafitness.ui.common.RatingStars
-import com.example.szakdogafitness.ui.common.TrainerDemo
 import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
+import com.example.szakdogafitness.ui.common.RatingStars
 import com.example.szakdogafitness.ui.common.RatingStarsTen
-import com.example.szakdogafitness.ui.common.TraineeTimetableView
+import com.example.szakdogafitness.ui.common.TrainerDemo
 import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
 import com.example.szakdogafitness.util.calculateDistance
 import com.example.szakdogafitness.viewmodel.AppBarEvent
 import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.TrainersEvent
 import com.example.szakdogafitness.viewmodel.TrainersViewModel
-import com.google.firebase.firestore.GeoPoint
 
 @Composable
 fun TrainerDetailsScreen(
@@ -225,7 +208,7 @@ fun TrainerDetailsScreen(
                 modifier = Modifier.padding(8.dp)
             )
             Spacer(modifier = Modifier.size(16.dp))
-            LazyRow (
+            /*LazyRow (
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
@@ -249,10 +232,21 @@ fun TrainerDetailsScreen(
                             modifier = Modifier
                                 .padding(8.dp)
                                 .size(40.dp)
+                                .clickable{
+                                    val intent = context.packageManager.getLaunchIntentForPackage(link)
+                                    if (intent != null) {
+                                        context.startActivity(intent)
+                                    } else {
+                                        Log.e("TrainerDetailsScreen", "Unable to open link: $link")
+                                    }
+                                }
                         )
                     }
                 }
-            }
+            }*/
+            SocialMediaLazyRow(
+                socialMediaLinks = data.second.trainer.socialMediaLinks
+            )
             Spacer(modifier = Modifier.size(16.dp))
             Text(
                 text = "${data.second.trainer.pricing}$ / session",
@@ -292,6 +286,58 @@ fun TrainerDetailsScreen(
 
     }
 }
+
+@Composable
+fun SocialMediaLazyRow(socialMediaLinks: Map<String, String>) {
+    val context = LocalContext.current
+
+    LazyRow(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        items(socialMediaLinks.entries.toList()) { (platform, username) ->
+            val painter = when (platform.lowercase()) {
+                "facebook" -> painterResource(id = R.drawable.facebook)
+                "instagram" -> painterResource(id = R.drawable.instagram)
+                "linkedin" -> painterResource(id = R.drawable.linkedin)
+                "pinterest" -> painterResource(id = R.drawable.pinterest)
+                "tiktok" -> painterResource(id = R.drawable.tiktok)
+                "x", "twitter" -> painterResource(id = R.drawable.twitter)
+                "youtube" -> painterResource(id = R.drawable.youtube)
+                else -> painterResource(id = R.drawable.tiktok)
+            }
+
+            val fullUrl = when (platform.lowercase()) {
+                "instagram" -> "https://instagram.com/$username"
+                "facebook" -> "https://facebook.com/$username"
+                "linkedin" -> "https://linkedin.com/in/$username"
+                "youtube" -> "https://www.youtube.com/@$username"
+                "tiktok" -> "https://www.tiktok.com/@$username"
+                "pinterest" -> "https://pinterest.com/$username"
+                "x", "twitter" -> "https://x.com/$username"
+                else -> "https://$platform.com/$username"
+            }
+
+            if (username.isNotEmpty()) {
+                Image(
+                    painter = painter,
+                    contentDescription = platform,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(40.dp)
+                        .clickable {
+                            try {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fullUrl))
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                Log.e("TrainerDetailsScreen", "Unable to open: $fullUrl", e)
+                            }
+                        }
+                )
+            }
+        }
+    }
+}
+
 
 
 
