@@ -39,17 +39,15 @@ class StepCountService : Service(), SensorEventListener {
         startForeground(1, createNotification())
     }
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // Fetch the current step count from DataStore
         CoroutineScope(Dispatchers.IO).launch {
             initialSteps = repository.getInitialSensorSteps()
             if (initialSteps == -1){
-                // Obtain a sensor event to get the initial step value
                 val tempListener = object : SensorEventListener {
                     var initialEvent: SensorEvent? = null
 
                     override fun onSensorChanged(event: SensorEvent?) {
                         initialEvent = event
-                        sensorManager.unregisterListener(this) // Unregister after getting the event
+                        sensorManager.unregisterListener(this)
                     }
 
                     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
@@ -59,8 +57,8 @@ class StepCountService : Service(), SensorEventListener {
                     sensorManager.registerListener(tempListener, it, SensorManager.SENSOR_DELAY_NORMAL)
                 }
 
-                // Wait for the sensor event to be captured
-                delay(100) // Adjust the delay if necessary
+
+                delay(100)
 
                 val totalSteps = tempListener.initialEvent?.values?.firstOrNull()?.toInt() ?: -1
 

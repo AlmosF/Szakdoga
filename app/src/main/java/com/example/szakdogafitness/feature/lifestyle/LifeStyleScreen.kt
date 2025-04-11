@@ -155,7 +155,8 @@ fun LifeStyleScreen(
     LaunchedEffect(Unit) {
         dailyDatasViewModel.onEvent(DailyDatasEvent.LoadDailyDatas)
         mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
-        delay(100)
+        delay(100) //fixme: Remove delay - somehow
+
         //Log.d("LifeStyleScreen", "LaunchedEffect: ${mainState.currentDailyData}")
         /*appBarViewModel.onEvent( //WITH MAINSTATE
             AppBarEvent.TopBarComposableChanged(
