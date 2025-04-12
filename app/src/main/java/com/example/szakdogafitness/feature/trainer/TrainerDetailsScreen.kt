@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,7 +20,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -202,6 +209,74 @@ fun TrainerDetailsScreen(
                 .fillMaxWidth(0.95f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(
+                text = "Contact Information",
+                fontSize = 20.sp
+            )
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth(0.95f),
+            ) {
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Transparent),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    IconButton(
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_SEND).apply {
+                                type = "message/rfc822"
+                                putExtra(Intent.EXTRA_EMAIL, arrayOf(data.second.email))
+                            }
+                            val chooser = Intent.createChooser(intent, "Send Email")
+                            context.startActivity(chooser)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Email,
+                            contentDescription = "Email",
+                        )
+                    }
+                    Text(
+                        text = data.second.email,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Transparent),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    IconButton(
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_DIAL).apply {
+                                setData(Uri.parse("tel:${data.second.phoneNumber}"))
+                            }
+                            if (intent.resolveActivity(context.packageManager) != null) {
+                                context.startActivity(intent)
+                            } else {
+                                Log.d("TraineeBioScreen", "No dialer app found")
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Phone,
+                            contentDescription = "Phone",
+                        )
+                    }
+                    Text(
+                        text = data.second.phoneNumber,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.size(16.dp))
             Text(
                 text = data.second.bio,
                 fontSize = 16.sp,

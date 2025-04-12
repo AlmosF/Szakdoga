@@ -3,6 +3,8 @@ package com.example.szakdogafitness.feature.trainee
 import android.R.attr.data
 import android.R.attr.text
 import android.R.attr.top
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,7 +21,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -148,6 +155,74 @@ fun TraineeBioScreen(
                     text = data.second.trainee.availableEquipment.joinToString(", ") { availableEquipmentList[it] },
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
+                )
+            }
+        }
+        Spacer(modifier = Modifier.size(32.dp))
+        Text(
+            text = "Contact Information",
+            fontSize = 20.sp
+        )
+        Column (
+            modifier = Modifier
+                .fillMaxWidth(0.95f),
+        ) {
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Transparent),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                IconButton(
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_SEND).apply {
+                            type = "message/rfc822"
+                            putExtra(Intent.EXTRA_EMAIL, arrayOf(data.second.email))
+                        }
+                        val chooser = Intent.createChooser(intent, "Send Email")
+                        context.startActivity(chooser)
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Email,
+                        contentDescription = "Email",
+                    )
+                }
+                Text(
+                    text = data.second.email,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Transparent),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                IconButton(
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_DIAL).apply {
+                            setData(Uri.parse("tel:${data.second.phoneNumber}"))
+                        }
+                        if (intent.resolveActivity(context.packageManager) != null) {
+                            context.startActivity(intent)
+                        } else {
+                            Log.d("TraineeBioScreen", "No dialer app found")
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Phone,
+                        contentDescription = "Phone",
+                    )
+                }
+                Text(
+                    text = data.second.phoneNumber,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(8.dp)
                 )
             }
         }
