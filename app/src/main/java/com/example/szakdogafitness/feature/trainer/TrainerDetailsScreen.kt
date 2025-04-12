@@ -257,11 +257,8 @@ fun TrainerDetailsScreen(
                             val intent = Intent(Intent.ACTION_DIAL).apply {
                                 setData(Uri.parse("tel:${data.second.phoneNumber}"))
                             }
-                            if (intent.resolveActivity(context.packageManager) != null) {
-                                context.startActivity(intent)
-                            } else {
-                                Log.d("TraineeBioScreen", "No dialer app found")
-                            }
+                            val chooser = Intent.createChooser(intent, "Dial Phone Number")
+                            context.startActivity(chooser)
                         }
                     ) {
                         Icon(
