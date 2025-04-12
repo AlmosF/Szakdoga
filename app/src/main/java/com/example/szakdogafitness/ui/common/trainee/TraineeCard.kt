@@ -33,6 +33,10 @@ import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.model.User
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 
 @Composable
@@ -111,7 +115,7 @@ fun TraineeCard(
                     text = "${data.firstName} ${data.lastName}",
                 )
                 Text(
-                    text = "${data.dateOfBirth}"
+                    text = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(data.dateOfBirth?.toDate()).toString()
                 )
                 Text(
                     text = data.phoneNumber

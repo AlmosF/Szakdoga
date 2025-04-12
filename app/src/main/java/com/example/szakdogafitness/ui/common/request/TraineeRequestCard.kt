@@ -18,12 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.model.User
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun TraineeRequestCard(
@@ -34,6 +37,7 @@ fun TraineeRequestCard(
 
     val painter = rememberAsyncImagePainter(data.profileImageUrl)
     val painterState = painter.state.collectAsState()
+    val context = LocalContext.current
 
 
     Card(
@@ -94,9 +98,6 @@ fun TraineeRequestCard(
                         )
                     }
                 }
-                Text(
-                    text = data.dateOfBirth.toString().substringBefore("(")
-                )
             }
 
             Column(
@@ -110,16 +111,15 @@ fun TraineeRequestCard(
                     //text = data.userId
                 )
                 Text(
-                    text = data.dateOfBirth.toString().substringBefore("(")
+                    text = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(data.dateOfBirth?.toDate()).toString()
                 )
+                val fitnessGoalList = context.resources.getStringArray(R.array.fitness_goal).toList()
                 Text(
-                    text = data.phoneNumber
-                )
-                Text(
-                    text = data.email
-                )
-                Text(
-                    text = data.trainee.fitnessGoals.joinToString(", ")
+                    text = data.trainee.fitnessGoals.joinToString(", ") {
+                        fitnessGoalList[it]
+                    }.let {
+                        if (it.length > 30) it.take(30) + "..." else it
+                    },
                 )
             }
 
