@@ -10,8 +10,11 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 fun GeoPoint.calculateDistance(other: GeoPoint?): Pair<Int?, Int?> {
-    if (other == null || this == other) {
+    if (other == null) {
         return Pair(null, null)
+    }
+    if (this == other){
+        return Pair(0,0)
     }
     Log.d("LocationUtils", "Calculating distance between $this and $other")
     val earthRadiusKm = 6371.0

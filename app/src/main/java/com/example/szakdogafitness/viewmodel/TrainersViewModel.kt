@@ -45,6 +45,9 @@ class TrainersViewModel @Inject constructor(
     private val _state = MutableStateFlow(TrainersState())
     val state = _state.asStateFlow()
 
+    private val _filter = MutableStateFlow(TrainersFilter())
+    val filter = _filter.asStateFlow()
+
     fun onEvent(event: TrainersEvent){
         when(event){
             TrainersEvent.LoadTrainers -> {
@@ -85,7 +88,12 @@ class TrainersViewModel @Inject constructor(
                 loadAllTrainersAllRating()
             }
 
-
+            is TrainersEvent.FilterTrainers -> {
+                _filter.update { it.copy(
+                    filterMen = event.filterMen,
+                    filterWomen = event.filterWomen
+                ) }
+            }
         }
     }
 
@@ -289,6 +297,11 @@ data class TrainersState(
     val allTrainersAllRating: List<Pair<String, List<Rating>>?> = listOf()
 )
 
+data class TrainersFilter(
+    val filterMen : Boolean = false,
+    val filterWomen : Boolean = false,
+)
+
 /**
  * @param LoadTrainers: Load trainers from the database
  * @param FetchTrainersRequests: Fetch the trainers requests, that trainees applied for
@@ -310,5 +323,9 @@ sealed class TrainersEvent {
     data class ApplyForAppointment(
         val trainer: String?,
         val appointment: Map<String, List<Int>>
+    ) : TrainersEvent()
+    data class FilterTrainers(
+        val filterMen: Boolean = false,
+        val filterWomen: Boolean = false
     ) : TrainersEvent()
 }
