@@ -70,14 +70,14 @@ sealed class BottomNavigationItems (
             NutritionItem,
             SearchItem,
             TrainerItem,
-            MenuItem
+            //MenuItem
         )
         val trainerItems = mutableListOf(
             LifeStyleItem,
             NutritionItem,
             TraineesItem,
             RequestsItem,
-            MenuItem
+            //MenuItem
         )
     }
 }
