@@ -34,7 +34,8 @@ import androidx.compose.ui.unit.sp
 fun WeightControlBlock(
     modifier: Modifier = Modifier,
     personal: Boolean = true,
-    weight: Double = 80.0
+    weight: Double = 80.0,
+    unit: Int = 1
 ) {
     Column (
         modifier = modifier
@@ -42,22 +43,24 @@ fun WeightControlBlock(
             //.fillMaxWidth()
             //.padding(8.dp)
             .background(Color.LightGray, shape = RoundedCornerShape(16.dp))
+            .fillMaxWidth(),
     ) {
         Row (
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 32.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
         ) {
             Icon(
                 imageVector = Icons.Default.MonitorWeight,
-                contentDescription = "Weight Control",
+                contentDescription = "Weight",
                 tint = Color.Black,
                 modifier = Modifier
                     .size(30.dp)
             )
             Text(
-                text = "Weight Control",
+                text = "Weight",
                 modifier = Modifier
                     .padding(start = 8.dp),
                 fontWeight = FontWeight.Bold,
@@ -68,39 +71,17 @@ fun WeightControlBlock(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.End
         ) {
-            if (personal){
-                Column (
-                    modifier = Modifier
-                        .weight(4f),
-                    verticalArrangement = Arrangement.Bottom,
-                    horizontalAlignment = Alignment.Start
-                ) {
-                    OutlinedButton(
-                        onClick = {},
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Text(
-                            text = "Enter",
-                            fontSize = 20.sp
-                        )
-                    }
-                }
-            }
-            Column (
-                modifier = Modifier
-                    .weight(2f)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "$weight kg",
-                    fontSize = 30.sp,
-                )
-            }
+            Text(
+                text = if (unit == 1) {
+                    "$weight kg"
+                } else {
+                    "${"%.1f".format(weight * 2.20462)} lbs"
+                },
+                fontSize = 25.sp,
+            )
         }
     }
 }

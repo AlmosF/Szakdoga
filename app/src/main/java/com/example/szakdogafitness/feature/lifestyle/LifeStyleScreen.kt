@@ -1,8 +1,14 @@
 package com.example.szakdogafitness.feature.lifestyle
 
+import android.R.attr.end
 import android.util.Log
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -12,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -294,17 +301,36 @@ fun LifeStyleScreen(
                 )
             }
         )
-        /*WeightControlBlock( //WITH MAINSTATE
+        Row (
             modifier = Modifier
-                .constrainAs(weightBlock){
+                .constrainAs(weightBlock) {
                     top.linkTo(waterBlock.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
-                .fillMaxWidth(0.9f),
-            weight = mainState.user?.trainee?.weight ?: 0.0,
-        )*/
-        WeightControlBlock(
+                .fillMaxWidth(0.9f)
+                .height(IntrinsicSize.Min),
+        ) {
+            if (profileState.user?.role == 2){
+                WeightControlBlock(
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    weight = profileState.user?.trainee?.weight ?: 0.0,
+                    unit = profileState.user?.trainee?.unit ?: 1,
+                )
+            }
+            StepsBlock(
+                modifier = Modifier
+                    .padding(start = if(profileState.user?.role == 2) 8.dp else 0.dp)
+                    .weight(1f)
+                    .fillMaxHeight(),
+                steps = dailyDatasState.currentDailyData.steps,
+                goalSteps = dailyDatasState.currentDailyData.targetSteps
+            )
+        }
+        /*WeightControlBlock(
             modifier = Modifier
                 .constrainAs(weightBlock){
                     top.linkTo(waterBlock.bottom)
@@ -314,17 +340,6 @@ fun LifeStyleScreen(
                 .fillMaxWidth(0.9f),
             weight = profileState.user?.trainee?.weight ?: 0.0,
         )
-        /*StepsBlock(
-            modifier = Modifier
-                .constrainAs(stepsBlock){
-                    top.linkTo(weightBlock.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-                .fillMaxWidth(0.9f),
-            steps = 1234,
-            goalSteps = 6000
-        )*/
         StepsBlock(
             modifier = Modifier
                 .constrainAs(stepsBlock){
@@ -335,7 +350,7 @@ fun LifeStyleScreen(
                 .fillMaxWidth(0.9f),
             steps = dailyDatasState.currentDailyData.steps,
             goalSteps = dailyDatasState.currentDailyData.targetSteps
-        )
+        )*/
 
 
     }

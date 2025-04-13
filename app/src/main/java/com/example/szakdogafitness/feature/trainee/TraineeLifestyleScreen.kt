@@ -3,9 +3,12 @@ package com.example.szakdogafitness.feature.trainee
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -28,6 +31,7 @@ import com.example.szakdogafitness.viewmodel.TraineesViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.input.key.Key.Companion.Ro
+import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.szakdogafitness.domain.model.DailyData
@@ -112,14 +116,28 @@ fun TraineeLifestyleScreen(
                 onModifyIntake = {},
                 onModifyTarget = {}
             )
-            WeightControlBlock(
-                weight = data.trainee.weight,
-                personal = false
-            )
-            StepsBlock(
-                steps = traineesState.selectedTraineesDailyData?.steps ?: 0,
-                goalSteps = traineesState.selectedTraineesDailyData?.targetSteps ?: 0,
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+            ){
+                WeightControlBlock(
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    weight = data.trainee.weight,
+                    personal = false
+                )
+                StepsBlock(
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    steps = traineesState.selectedTraineesDailyData?.steps ?: 0,
+                    goalSteps = traineesState.selectedTraineesDailyData?.targetSteps ?: 0,
+                )
+            }
         }
     }
 

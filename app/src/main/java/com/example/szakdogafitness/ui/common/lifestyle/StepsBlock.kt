@@ -37,6 +37,8 @@ fun StepsBlock(
             //.fillMaxWidth()
             //.padding(8.dp)
             .background(Color.LightGray, shape = RoundedCornerShape(16.dp))
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         Row (
             modifier = Modifier
