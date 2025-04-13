@@ -195,7 +195,7 @@ fun SearchTrainerDetailsScreen(
                 )
                 val trainerRatingSize = trainerState.allTrainersAllRating.find {
                     it?.first == data.userId
-                }?.second?.size ?: 1
+                }?.second?.size ?: 0
                 RatingStars(
                     rating = rating ?: 0,
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
