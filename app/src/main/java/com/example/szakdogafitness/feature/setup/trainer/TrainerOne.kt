@@ -210,8 +210,6 @@ fun TrainerOne(
             }
         )
 
-        var selectedExperienceIndice by remember { mutableStateOf(-1) }
-        //var experienceRangeYear = (1970..2100) // FIXME: ACTUAL DATE RANGE
         var experienceRangeYear = (1970..Timestamp.now().toTriple().third) // FIXME: ACTUAL DATE RANGE
 
         /*YearSelector(
