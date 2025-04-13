@@ -1,41 +1,31 @@
 package com.example.szakdogafitness.feature.nutrition
 
-import android.R.attr.onClick
-import android.R.attr.text
-import android.R.attr.top
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -49,12 +39,10 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,9 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -80,8 +66,9 @@ import com.example.szakdogafitness.viewmodel.DailyDatasEvent
 import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
 import com.example.szakdogafitness.viewmodel.MealTypesEvent
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
-import com.google.firebase.Timestamp
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 
 
 /*@Composable
@@ -260,9 +247,12 @@ fun SearchNutritionScreen(
                                 )
                             },
                             trailingIcon = {
-                                IconButton(
+                                NutritionSorter(
+                                    mealTypesViewModel = mealTypesViewModel
+                                )
+                                /*IconButton(
                                     onClick = {
-                                        mealTypesViewModel.onEvent(MealTypesEvent.SortByCalories)
+                                        mealTypesViewModel.onEvent(MealTypesEvent.SortByCaloriesDesc)
                                     }
                                 ) {
                                     Icon(
@@ -271,7 +261,7 @@ fun SearchNutritionScreen(
                                         modifier = Modifier
                                             .size(32.dp)
                                     )
-                                }
+                                }*/
                             },
                             singleLine = true,
                             shape = RoundedCornerShape(32.dp),
@@ -464,6 +454,131 @@ fun ModalBottomSheetContent(
     }
 }
 
+@Composable
+fun NutritionSorter(
+    mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
+){
+    var isSortMenuExpanded by remember { mutableStateOf(false) }
+    val sortState by mealTypesViewModel.sortState.collectAsState()
+    Box {
+        IconButton(onClick = {
+            isSortMenuExpanded = true
+        }) {
+            Icon(
+                imageVector = Icons.Filled.FilterAlt,
+                contentDescription = "Sort Options",
+                modifier = Modifier.size(32.dp),
+                tint = if (!sortState.sortedByDefault) Color.Red else Color.Black
+            )
+        }
+
+        DropdownMenu(
+            expanded = isSortMenuExpanded,
+            onDismissRequest = { isSortMenuExpanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text("Default") },
+                onClick = {
+                    isSortMenuExpanded = false
+                    mealTypesViewModel.onEvent(MealTypesEvent.SortByDefault)
+                },
+                modifier = Modifier.background(
+                    if (sortState.sortedByDefault) Color.LightGray
+                    else Color.Transparent
+                )
+            )
+            HorizontalDivider()
+            DropdownMenuItem(
+                text = { Text("Calories ↑") },
+                onClick = {
+                    isSortMenuExpanded = false
+                    mealTypesViewModel.onEvent(MealTypesEvent.SortByCaloriesAsc)
+                },
+                modifier = Modifier.background(
+                    if (sortState.sortedByCalAsc) Color.LightGray
+                    else Color.Transparent
+                )
+            )
+            DropdownMenuItem(
+                text = { Text("Calories ↓") },
+                onClick = {
+                    isSortMenuExpanded = false
+                    mealTypesViewModel.onEvent(MealTypesEvent.SortByCaloriesDesc)
+                },
+                modifier = Modifier.background(
+                    if (sortState.sortedByCalDesc) Color.LightGray
+                    else Color.Transparent
+                )
+            )
+            DropdownMenuItem(
+                text = { Text("Fat ↑") },
+                onClick = {
+                    isSortMenuExpanded = false
+                    mealTypesViewModel.onEvent(MealTypesEvent.SortByFatAsc)
+                },
+                modifier = Modifier.background(
+                    if (sortState.sortedByFatAsc) Color.LightGray
+                    else Color.Transparent
+                )
+            )
+            DropdownMenuItem(
+                text = { Text("Fat ↓") },
+                onClick = {
+                    isSortMenuExpanded = false
+                    mealTypesViewModel.onEvent(MealTypesEvent.SortByFatDesc)
+                },
+                modifier = Modifier.background(
+                    if (sortState.sortedByFatDesc) Color.LightGray
+                    else Color.Transparent
+                )
+            )
+            DropdownMenuItem(
+                text = { Text("Carbs ↑") },
+                onClick = {
+                    isSortMenuExpanded = false
+                    mealTypesViewModel.onEvent(MealTypesEvent.SortByCarbsAsc)
+                },
+                modifier = Modifier.background(
+                    if (sortState.sortedByCarbsAsc) Color.LightGray
+                    else Color.Transparent
+                )
+            )
+            DropdownMenuItem(
+                text = { Text("Carbs ↓") },
+                onClick = {
+                    isSortMenuExpanded = false
+                    mealTypesViewModel.onEvent(MealTypesEvent.SortByCarbsDesc)
+                },
+                modifier = Modifier.background(
+                    if (sortState.sortedByCarbsDesc) Color.LightGray
+                    else Color.Transparent
+                )
+            )
+            DropdownMenuItem(
+                text = { Text("Protein ↑") },
+                onClick = {
+                    isSortMenuExpanded = false
+                    mealTypesViewModel.onEvent(MealTypesEvent.SortByProteinAsc)
+                },
+                modifier = Modifier.background(
+                    if (sortState.sortedByProteinAsc) Color.LightGray
+                    else Color.Transparent
+                )
+            )
+            DropdownMenuItem(
+                text = { Text("Protein ↓") },
+                onClick = {
+                    isSortMenuExpanded = false
+                    mealTypesViewModel.onEvent(MealTypesEvent.SortByProteinDesc)
+                },
+                modifier = Modifier.background(
+                    if (sortState.sortedByProteinDesc) Color.LightGray
+                    else Color.Transparent
+                )
+            )
+        }
+    }
+}
 
 @Composable
 @Preview

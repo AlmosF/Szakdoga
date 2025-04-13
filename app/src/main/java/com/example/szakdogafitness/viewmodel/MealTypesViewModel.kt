@@ -8,7 +8,6 @@ import com.example.szakdogafitness.domain.usecases.mealTypes.AllMealTypesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +19,9 @@ class MealTypesViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(MealTypesState())
     val state = _state.asStateFlow()
+
+    private val _sortState = MutableStateFlow(MealTypesSortState())
+    val sortState = _sortState.asStateFlow()
 
     fun onEvent(event: MealTypesEvent) {
         when(event){
@@ -52,6 +54,9 @@ class MealTypesViewModel @Inject constructor(
                         }
                     )
                 }
+                _sortState.update {
+                    MealTypesSortState()
+                }
             }
 
             is MealTypesEvent.NutritionSelected -> {
@@ -83,11 +88,123 @@ class MealTypesViewModel @Inject constructor(
                 }
             }
 
-            MealTypesEvent.SortByCalories -> {
+            MealTypesEvent.SortByCaloriesDesc -> {
+                _state.update {
+                    it.copy(
+                        selectedMealType = it.selectedMealType.sortedByDescending { it.calories }
+                    )
+                }
+                _sortState.update {
+                    MealTypesSortState().copy(
+                        sortedByCalDesc = true,
+                        sortedByDefault = false
+                    )
+                }
+            }
+
+            MealTypesEvent.SortByCaloriesAsc -> {
                 _state.update {
                     it.copy(
                         selectedMealType = it.selectedMealType.sortedBy { it.calories }
                     )
+                }
+                _sortState.update {
+                    MealTypesSortState().copy(
+                        sortedByCalAsc = true,
+                        sortedByDefault = false
+                    )
+                }
+            }
+
+            MealTypesEvent.SortByCarbsAsc -> {
+                _state.update {
+                    it.copy(
+                        selectedMealType = it.selectedMealType.sortedBy { it.carbs }
+                    )
+                }
+                _sortState.update {
+                    MealTypesSortState().copy(
+                        sortedByCarbsAsc = true,
+                        sortedByDefault = false
+                    )
+                }
+            }
+            MealTypesEvent.SortByCarbsDesc -> {
+                _state.update {
+                    it.copy(
+                        selectedMealType = it.selectedMealType.sortedByDescending { it.carbs }
+                    )
+                }
+                _sortState.update {
+                    MealTypesSortState().copy(
+                        sortedByCarbsDesc = true,
+                        sortedByDefault = false
+                    )
+                }
+            }
+            MealTypesEvent.SortByFatAsc -> {
+                _state.update {
+                    it.copy(
+                        selectedMealType = it.selectedMealType.sortedBy { it.fat }
+                    )
+                }
+                _sortState.update {
+                    MealTypesSortState().copy(
+                        sortedByFatAsc = true,
+                        sortedByDefault = false
+                    )
+                }
+            }
+            MealTypesEvent.SortByFatDesc -> {
+                _state.update {
+                    it.copy(
+                        selectedMealType = it.selectedMealType.sortedByDescending { it.fat }
+                    )
+                }
+                _sortState.update {
+                    MealTypesSortState().copy(
+                        sortedByFatDesc = true,
+                        sortedByDefault = false
+                    )
+                }
+            }
+            MealTypesEvent.SortByProteinAsc -> {
+                _state.update {
+                    it.copy(
+                        selectedMealType = it.selectedMealType.sortedBy { it.protein }
+                    )
+                }
+                _sortState.update {
+                    MealTypesSortState().copy(
+                        sortedByProteinAsc = true,
+                        sortedByDefault = false
+                    )
+                }
+            }
+            MealTypesEvent.SortByProteinDesc -> {
+                _state.update {
+                    it.copy(
+                        selectedMealType = it.selectedMealType.sortedByDescending { it.protein }
+                    )
+                }
+                _sortState.update {
+                    MealTypesSortState().copy(
+                        sortedByProteinDesc = true,
+                        sortedByDefault = false
+                    )
+                }
+            }
+            MealTypesEvent.SortByDefault -> {
+                _state.update {
+                    it.copy(
+                        selectedMealType = it.nutritions.filter { nutrition ->
+                            nutrition.mealType.contains(it.selectedMealTitle, ignoreCase = true) &&
+                                    nutrition.foodName.contains(it.queryString, ignoreCase = true)
+                        }
+                    )
+                }
+                _sortState.update {
+                    MealTypesSortState()
                 }
             }
 
@@ -113,6 +230,7 @@ class MealTypesViewModel @Inject constructor(
             MealTypesEvent.AddNutrition -> {
                 addNutrition()
             }
+
         }
     }
 
@@ -173,7 +291,7 @@ class MealTypesViewModel @Inject constructor(
                             selectedMealType = nutritions.filter { nutrition ->
                                 nutrition.mealType.contains(it.selectedMealTitle, ignoreCase = true) &&
                                         nutrition.foodName.contains(it.queryString, ignoreCase = true)
-                            }
+                            },
                         )
                     }
                 }
@@ -229,10 +347,34 @@ data class MealTypesState(
     val selectedNutrition: Nutrition? = null
 )
 
+data class MealTypesSortState(
+    val sortedByCalAsc : Boolean = false,
+    val sortedByCalDesc : Boolean = false,
+    val sortedByProteinAsc : Boolean = false,
+    val sortedByProteinDesc : Boolean = false,
+    val sortedByCarbsAsc : Boolean = false,
+    val sortedByCarbsDesc : Boolean = false,
+    val sortedByFatAsc : Boolean = false,
+    val sortedByFatDesc : Boolean = false,
+    val sortedByFiberAsc : Boolean = false,
+    val sortedByFiberDesc : Boolean = false,
+    val sortedByDefault: Boolean = true,
+)
+
 sealed class MealTypesEvent{
     object LoadMealTypes: MealTypesEvent()
     object ChangeDialogState: MealTypesEvent()
-    object SortByCalories: MealTypesEvent()
+    //SORTING
+    object SortByCaloriesAsc: MealTypesEvent()
+    object SortByCaloriesDesc: MealTypesEvent()
+    object SortByProteinAsc: MealTypesEvent()
+    object SortByProteinDesc: MealTypesEvent()
+    object SortByCarbsAsc: MealTypesEvent()
+    object SortByCarbsDesc: MealTypesEvent()
+    object SortByFatAsc: MealTypesEvent()
+    object SortByFatDesc: MealTypesEvent()
+    object SortByDefault: MealTypesEvent()
+    //SORTING
     object FetchNutritions: MealTypesEvent()
     object UpdateNutrition: MealTypesEvent()
     object AddNutrition: MealTypesEvent()
