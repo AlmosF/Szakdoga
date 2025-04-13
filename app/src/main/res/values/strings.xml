@@ -115,7 +115,16 @@
         <item>Improve Religion</item>
         <item>Improve</item>
     </string-array>
+    <string-array name="trainings_per_week">
+        <item> </item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
     <string-array name="current_fitness_level">
+        <item> </item>
         <item>Beginner"</item>
         <item>Intermediate"</item>
         <item>Advanced"</item>

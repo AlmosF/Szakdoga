@@ -179,6 +179,12 @@ fun RequestDetailScreen(
                         modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                         fontSize = 16.sp
                     )
+                    val trainings = context.resources.getStringArray(R.array.trainings_per_week).toList()
+                    Text(
+                        text = "Trainings / Week: ${traineesState.selectedTrainee?.second?.trainee?.trainings?.let { trainings[it] }}",
+                        modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
+                        fontSize = 16.sp
+                    )
                     val trainerPreferenceArray = context.resources.getStringArray(R.array.trainer_preference).toList()
                     Text(
                         text = traineesState.selectedTrainee?.second?.trainee?.trainingPreference?.let { trainerPreferenceArray[it] } ?: "",

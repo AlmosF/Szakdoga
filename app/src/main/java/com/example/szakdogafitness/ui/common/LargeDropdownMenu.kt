@@ -132,6 +132,7 @@ fun <T> LargeDropdownMenu(
                             }
                         }
                         itemsIndexed(items) { index, item ->
+                            if((item as? String)?.isNotBlank() == false) return@itemsIndexed
                             val selectedItem = selectedIndices.contains(index) // Check if the item is selected
                             drawItem(
                                 item,

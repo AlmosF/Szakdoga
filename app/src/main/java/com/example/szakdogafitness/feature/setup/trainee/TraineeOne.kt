@@ -365,9 +365,7 @@ fun TraineeOne(
                 }
             }
         }
-
-        var selectedTriningIndices by remember { mutableStateOf(emptyList<Int>()) }
-        val trainingItems = listOf("1", "2", "3", "4", "5")
+        val trainingItems = context.resources.getStringArray(R.array.trainings_per_week).toList()
 
         LargeDropdownMenu( //TODO: Nincs kész rossz a paraméter
             modifier = textFieldModifier
@@ -378,7 +376,7 @@ fun TraineeOne(
                 },
             label = "Training / Week",
             items = trainingItems,
-            selectedIndices = state.user.trainee.trainings.let { if (it == -1) emptyList() else listOf(it) },
+            selectedIndices = state.user.trainee.trainings.let { if (it == 0) emptyList() else listOf(it) },
             onItemSelected = { index, items ->
                 //selectedTriningIndices = listOf(index)
                 setupViewModel.onEvent(
@@ -387,8 +385,6 @@ fun TraineeOne(
             },
         )
 
-        var selectedFitnessGoalIndices by remember { mutableStateOf(emptyList<Int>()) }
-        //val fitnessGoalItems = listOf("Lose Weight", "Gain Muscle", "Improve Endurance", "Improve Flexibility", "Improve Strength", "Improve Speed", "Improve Power", "Improve Agility", "Improve Balance", "Improve Coordination", "Improve Accuracy", "Improve Stamina", "Improve Cardiovascular Health", "Improve Mental Health", "Improve Sleep", "Improve Nutrition", "Improve Hydration", "Improve Recovery", "Improve Mobility", "Improve Posture", "Improve Technique", "Improve Form", "Improve Breathing", "Improve Confidence", "Improve Discipline", "Improve Consistency", "Improve Patience", "Improve Focus", "Improve Mindfulness", "Improve Awareness", "Improve Presence", "Improve Resilience", "Improve Grit", "Improve Determination", "Improve Perseverance", "Improve Dedication", "Improve Commitment", "Improve Passion", "Improve Love", "Improve Joy", "Improve Happiness", "Improve Fulfillment", "Improve Purpose", "Improve Meaning", "Improve Connection", "Improve Community", "Improve Relationships", "Improve Communication", "Improve Collaboration", "Improve Teamwork", "Improve Leadership", "Improve Management", "Improve Organization", "Improve Planning", "Improve Preparation", "Improve Execution", "Improve Performance", "Improve Results", "Improve Success", "Improve Achievement", "Improve Progress", "Improve Growth", "Improve Development", "Improve Evolution", "Improve Transformation", "Improve Change", "Improve Adaptation", "Improve Innovation", "Improve Creativity", "Improve Imagination", "Improve Inspiration", "Improve Motivation", "Improve Encouragement", "Improve Support", "Improve Empowerment", "Improve Influence", "Improve Impact", "Improve Contribution", "Improve Service", "Improve Value", "Improve Quality", "Improve Excellence", "Improve Greatness", "Improve Mastery", "Improve Wisdom", "Improve Knowledge", "Improve Understanding", "Improve Awareness", "Improve Consciousness", "Improve Spirituality", "Improve Religion", "Improve")
         val fitnessGoalItems = context.resources.getStringArray(R.array.fitness_goal).toList()
         LargeDropdownMenu(
             modifier = textFieldModifier
@@ -402,11 +398,6 @@ fun TraineeOne(
             items = fitnessGoalItems,
             selectedIndices = state.user.trainee.fitnessGoals,
             onItemsSelected = { index, item ->
-                /*selectedFitnessGoalIndices = if (selectedFitnessGoalIndices.contains(index)) {
-                    selectedFitnessGoalIndices - index
-                } else {
-                    selectedFitnessGoalIndices + index
-                }*/
                 setupViewModel.onEvent(
                     SetupEvent.FitnessGoalsChanged(
                         if (state.user.trainee.fitnessGoals.contains(index)){
@@ -418,9 +409,6 @@ fun TraineeOne(
                 )
             },
         )
-
-        var currentFitnessLevelIndices by remember { mutableStateOf(emptyList<Int>()) }
-        //val currentFitnessLevelItems = listOf("Beginner", "Intermediate", "Advanced", "Professional", "Elite", "Olympian")
         val currentFitnessLevelItems = context.resources.getStringArray(R.array.current_fitness_level).toList()
         LargeDropdownMenu( //TODO: Nincs kész rossz a paraméter
             modifier = textFieldModifier
@@ -431,7 +419,7 @@ fun TraineeOne(
                 },
             label = "Current Fitness Level",
             items = currentFitnessLevelItems,
-            selectedIndices = state.user.trainee.currentFitnessLevel.let { if (it == -1) emptyList() else listOf(it) },
+            selectedIndices = state.user.trainee.currentFitnessLevel.let { if (it == 0) emptyList() else listOf(it) },
             onItemSelected = { index, items ->
                 //currentFitnessLevelIndices = listOf(index)
                 setupViewModel.onEvent(
