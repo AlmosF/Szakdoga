@@ -1,12 +1,21 @@
 package com.example.szakdogafitness.feature.setup.trainer
 
+import android.R.attr.enabled
+import android.R.attr.textStyle
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -14,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -25,7 +35,9 @@ import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.usecases.setup.AllSetupUseCases
 import com.example.szakdogafitness.feature.setup.toTriple
 import com.example.szakdogafitness.ui.common.LargeDropdownMenu
+import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.TrainerTimetableView
+import com.example.szakdogafitness.ui.common.YearPickerDialog
 import com.example.szakdogafitness.ui.common.YearSelector
 import com.example.szakdogafitness.viewmodel.SetupEvent
 import com.example.szakdogafitness.viewmodel.SetupViewModel
@@ -201,7 +213,8 @@ fun TrainerOne(
         var selectedExperienceIndice by remember { mutableStateOf(-1) }
         //var experienceRangeYear = (1970..2100) // FIXME: ACTUAL DATE RANGE
         var experienceRangeYear = (1970..Timestamp.now().toTriple().third) // FIXME: ACTUAL DATE RANGE
-        YearSelector(
+
+        /*YearSelector(
             modifier = textFieldModifier
                 .constrainAs(exp) {
                     top.linkTo(style.bottom)
@@ -221,7 +234,59 @@ fun TrainerOne(
                     SetupEvent.ExperienceChanged(year)
                 )
             }
-        )
+        )*/
+        var yearPickerDialogOpened by remember { mutableStateOf(false) }
+
+        Box(
+            modifier = textFieldModifier
+                .height(IntrinsicSize.Min)
+                .constrainAs(exp) {
+                    top.linkTo(style.bottom)
+                    start.linkTo(startGuideline5)
+                    end.linkTo(endGuideline95)
+                }
+        ) {
+            NormalTextField(
+                label = "Experience (Since when)",
+                value = if (state.user.trainer.experience != 0) state.user.trainer.experience.toString() else "Not set",
+                enabled = true,
+                onValueChange = {},
+                readOnly = true,
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 1,
+                trailingIcon = null,
+                onDone = {},
+                textStyle = TextStyle(fontSize = 16.sp),
+                leadingIcon = null,
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    disabledContainerColor = MaterialTheme.colorScheme.surface,
+                ),
+            )
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 8.dp)
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .clickable { yearPickerDialogOpened = true },
+                color = Color.Transparent,
+            ) {}
+        }
+        if (yearPickerDialogOpened){
+            YearPickerDialog(
+                onDismissRequest = {
+                    yearPickerDialogOpened = false
+                },
+                onYearSelected = {
+                    setupViewModel.onEvent(
+                        SetupEvent.ExperienceChanged(it)
+                    )
+                    yearPickerDialogOpened = false
+                },
+            )
+        }
 
         TrainerTimetableView(
             modifier = textFieldModifier

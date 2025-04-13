@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.ui.common
 
+import android.R.attr.enabled
 import android.R.attr.textColor
 import android.R.attr.textStyle
 import androidx.compose.foundation.background
@@ -13,7 +14,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -35,7 +40,121 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.szakdogafitness.presentation.navigation.main.items.TopNavigationItem.Companion.items
 import com.example.szakdogafitness.ui.theme.SzakdogaFitnessTheme
+import java.time.LocalDate
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.runtime.LaunchedEffect
+import com.google.firebase.Timestamp
+import java.time.ZoneId
+
+@Composable
+fun YearPickerDialog(
+    onDismissRequest: () -> Unit,
+    onYearSelected: (Int) -> Unit,
+    selectedYear: Int = remember {
+        Timestamp.now().toDate().toInstant()
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate()
+            .year
+    },
+    yearRange: IntRange = (1900..Timestamp.now().toDate().toInstant()
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
+        .year + 10)
+) {
+    val years = yearRange.toList()
+    val listState = rememberLazyListState()
+    var tempSelectedYear by remember { mutableStateOf(selectedYear) }
+
+    // Auto-scroll to selected year
+    LaunchedEffect(Unit) {
+        val selectedIndex = years.indexOf(tempSelectedYear).coerceAtLeast(0)
+        listState.scrollToItem(selectedIndex)
+    }
+
+    Dialog(onDismissRequest = onDismissRequest) {
+        Surface(
+            shape = RoundedCornerShape(28.dp),
+            tonalElevation = 6.dp,
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(400.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxSize()
+            ) {
+                Text(
+                    text = "Select Year",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                HorizontalDivider()
+
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+                    items(years) { year ->
+                        val isSelected = year == tempSelectedYear
+                        val background = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else Color.Transparent
+                        val textColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(background)
+                                .clickable (enabled = year <= Timestamp.now().toDate().toInstant().atZone(
+                                    ZoneId
+                                        .systemDefault())
+                                        .toLocalDate()
+                                        .year
+                                ){
+                                    tempSelectedYear = year
+                                }
+                                .padding(vertical = 12.dp, horizontal = 16.dp)
+                        ) {
+                            Text(
+                                text = year.toString(),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = if (year <= selectedYear) textColor else Color.Gray
+                            )
+                        }
+                    }
+                }
+
+                HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = onDismissRequest) {
+                        Text("Cancel")
+                    }
+                    TextButton(
+                        onClick = {
+                            onYearSelected(tempSelectedYear)
+                            onDismissRequest()
+                        }
+                    ) {
+                        Text("OK")
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun YearSelector(
