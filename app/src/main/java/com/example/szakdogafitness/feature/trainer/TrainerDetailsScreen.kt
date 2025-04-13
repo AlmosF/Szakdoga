@@ -163,14 +163,21 @@ fun TrainerDetailsScreen(
                     text = if (specializationsText.value) {
                         data.second.trainer.specializations.joinToString(", ") { specializationsList[it] }
                     } else {
-                        data.second.trainer.specializations.joinToString(", ") { specializationsList[it] }.take(50) + "..."
+                        data.second.trainer.specializations.joinToString(", ") { specializationsList[it] }.let {
+                            if (it.length > 50) {
+                                "${it.take(50)}..."
+                            } else {
+                                it
+                            }
+                        }
                     },
                     modifier = Modifier
                         .padding(top = 4.dp, bottom = 4.dp)
                         .clickable { specializationsText.value = !specializationsText.value },
                     fontSize = 16.sp,
                     maxLines = if (specializationsText.value) Int.MAX_VALUE else 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    softWrap = true
                 )
                 val distance = data.second.location?.calculateDistance(currentUser.location)
                 Text(

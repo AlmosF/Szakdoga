@@ -149,10 +149,11 @@ fun TrainerCard(
                 fontWeight = Bold
             )
             //data.specializations.forEach {
+            val specializationList = context.resources.getStringArray(R.array.specializations).toList()
             currentTrainer.trainer.specializations.forEach {
                 Text(
-                    //text = data.specializations.joinToString(", "),
-                    text = currentTrainer.trainer.specializations.joinToString(", "),
+                    text = currentTrainer.trainer.specializations.joinToString(", ")
+                        { specializationList[it] },
                     modifier = Modifier
                         .constrainAs(specializations){
                             top.linkTo(name.bottom, margin = 8.dp)
@@ -180,7 +181,7 @@ fun TrainerCard(
                 RatingStars(
                     modifier = Modifier
                         .padding(8.dp)
-                        .weight(1f),
+                        .weight(2f),
                     //rating = data.rating
                     //rating = data.trainer.rating
                     rating = ratingData,
@@ -197,7 +198,7 @@ fun TrainerCard(
                 )
                 Column (
                     modifier = Modifier
-                        .weight(1f),
+                        .weight(2f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(

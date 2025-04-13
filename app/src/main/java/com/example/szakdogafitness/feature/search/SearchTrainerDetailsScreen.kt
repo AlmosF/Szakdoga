@@ -3,6 +3,7 @@ package com.example.szakdogafitness.feature.search
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -84,6 +86,7 @@ fun SearchTrainerDetailsScreen(
     val painter = rememberAsyncImagePainter(data.profileImageUrl)
     val painterState = painter.state.collectAsState()
 
+    val context = LocalContext.current
 
     var scheduleOpened by remember { mutableStateOf(false) }
     Column (
@@ -145,10 +148,29 @@ fun SearchTrainerDetailsScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.Start
             ) {
+                val specializationList = context.resources.getStringArray(R.array.specializations).toList()
+                val specializationsText = remember { mutableStateOf(false) }
                 Text(
-                    text = data.trainer.specializations.joinToString(", "),
-                    modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
-                    fontSize = 16.sp
+                    text = if (specializationsText.value) {
+                        data.trainer.specializations.joinToString(", "){specializationList[it]}
+                    } else {
+                        data.trainer.specializations.joinToString(", ") { specializationList[it] }.let {
+                            if (it.length > 50) {
+                                "${it.take(50)}..."
+                            } else {
+                                it
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(top = 4.dp, bottom = 4.dp)
+                        .clickable{
+                            specializationsText.value = !specializationsText.value
+                        }
+                    ,
+                    fontSize = 16.sp,
+                    maxLines = if (specializationsText.value) 10 else 1,
+                    softWrap = true
                 )
                 val distance = data.location?.calculateDistance(currentUser.location)
                 Text(
@@ -156,8 +178,9 @@ fun SearchTrainerDetailsScreen(
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
+                val genderList = context.resources.getStringArray(R.array.gender).toList()
                 Text(
-                    text = data.gender.toString(),
+                    text = genderList[data.gender-1],
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                     fontSize = 16.sp
                 )
