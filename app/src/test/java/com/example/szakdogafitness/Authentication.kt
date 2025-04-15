@@ -1,5 +1,6 @@
 package com.example.szakdogafitness
 
+import android.R.attr.password
 import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.data.auth.AuthService
 import com.example.szakdogafitness.data.auth.FirebaseAuthService
@@ -28,6 +29,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockk
+import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -165,15 +167,18 @@ class AuthViewModelTest{
 
 }*/
 
-/* // WORKING
+// WORKING
 @OptIn(ExperimentalCoroutinesApi::class)
 class AuthenticationViewModelTest {
+
+
     private lateinit var viewModel: AuthenticationViewModel
 
     private val signInUseCase = mockk<SignInUseCase>()
     private val signUpUseCase = mockk<SignUpUseCase>()
     private val repository = mockk<AuthService>(relaxed = true)
-    private val currentUserId = mockk<CurrentUserIdUseCase>(/*relaxed = true*/)
+    private val repository2 = mockk<FirebaseAuthService>(relaxed = true)
+    private val currentUserId = mockk<CurrentUserIdUseCase>(relaxed = true)
     private val currentUser = mockk<CurrentUserUseCase>(relaxed = true)
     private val hasUser = mockk<HasUserUseCase>(relaxed = true)
     private val isOnline = mockk<IsOnlineUseCase>(relaxed = true)
@@ -183,6 +188,9 @@ class AuthenticationViewModelTest {
     private val currentUserEmail = mockk<CurrentUserEmailUseCase>(relaxed = true)
     private val isEmailValid = mockk<IsEmailValidUseCase>()
     private val passwordsMatch = mockk<PasswordsMatchUseCase>()
+
+    val firebaseAuth = mockk<FirebaseAuth>(relaxed = true)
+    private val firebaseAS = FirebaseAuthService(firebaseAuth)
 
     private val dispatcher = StandardTestDispatcher()
 
@@ -217,13 +225,35 @@ class AuthenticationViewModelTest {
         viewModel.viewModelScope.cancel()
     }
 
+    @Test
+    fun isCurrentUserIdWorking() = runTest {
+        every { firebaseAuth.currentUser?.uid } returns "7QPyGPyAeISdfwXe0teOeWMPwVz2"
+        val userId = firebaseAS.currentUserId()
+        assertNotNull(userId)
+        assertEquals(
+            "7QPyGPyAeISdfwXe0teOeWMPwVz2",
+            userId
+        )
+    }
+
+    @Test
+    fun isLoggedIfCurrentUserNotNull() = runTest {
+        every { firebaseAuth.currentUser } returns mockk()
+        val hasUser = firebaseAS.hasUser()
+        assertTrue(hasUser)
+    }
+
+    @Test
+    fun isLoggedIfCurrentUserIsNull() = runTest {
+        every { firebaseAuth.currentUser } returns null
+        val hasUser = firebaseAS.hasUser()
+        assertFalse(hasUser)
+    }
 
     @Test
     fun onEventEmailChanged() {
         val newEmail = "feketealmos0@gmail.com"
-
         viewModel.onEvent(AuthenticationEvent.EmailChanged(newEmail))
-
         assertEquals(
             viewModel.state.value.email,
             newEmail
@@ -233,7 +263,6 @@ class AuthenticationViewModelTest {
     @Test
     fun onEventPasswordChanged() {
         val newPassword = "Almos123"
-
         viewModel.onEvent(AuthenticationEvent.PasswordChanged(newPassword))
         assertEquals(
             viewModel.state.value.password,
@@ -264,7 +293,7 @@ class AuthenticationViewModelTest {
     }
 
     @Test
-    fun onEventAssertModeChange(){
+    fun onEventAssertModeChange() {
         val initialMode = viewModel.state.value.isInRegisterMode
         viewModel.onEvent(AuthenticationEvent.ChangeMode)
         assertEquals(
@@ -274,7 +303,7 @@ class AuthenticationViewModelTest {
     }
 
     @Test
-    fun onEventAssertPasswordVisible(){
+    fun onEventAssertPasswordVisible() {
         val initialPasswordVisibility = viewModel.state.value.passwordVisibility
         viewModel.onEvent(AuthenticationEvent.PasswordVisibilityChanged)
         assertEquals(
@@ -284,7 +313,7 @@ class AuthenticationViewModelTest {
     }
 
     @Test
-    fun onEventAssertConfirmPasswordVisible(){
+    fun onEventAssertConfirmPasswordVisible() {
         val initialConfirmPasswordVisibility = viewModel.state.value.confirmPasswordVisibility
         viewModel.onEvent(AuthenticationEvent.ConfirmPasswordVisibilityChanged)
         assertEquals(
@@ -337,6 +366,7 @@ class AuthenticationViewModelTest {
         }
         assertTrue(event is UiEvent.Success)
     }
+
 
     @Test
     fun AuthenticationButtonClickedWithCorrectCredentialsAssertUID() = runTest {
@@ -437,24 +467,22 @@ class AuthenticationViewModelTest {
     }
 
     @Test
-    fun AuthenticationButtonClickedWithSignInModeWithBlankPasswordTriggeresFailureEvent() = runTest {
-        val email = "feketealmos0@gmail.com"
-        val password = ""
+    fun AuthenticationButtonClickedWithSignInModeWithBlankPasswordTriggeresFailureEvent() =
+        runTest {
+            val email = "feketealmos0@gmail.com"
+            val password = ""
 
-        every { isEmailValid(email) } returns true
-        every { passwordsMatch(password, password) } returns true
-        coEvery { signInUseCase(email, password) } just Runs
-        viewModel.onEvent(AuthenticationEvent.EmailChanged(email))
-        viewModel.onEvent(AuthenticationEvent.PasswordChanged(password))
-        viewModel.onEvent(AuthenticationEvent.AuthenticationButtonClicked)
-        val event = withTimeout(5000) {
-            viewModel.uiEvent.first()
+            every { isEmailValid(email) } returns true
+            every { passwordsMatch(password, password) } returns true
+            coEvery { signInUseCase(email, password) } just Runs
+            viewModel.onEvent(AuthenticationEvent.EmailChanged(email))
+            viewModel.onEvent(AuthenticationEvent.PasswordChanged(password))
+            viewModel.onEvent(AuthenticationEvent.AuthenticationButtonClicked)
+            val event = withTimeout(5000) {
+                viewModel.uiEvent.first()
+            }
+            assertTrue(event is UiEvent.Failure)
         }
-        assertTrue(event is UiEvent.Failure)
-    }
-
-
-
 
 
     /*@Test
@@ -480,8 +508,8 @@ class AuthenticationViewModelTest {
 
 }
 
-*/
-class AuthenticationViewModelTest {
+
+/*class AuthenticationViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val testDispatcher = StandardTestDispatcher()
@@ -607,4 +635,4 @@ class AuthenticationViewModelTest {
 
         assertEquals(false, viewModel.state.value.isLoggedIn)
     }
-}
+}*/
