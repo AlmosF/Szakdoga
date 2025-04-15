@@ -1,4 +1,5 @@
 import org.gradle.kotlin.dsl.implementation
+import org.gradle.kotlin.dsl.testImplementation
 import java.util.Properties
 
 plugins {
@@ -57,6 +58,29 @@ android {
     }
 }
 dependencies {
+
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+
+    androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
+
+    // Unit testing
+    testImplementation("junit:junit:4.13.2")
+
+    // Coroutines testing
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    // Mocking
+    testImplementation("org.mockito:mockito-core:5.2.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+
+    //Mockk
+    testImplementation ("io.mockk:mockk:1.13.4")
+
+
+    // (optional) Truth or assertk for better assertions
+    testImplementation("com.google.truth:truth:1.1.5")
+
 
     //Location
     implementation(libs.play.services.location)
@@ -137,4 +161,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    testImplementation(kotlin("test"))
 }

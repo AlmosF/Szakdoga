@@ -1,7 +1,8 @@
-package com.example.szakdogafitness.feature.auth
+package com.example.szakdogafitness.viewmodel
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -22,6 +23,13 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.example.szakdogafitness.R
+import com.example.szakdogafitness.domain.usecases.PasswordsMatchUseCase
+import com.example.szakdogafitness.domain.usecases.auth.AllAuthenticationUseCases
+import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
+import com.example.szakdogafitness.ui.model.toUiText
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withTimeout
 
 @HiltViewModel
 class AuthenticationViewModel @Inject constructor(
@@ -239,4 +247,10 @@ sealed class AuthenticationEvent {
     object LogoutButtonClicked : AuthenticationEvent()
     object ChangeMode: AuthenticationEvent()
     object ForgotPasswordButtonClicked: AuthenticationEvent()
+}
+
+suspend fun AuthenticationViewModel.collectFirstUiEvent(): UiEvent{
+    return withTimeout(1000) {
+        uiEvent.first()
+    }
 }

@@ -13,16 +13,13 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="LifeStyleScreenPreview">
+      <SelectionState runConfigName="AuthenticationViewModelIntegrationTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="NutritionScreenPreview">
+      <SelectionState runConfigName="testViewModelSignInAndGetUserId()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="LogBlockRowPreview">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="LogBlockPreview">
+      <SelectionState runConfigName="onSignIn_validCredentials_userIdMatches()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
