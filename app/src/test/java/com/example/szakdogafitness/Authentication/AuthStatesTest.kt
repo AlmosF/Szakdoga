@@ -1,6 +1,7 @@
 package com.example.szakdogafitness.Authentication
 
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.szakdogafitness.data.auth.AuthService
 import com.example.szakdogafitness.domain.usecases.IsEmailValidUseCase
 import com.example.szakdogafitness.domain.usecases.PasswordsMatchUseCase
@@ -32,6 +33,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import org.junit.After
 import org.junit.Before
@@ -55,7 +57,7 @@ class AuthStatesTest {
     private val isOnline = mockk<IsOnlineUseCase>(relaxed = true)
     private val sendRecoveryEmail = mockk<SendRecoveryEmailUseCase>(relaxed = true)
     private val deleteAccount = mockk<DeleteAccountUseCase>(relaxed = true)
-    private val signOut = mockk<SignOutUseCase>(relaxed = true)
+    private val signOut = mockk<SignOutUseCase>()
     private val currentUserEmail = mockk<CurrentUserEmailUseCase>(relaxed = true)
     private val isEmailValid = mockk<IsEmailValidUseCase>()
     private val passwordsMatch = mockk<PasswordsMatchUseCase>()
@@ -283,5 +285,31 @@ class AuthStatesTest {
             }
             assertTrue(event is UiEvent.Failure)
         }
+
+    @Test
+    fun forgotPasswordButtonClickedWithInvalidEmailAddressTriggersFailureEvent() = runTest {
+        val email = "feketealmos"
+        every { isEmailValid(email) } returns false
+
+        viewModel.onEvent(AuthenticationEvent.EmailChanged(email))
+        viewModel.onEvent(AuthenticationEvent.ForgotPasswordButtonClicked)
+        val event = withTimeout(5000) {
+            viewModel.uiEvent.first()
+        }
+        assertTrue(event is UiEvent.Failure)
+    }
+
+    @Test
+    fun forgotPasswordButtonClickedWithValidEmailAddressTriggersSuccessEvent() = runTest {
+        val email = "feketealmos0@gmail.com"
+        every { isEmailValid(email) } returns true
+        coEvery { sendRecoveryEmail(email) } just Runs
+        viewModel.onEvent(AuthenticationEvent.EmailChanged(email))
+        viewModel.onEvent(AuthenticationEvent.ForgotPasswordButtonClicked)
+        val event = withTimeout(5000) {
+            viewModel.uiEvent.first()
+        }
+        assertTrue(event is UiEvent.Success)
+    }
 
 }
