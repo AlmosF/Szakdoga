@@ -125,4 +125,15 @@ class AuthServiceTest {
         )
     }
 
+    @Test
+    fun currentUserEmail() = runTest {
+        every { firebaseAuth.currentUser?.email } returns "feketealmos0@gmail.com"
+        val currentUserEmail = firebaseAS.currentUserEmail()
+        assertNotNull(currentUserEmail)
+        assertEquals(
+            "feketealmos0@gmail.com",
+            currentUserEmail
+        )
+    }
+
 }
