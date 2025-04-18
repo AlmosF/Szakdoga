@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
@@ -74,9 +75,30 @@ class TrainersService @Inject constructor(
         }
     }
 
-    override suspend fun fetchTrainersRequests(trainerId: String): Flow<Map<String, List<Int>>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun fetchTrainersRequests(trainerId: String): Flow<Map<String, List<Int>>> = flow {
+        try {
+            firestore.collection("requests")
+                .document(trainerId)
+                .collection("traineeRequests")
+                .dataObjects<Requests>()
+                .collect { traineeRequestsList ->
+                    val mergedAppointments = mutableMapOf<String, MutableList<Int>>()
+
+                    traineeRequestsList.forEach { traineeRequests ->
+                        traineeRequests.appointment.forEach { (day, hour) ->
+                            mergedAppointments.getOrPut(day) { mutableListOf() }.addAll(hour)
+                        }
+                    }
+
+                    emit(mergedAppointments)
+
+
+                }
+        } catch (e: Exception){
+            Log.e("MainService", "Error fetching real-time trainer requests: ${e.message}", e)
+            emit(emptyMap())
+        }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun fetchRequestedAppoint(trainerId: String): Flow<Pair<Requests, User>> {
         TODO("Not yet implemented")
