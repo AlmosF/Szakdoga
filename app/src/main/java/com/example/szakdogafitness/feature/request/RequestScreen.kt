@@ -1,6 +1,7 @@
 package com.example.szakdogafitness.feature.request
 
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -123,38 +125,73 @@ fun RequestScreen(
                 disabledContainerColor = MaterialTheme.colorScheme.surface,
             )
         )
-        /*val filtered = testRequestList.filter {
-            (it.firstName+ " " + it.lastName).contains(search, ignoreCase = true)
-        }*/
-        LazyColumn (
-            modifier = Modifier
-                .fillMaxWidth(0.95f),
-        ) {
-            items(traineesState.pendingRequests.size) {
-                /*TraineeRequestCard( // With REQUEST only
-                    data = User(
-                        userId = traineesState.pendingRequests[it].traineeId),
-                ) {
-                    traineesViewModel.onEvent(
-                        TraineesEvent.DeclineRequest(
-                            userId = traineesState.pendingRequests[it].traineeId
+        if (traineesState.isLoading){
+            Column (
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxSize(
+                            0.95f
                         )
-                    )
-                }*/
-                TraineeRequestCard( // With PAIR
-                    data = traineesState.pendingRequests[it].second,
+                )
+            }
+        } else {
+            if (traineesState.pendingRequests.isEmpty()){
+                Column (
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    /*traineesViewModel.onEvent(
-                        TraineesEvent.DeclineRequest(
-                            userId = traineesState.pendingRequests[it].first.traineeId
-                        )
-                    )*/
-                    val request = traineesState.pendingRequests[it]
-                    onClick(
-                        request.first.traineeId
+                    Text(
+                        text = "No pending requests",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
+                }
+            } else {
+                val filtered = traineesState.pendingRequests.filter {
+                    (it.second.firstName+ " " + it.second.lastName).contains(search, ignoreCase = true)
+                }
+                LazyColumn (
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f),
+                ) {
+                    //items(traineesState.pendingRequests.size) {
+                    items(filtered.size) {
+                        /*TraineeRequestCard( // With REQUEST only
+                            data = User(
+                                userId = traineesState.pendingRequests[it].traineeId),
+                        ) {
+                            traineesViewModel.onEvent(
+                                TraineesEvent.DeclineRequest(
+                                    userId = traineesState.pendingRequests[it].traineeId
+                                )
+                            )
+                        }*/
+                        TraineeRequestCard( // With PAIR
+                            //data = traineesState.pendingRequests[it].second,
+                            data = filtered[it].second,
+                        ) {
+                            /*traineesViewModel.onEvent(
+                                TraineesEvent.DeclineRequest(
+                                    userId = traineesState.pendingRequests[it].first.traineeId
+                                )
+                            )*/
+                            //val request = traineesState.pendingRequests[it]
+                            val request = filtered[it]
+                            onClick(
+                                request.first.traineeId
+                            )
+                        }
+                    }
                 }
             }
         }
+
     }
 }
