@@ -1,6 +1,7 @@
 package com.example.szakdogafitness.feature.trainee
 
 import android.R.attr.onClick
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -103,30 +105,60 @@ fun TraineesScreen(
                 disabledContainerColor = MaterialTheme.colorScheme.surface,
             )
         )
-        val filtered = testData.filter {
-            (it.firstName+" "+it.lastName).contains(search, ignoreCase = true)
-        }
-        LazyColumn (
-            modifier = Modifier
-                .fillMaxWidth(0.95f)
-        ) {
-            /*items(filtered.size) {
-                TraineeCard(
-                    data = filtered[it],
-                    onCardClick = {},
-                    onMessageClick = {}
-                )
-            }*/
-            items(traineesState.acceptedRequests.size) {
-                TraineeCard(
-                    data = traineesState.acceptedRequests[it].second,
-                    onCardClick = {
-                        onClick(traineesState.acceptedRequests[it].second.userId)
-                    },
-                    onMessageClick = {}
+
+        if(traineesState.isLoading){
+            Column (
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxSize(
+                            0.95f
+                        )
                 )
             }
+        } else {
+            if (traineesState.acceptedRequests.isEmpty()){
+                Column (
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f)
+                ) {
+                    Text("No accepted trainees yet.")
+                }
+            } else {
+                val filtered = traineesState.acceptedRequests.filter {
+                    (it.second.firstName+" "+it.second.lastName).contains(search, ignoreCase = true)
+                }
+                LazyColumn (
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f)
+                ) {
+                    /*items(filtered.size) {
+                        TraineeCard(
+                            data = filtered[it],
+                            onCardClick = {},
+                            onMessageClick = {}
+                        )
+                    }*/
+                    //items(traineesState.acceptedRequests.size) {
+                    items(filtered.size) {
+                        TraineeCard(
+                            //data = traineesState.acceptedRequests[it].second,
+                            data = filtered[it].second,
+                            onCardClick = {
+                                //onClick(traineesState.acceptedRequests[it].second.userId)
+                                onClick(filtered[it].second.userId)
+                            },
+                            onMessageClick = {}
+                        )
+                    }
+                }
+            }
         }
+
     }
 }
 
