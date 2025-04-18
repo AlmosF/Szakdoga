@@ -42,10 +42,11 @@ object AllMainUseCasesModule {
     fun provideFetchUserUseCase(repository: IMainService): FetchUserUseCase =
         FetchUserUseCase(repository)*/
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideFetchUsersDailyDatasUseCase(repository: IMainService): FetchUsersDailyDatasUseCase =
         FetchUsersDailyDatasUseCase(repository)
+    */
 
     @Provides
     @Singleton
@@ -129,20 +130,23 @@ object AllMainUseCasesModule {
     fun provideFetchUsersDailyDatasByIdUseCase(repository: IMainService): FetchUsersDailyDatasByIdUseCase =
         FetchUsersDailyDatasByIdUseCase(repository)
 */
-    @Provides
+    /*@Provides
     @Singleton
     fun provideTargetKcalModifyUseCase(repository: IMainService): TargetKcalModifyUseCase =
         TargetKcalModifyUseCase(repository)
+    */
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideTargetWaterModifyUseCase(repository: IMainService): TargetWaterModifyUseCase =
         TargetWaterModifyUseCase(repository)
+    */
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideUpdateWaterIntakeUseCase(repository: IMainService): WaterIntakeModifyUseCase =
         WaterIntakeModifyUseCase(repository)
+    */
 
     /*@Provides
     @Singleton
