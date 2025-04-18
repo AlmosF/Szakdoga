@@ -1,6 +1,7 @@
 package com.example.szakdogafitness.domain.di.Trainers
 
 import com.example.szakdogafitness.data.trainers.ITrainersService
+import com.example.szakdogafitness.domain.usecases.main.ApplyToTrainerAppointmentUseCase
 import com.example.szakdogafitness.domain.usecases.main.GetTrainersUseCase
 import dagger.Module
 import dagger.Provides
@@ -16,6 +17,11 @@ object AllTrainersUseCasesModule{
     @Provides
     fun provideGetTrainersUseCase(repository: ITrainersService): GetTrainersUseCase =
         GetTrainersUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideApplyToTrainerAppointmentUseCase(repository: ITrainersService): ApplyToTrainerAppointmentUseCase =
+        ApplyToTrainerAppointmentUseCase(repository)
 
 
 }
