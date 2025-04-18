@@ -2,6 +2,7 @@ package com.example.szakdogafitness.domain.di.DailyDatas
 
 import com.example.szakdogafitness.data.dailydatas.IDailyDatasService
 import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasUseCase
+import com.example.szakdogafitness.domain.usecases.main.GenerateNewDailyDataUseCase
 import com.example.szakdogafitness.domain.usecases.main.TargetWaterModifyUseCase
 import com.example.szakdogafitness.domain.usecases.main.WaterIntakeModifyUseCase
 import com.example.szakdogafitness.domain.usecases.mealLog.TargetKcalModifyUseCase
@@ -36,5 +37,11 @@ object AllDailyDatasUseCasesModule {
     @Singleton
     fun provideUpdateWaterIntakeUseCase(repository: IDailyDatasService): WaterIntakeModifyUseCase =
         WaterIntakeModifyUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGenerateNewDailyDataUseCase(repository: IDailyDatasService): GenerateNewDailyDataUseCase =
+        GenerateNewDailyDataUseCase(repository)
+
 
 }

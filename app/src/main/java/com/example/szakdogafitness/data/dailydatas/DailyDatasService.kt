@@ -11,7 +11,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
@@ -42,6 +44,39 @@ class DailyDatasService @Inject constructor(
             emit(emptyList())
         }
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun generateNewDailyData() {
+        val userId = userIdUseCase()
+
+        // Format today's date as "YYYY-MM-DD"
+        val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        Log.d("MainService", "Generating new daily data for user: $userId")
+
+        try {
+            val userDocRef = firestore.collection("dailyDatas").document(userId!!)
+            val dailyDataCollectionRef = userDocRef.collection("dailyData")
+
+            // Check if today's entry exists
+            val existingDoc = dailyDataCollectionRef.document(todayDate).get().await()
+
+            if (!existingDoc.exists()) {
+                val newDailyData = DailyData(date = Timestamp.now())
+
+                // Create the new daily entry with today's date as the document ID
+                dailyDataCollectionRef
+                    .document(todayDate)
+                    .set(newDailyData)
+                    .await()
+
+                Log.d("MainService", "Created new daily data for user: $userId")
+            } else {
+                Log.d("MainService", "Today's daily data already exists for user: $userId")
+            }
+
+        } catch (e: Exception) {
+            Log.e("MainService", "Error generating new daily data: ${e.message}", e)
+        }
+    }
 
     override suspend fun modifyTargetKcal(
         targetKcal: Int,

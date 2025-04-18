@@ -51,6 +51,7 @@ import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
 
+@Deprecated("This class is deprecated and will be removed soon")
 class MainService @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val userIdUseCase: CurrentUserIdUseCase,
@@ -58,7 +59,36 @@ class MainService @Inject constructor(
     private val storage: FirebaseStorage
 ) : IMainService {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    override suspend fun fetchRequestedAppointments(trainerId: String): Flow<Map<String, List<Int>>> = flow {
+        val userId = userIdUseCase()
+        if (userId == null) {
+            Log.e("MainService", "Error fetching requested appointments: User ID is null")
+            return@flow
+        }
+        Log.d("MainService", "Fetching requested appointments for user: $userId")
+        try {
+            firestore.collection("requests")
+                .document(trainerId)
+                .collection("traineeRequests")
+                .document(userId)
+                .dataObjects<Requests>()
+                .collect { requests ->
+                    if (requests != null) {
+                        Log.d("MainService", "--- Requests: $requests")
+                        emit(requests.appointment)
+                    } else {
+                        Log.d("MainService", "No requested appointments found for user: $userId at trainer: $trainerId")
+                        emit(emptyMap())
+                    }
+                }
+
+        } catch (e: Exception){
+            Log.e("MainService", "Error fetching requested appointments: ${e.message}", e)
+            emit(emptyMap())
+        }
+    }.flowOn(Dispatchers.IO)
+
+    /*@OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getUser(): Flow<User?> =
         firestore.collection("users")
             .document(userIdUseCase() ?: "")
@@ -275,34 +305,7 @@ class MainService @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun fetchRequestedAppointments(trainerId: String): Flow<Map<String, List<Int>>> = flow {
-        val userId = userIdUseCase()
-        if (userId == null) {
-            Log.e("MainService", "Error fetching requested appointments: User ID is null")
-            return@flow
-        }
-        Log.d("MainService", "Fetching requested appointments for user: $userId")
-        try {
-            firestore.collection("requests")
-                .document(trainerId)
-                .collection("traineeRequests")
-                .document(userId)
-                .dataObjects<Requests>()
-                .collect { requests ->
-                    if (requests != null) {
-                        Log.d("MainService", "--- Requests: $requests")
-                        emit(requests.appointment)
-                    } else {
-                        Log.d("MainService", "No requested appointments found for user: $userId at trainer: $trainerId")
-                        emit(emptyMap())
-                    }
-                }
 
-        } catch (e: Exception){
-            Log.e("MainService", "Error fetching requested appointments: ${e.message}", e)
-            emit(emptyMap())
-        }
-    }.flowOn(Dispatchers.IO)
 
     override suspend fun fetchRequestedAppoint(trainerId: String): Flow<Pair<Requests, User>> =
         firestore.collection("requests")
@@ -761,6 +764,6 @@ class MainService @Inject constructor(
             results.distinctBy { it.first }
         })
     }.flowOn(Dispatchers.IO)
-
+*/
 
 }
