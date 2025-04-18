@@ -124,11 +124,11 @@ object AllMainUseCasesModule {
         LoadAllTrainersAllRateUseCase(repository)
     */
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideFetchUsersDailyDatasByIdUseCase(repository: IMainService): FetchUsersDailyDatasByIdUseCase =
         FetchUsersDailyDatasByIdUseCase(repository)
-
+*/
     @Provides
     @Singleton
     fun provideTargetKcalModifyUseCase(repository: IMainService): TargetKcalModifyUseCase =
