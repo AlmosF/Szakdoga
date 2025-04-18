@@ -1,7 +1,13 @@
 package com.example.szakdogafitness.domain.di.Trainees
 
 import com.example.szakdogafitness.data.trainees.ITraineesService
+import com.example.szakdogafitness.domain.usecases.main.AcceptRequestUseCase
+import com.example.szakdogafitness.domain.usecases.main.AddEventToCalendarUseCase
+import com.example.szakdogafitness.domain.usecases.main.DeleteRequestUseCase
+import com.example.szakdogafitness.domain.usecases.main.FetchRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.main.FetchUsersDailyDatasByIdUseCase
+import com.example.szakdogafitness.domain.usecases.main.RemoveEventFromCalendarUseCase
+import com.example.szakdogafitness.domain.usecases.main.RemoveTraineeUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,5 +23,35 @@ object AllTraineesUseCasesModule {
     @Singleton
     fun provideFetchUsersDailyDatasByIdUseCase(repository: ITraineesService): FetchUsersDailyDatasByIdUseCase =
         FetchUsersDailyDatasByIdUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideDeleteRequestUseCase(repository: ITraineesService): DeleteRequestUseCase =
+        DeleteRequestUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideAcceptRequestUseCase(repository: ITraineesService): AcceptRequestUseCase =
+        AcceptRequestUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideRemoveTraineeUseCase(repository: ITraineesService): RemoveTraineeUseCase =
+        RemoveTraineeUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideAddEventToCalendarUseCase(repository: ITraineesService): AddEventToCalendarUseCase =
+        AddEventToCalendarUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideRemoveEventFromCalendarUseCase(repository: ITraineesService): RemoveEventFromCalendarUseCase =
+        RemoveEventFromCalendarUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideFetchRequestsUseCase(repository: ITraineesService): FetchRequestsUseCase =
+        FetchRequestsUseCase(repository)
 
 }
