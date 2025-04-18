@@ -63,10 +63,10 @@ object AllMainUseCasesModule {
     fun provideUpdateUserUseCase(repository: IMainService): UpdateUserUseCase =
         UpdateUserUseCase(repository)*/
 
-    @Singleton
+    /*@Singleton
     @Provides
     fun provideApplyToTrainerAppointmentUseCase(repository: IMainService): ApplyToTrainerAppointmentUseCase =
-        ApplyToTrainerAppointmentUseCase(repository)
+        ApplyToTrainerAppointmentUseCase(repository)*/
 
     @Singleton
     @Provides
