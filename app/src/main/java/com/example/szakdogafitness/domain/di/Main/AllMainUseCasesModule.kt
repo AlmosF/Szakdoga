@@ -52,10 +52,11 @@ object AllMainUseCasesModule {
     fun provideGenerateNewDailyDataUseCase(repository: IMainService): GenerateNewDailyDataUseCase =
         GenerateNewDailyDataUseCase(repository)
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideGetTrainersUseCase(repository: IMainService): GetTrainersUseCase =
         GetTrainersUseCase(repository)
+    */
 
     /*@Provides
     @Singleton
