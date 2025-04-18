@@ -68,10 +68,11 @@ object AllMainUseCasesModule {
     fun provideApplyToTrainerAppointmentUseCase(repository: IMainService): ApplyToTrainerAppointmentUseCase =
         ApplyToTrainerAppointmentUseCase(repository)*/
 
-    @Singleton
+    /*@Singleton
     @Provides
     fun provideFetchTrainersRequestsUseCase(repository: IMainService): FetchTrainersRequestsUseCase =
         FetchTrainersRequestsUseCase(repository)
+    */
 
     @Singleton
     @Provides
