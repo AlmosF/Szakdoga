@@ -7,6 +7,9 @@ import com.example.szakdogafitness.domain.usecases.main.FetchRequestedAppointmen
 import com.example.szakdogafitness.domain.usecases.main.FetchTrainersRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.main.GetAcceptedTrainersUseCase
 import com.example.szakdogafitness.domain.usecases.main.GetTrainersUseCase
+import com.example.szakdogafitness.domain.usecases.main.LoadAllTrainersAllRateUseCase
+import com.example.szakdogafitness.domain.usecases.main.LoadTrainersRateUseCase
+import com.example.szakdogafitness.domain.usecases.main.RateTrainerUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,5 +44,20 @@ object AllTrainersUseCasesModule{
     @Singleton
     fun provideAcceptedTrainersUseCase(repository: ITrainersService): GetAcceptedTrainersUseCase =
         GetAcceptedTrainersUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideRateTrainerUseCase(repository: ITrainersService): RateTrainerUseCase =
+        RateTrainerUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideLoadTrainersRateUseCase(repository: ITrainersService): LoadTrainersRateUseCase =
+        LoadTrainersRateUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideLoadAllTrainersAllRateUseCase(repository: ITrainersService): LoadAllTrainersAllRateUseCase =
+        LoadAllTrainersAllRateUseCase(repository)
 
 }

@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -176,15 +177,67 @@ class TrainersService @Inject constructor(
             .flowOn(Dispatchers.IO)
 
     override suspend fun rateTrainer(trainerId: String, rate: Int) {
-        TODO("Not yet implemented")
+        val userId = userIdUseCase()
+        if (userId == null) {
+            Log.e("MainService", "Error rating trainer: User ID is null")
+            return
+        }
+        try {
+            val ratingRef = firestore.collection("ratings")
+                .document(trainerId)
+                .collection("trainerRatings")
+                .document(userId)
+
+            /*val rating = Rating(
+                rating = rate,
+                timestamp = Timestamp.now()
+            )*/
+            val rating = mapOf(
+                "rating" to rate,
+                "timestamp" to Timestamp.now()
+            )
+            ratingRef.set(rating).await()
+
+        } catch (e: Exception) {
+            Log.e("MainService", "Error rating trainer: ${e.message}", e)
+        }
     }
 
-    override suspend fun loadTrainersRate(trainerId: String): Flow<Rating> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun loadTrainersRate(trainerId: String): Flow<Rating> =
+        firestore.collection("ratings")
+            .document(trainerId)
+            .collection("trainerRatings")
+            .document(userIdUseCase() ?: "")
+            .dataObjects<Rating>()
+            .map { it ?: Rating() }
+            .flowOn(Dispatchers.IO)
 
-    override suspend fun loadAllTrainersRates(): Flow<List<Pair<String, List<Rating>>>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun loadAllTrainersRates(): Flow<List<Pair<String, List<Rating>>>> = flow {
+        Log.d("MainService", "Fetching all trainers' ratings")
+
+        val ratingQuerySnapshot = firestore.collectionGroup("trainerRatings").get().await()
+
+        if (ratingQuerySnapshot.isEmpty) {
+            Log.d("MainService", "No ratings found.")
+            emit(emptyList())
+            return@flow
+        }
+
+        val trainerFlows = ratingQuerySnapshot.documents.map { ratingDoc ->
+            val trainerId = ratingDoc.reference.parent.parent?.id ?: ""
+
+            firestore.collection("ratings")
+                .document(trainerId)
+                .collection("trainerRatings")
+                .dataObjects<Rating>()
+                .map { ratings ->
+                    trainerId to ratings
+                }
+        }
+
+        emitAll(combine(trainerFlows) { results ->
+            results.distinctBy { it.first }
+        })
+    }.flowOn(Dispatchers.IO)
 
 }
