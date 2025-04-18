@@ -127,73 +127,98 @@ fun TrainerScreen(
                 )
             }
         } else {
-            var filteredList = trainersState.acceptedTrainers.filter {
-                (trainersFiltersState.filterMen && it.second.gender == 1) ||
-                (trainersFiltersState.filterWomen && it.second.gender == 2) ||
-                (!trainersFiltersState.filterMen && !trainersFiltersState.filterWomen)
-            }
-
-            LazyColumn (
-                modifier = Modifier
-                    .fillMaxWidth(0.95f),
-            ) {
-                /*items(trainersState.acceptedTrainers.size) {
-                    val currentTrainer = trainersState.acceptedTrainers[it]
-                    val rating = trainersState.allTrainersAllRating.find { rating ->
-                        Log.d("TAG", "TrainerScreen: ${currentTrainer.second.userId}")
-                        rating?.first == currentTrainer.second.userId
-                    }?.second?.sumOf {
-                        Log.d("TAG", "TrainerScreen: ${it.rating}")
-                        it.rating
-                    }?.div(
-                        trainersState.allTrainersAllRating.find { rating ->
-                            rating?.first == currentTrainer.second.userId
-                        }?.second?.size ?: 1
+            if (trainersState.acceptedTrainers.isEmpty()){
+                Column (
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "You don't have any trainer yet",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
-                    val distance = currentTrainer.second.location?.calculateDistance(
-                        currentUser.location ?: GeoPoint(0.0, 0.0)
-                    )
+                }
+            } else {
+                val filteredList = trainersState.acceptedTrainers.filter { (_, trainer) ->
+                    val fullName = "${trainer.firstName} ${trainer.lastName}"
 
-                    TrainerCard(
-                        currentTrainer = currentTrainer.second,
-                        ratingData = rating ?: 0,
-                        rateSize = trainersState.allTrainersAllRating.find { rating ->
-                            rating?.first == currentTrainer.second.userId
-                        }?.second?.size ?: 0,
-                        locationDistance = distance
-                    ) { userId ->
-                        onTrainerClick(userId)
+                    val matchesName = search.isBlank() || fullName.contains(search, ignoreCase = true)
+
+                    val matchesGender = when {
+                        trainersFiltersState.filterMen && !trainersFiltersState.filterWomen -> trainer.gender == 1
+                        trainersFiltersState.filterWomen && !trainersFiltersState.filterMen -> trainer.gender == 2
+                        trainersFiltersState.filterMen && trainersFiltersState.filterWomen -> trainer.gender == 1 || trainer.gender == 2
+                        else -> true
                     }
-                }*/
-                items(filteredList.size) {
-                    val currentTrainer = filteredList[it]
-                    val rating = trainersState.allTrainersAllRating.find { rating ->
-                        Log.d("TAG", "TrainerScreen: ${currentTrainer.second.userId}")
-                        rating?.first == currentTrainer.second.userId
-                    }?.second?.sumOf {
-                        Log.d("TAG", "TrainerScreen: ${it.rating}")
-                        it.rating
-                    }?.div(
-                        trainersState.allTrainersAllRating.find { rating ->
-                            rating?.first == currentTrainer.second.userId
-                        }?.second?.size ?: 1
-                    )
-                    val distance = currentTrainer.second.location?.calculateDistance(
-                        currentUser.location ?: GeoPoint(0.0, 0.0)
-                    )
 
-                    TrainerCard(
-                        currentTrainer = currentTrainer.second,
-                        ratingData = rating ?: 0,
-                        rateSize = trainersState.allTrainersAllRating.find { rating ->
+                    matchesName && matchesGender
+                }
+                LazyColumn (
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f),
+                ) {
+                    /*items(trainersState.acceptedTrainers.size) {
+                        val currentTrainer = trainersState.acceptedTrainers[it]
+                        val rating = trainersState.allTrainersAllRating.find { rating ->
+                            Log.d("TAG", "TrainerScreen: ${currentTrainer.second.userId}")
                             rating?.first == currentTrainer.second.userId
-                        }?.second?.size ?: 0,
-                        locationDistance = distance
-                    ) { userId ->
-                        onTrainerClick(userId)
+                        }?.second?.sumOf {
+                            Log.d("TAG", "TrainerScreen: ${it.rating}")
+                            it.rating
+                        }?.div(
+                            trainersState.allTrainersAllRating.find { rating ->
+                                rating?.first == currentTrainer.second.userId
+                            }?.second?.size ?: 1
+                        )
+                        val distance = currentTrainer.second.location?.calculateDistance(
+                            currentUser.location ?: GeoPoint(0.0, 0.0)
+                        )
+
+                        TrainerCard(
+                            currentTrainer = currentTrainer.second,
+                            ratingData = rating ?: 0,
+                            rateSize = trainersState.allTrainersAllRating.find { rating ->
+                                rating?.first == currentTrainer.second.userId
+                            }?.second?.size ?: 0,
+                            locationDistance = distance
+                        ) { userId ->
+                            onTrainerClick(userId)
+                        }
+                    }*/
+                    items(filteredList.size) {
+                        val currentTrainer = filteredList[it]
+                        val rating = trainersState.allTrainersAllRating.find { rating ->
+                            Log.d("TAG", "TrainerScreen: ${currentTrainer.second.userId}")
+                            rating?.first == currentTrainer.second.userId
+                        }?.second?.sumOf {
+                            Log.d("TAG", "TrainerScreen: ${it.rating}")
+                            it.rating
+                        }?.div(
+                            trainersState.allTrainersAllRating.find { rating ->
+                                rating?.first == currentTrainer.second.userId
+                            }?.second?.size ?: 1
+                        )
+                        val distance = currentTrainer.second.location?.calculateDistance(
+                            currentUser.location ?: GeoPoint(0.0, 0.0)
+                        )
+
+                        TrainerCard(
+                            currentTrainer = currentTrainer.second,
+                            ratingData = rating ?: 0,
+                            rateSize = trainersState.allTrainersAllRating.find { rating ->
+                                rating?.first == currentTrainer.second.userId
+                            }?.second?.size ?: 0,
+                            locationDistance = distance
+                        ) { userId ->
+                            onTrainerClick(userId)
+                        }
                     }
                 }
             }
+
+
 
         }
     }

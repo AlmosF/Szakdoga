@@ -101,11 +101,14 @@ fun SearchTrainerScreen(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        var search by remember { mutableStateOf("") }
         NormalTextField(
             modifier = Modifier
                 .fillMaxWidth(0.95f),
-            value = "",
-            onValueChange = {},
+            value = search,
+            onValueChange = {
+                search = it
+            },
             onDone = {},
             label = "Search",
             leadingIcon = {
@@ -158,10 +161,19 @@ fun SearchTrainerScreen(
                     Text("No trainers found")
                 }
             } else {
-                var filteredList = trainersState.trainers.filter {
-                    (trainersFiltersState.filterMen && it?.gender == 1) ||
-                    (trainersFiltersState.filterWomen && it?.gender == 2) ||
-                    (!trainersFiltersState.filterMen && !trainersFiltersState.filterWomen)
+                val filteredList = trainersState.trainers.filter { trainer ->
+                    val fullName = "${trainer?.firstName} ${trainer?.lastName}"
+
+                    val matchesName = search.isBlank() || fullName.contains(search, ignoreCase = true)
+
+                    val matchesGender = when {
+                        trainersFiltersState.filterMen && !trainersFiltersState.filterWomen -> trainer?.gender == 1
+                        trainersFiltersState.filterWomen && !trainersFiltersState.filterMen -> trainer?.gender == 2
+                        trainersFiltersState.filterMen && trainersFiltersState.filterWomen -> trainer?.gender == 1 || trainer?.gender == 2
+                        else -> true
+                    }
+
+                    matchesName && matchesGender
                 }
                 LazyColumn (
                     modifier = Modifier
