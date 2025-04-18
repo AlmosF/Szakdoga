@@ -85,20 +85,20 @@ object AllMainUseCasesModule {
         FetchRequestedAppoint(repository)
     */
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideFetchRequestsUseCase(repository: IMainService): FetchRequestsUseCase =
-        FetchRequestsUseCase(repository)
+        FetchRequestsUseCase(repository)*/
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideDeleteRequestUseCase(repository: IMainService): DeleteRequestUseCase =
-        DeleteRequestUseCase(repository)
+        DeleteRequestUseCase(repository)*/
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideAcceptRequestUseCase(repository: IMainService): AcceptRequestUseCase =
-        AcceptRequestUseCase(repository)
+        AcceptRequestUseCase(repository)*/
 
     /*@Provides
     @Singleton
@@ -144,22 +144,22 @@ object AllMainUseCasesModule {
     fun provideUpdateWaterIntakeUseCase(repository: IMainService): WaterIntakeModifyUseCase =
         WaterIntakeModifyUseCase(repository)
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideAddEventToCalendarUseCase(repository: IMainService): AddEventToCalendarUseCase {
         return AddEventToCalendarUseCase(repository)
-    }
+    }*/
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideRemoveEventFromCalendarUseCase(repository: IMainService): RemoveEventFromCalendarUseCase {
         return RemoveEventFromCalendarUseCase(repository)
-    }
+    }*/
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideRemoveTraineeUseCase(repository: IMainService): RemoveTraineeUseCase =
-        RemoveTraineeUseCase(repository)
+        RemoveTraineeUseCase(repository)*/
 
     /*@Provides
     @Singleton
