@@ -106,20 +106,23 @@ object AllMainUseCasesModule {
         GetAcceptedTrainersUseCase(repository)
     */
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideRateTrainerUseCase(repository: IMainService): RateTrainerUseCase =
         RateTrainerUseCase(repository)
+    */
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideLoadTrainersRateUseCase(repository: IMainService): LoadTrainersRateUseCase =
         LoadTrainersRateUseCase(repository)
+    */
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideLoadAllTrainersAllRateUseCase(repository: IMainService): LoadAllTrainersAllRateUseCase =
         LoadAllTrainersAllRateUseCase(repository)
+    */
 
     @Provides
     @Singleton
