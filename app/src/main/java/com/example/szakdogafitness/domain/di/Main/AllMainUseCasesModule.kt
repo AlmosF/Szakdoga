@@ -37,10 +37,10 @@ import javax.inject.Singleton
 object AllMainUseCasesModule {
 
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideFetchUserUseCase(repository: IMainService): FetchUserUseCase =
-        FetchUserUseCase(repository)
+        FetchUserUseCase(repository)*/
 
     @Provides
     @Singleton
@@ -57,10 +57,10 @@ object AllMainUseCasesModule {
     fun provideGetTrainersUseCase(repository: IMainService): GetTrainersUseCase =
         GetTrainersUseCase(repository)
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideUpdateUserUseCase(repository: IMainService): UpdateUserUseCase =
-        UpdateUserUseCase(repository)
+        UpdateUserUseCase(repository)*/
 
     @Singleton
     @Provides
@@ -154,11 +154,11 @@ object AllMainUseCasesModule {
     fun provideRemoveTraineeUseCase(repository: IMainService): RemoveTraineeUseCase =
         RemoveTraineeUseCase(repository)
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideUploadProfilePictureUseCase(repository: IMainService): UploadProfilePictureUseCase =
         UploadProfilePictureUseCase(repository)
-
+*/
     @Provides
     @Singleton
     fun provideMainUseCases(

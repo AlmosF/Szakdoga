@@ -1,4 +1,4 @@
-package com.example.szakdogafitness.domain.di.Setup
+package com.example.szakdogafitness.domain.di.Profile
 
 import com.example.szakdogafitness.data.profile.IProfileService
 import com.example.szakdogafitness.data.profile.ProfileService
