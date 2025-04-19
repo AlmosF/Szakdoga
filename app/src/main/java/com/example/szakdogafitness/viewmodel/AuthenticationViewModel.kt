@@ -2,12 +2,16 @@ package com.example.szakdogafitness.viewmodel
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.usecases.IsEmailValidUseCase
+import com.example.szakdogafitness.domain.usecases.PasswordsMatchUseCase
+import com.example.szakdogafitness.domain.usecases.auth.AllAuthenticationUseCases
+import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
 import com.example.szakdogafitness.ui.model.UiText
+import com.example.szakdogafitness.ui.model.toUiText
 import com.example.szakdogafitness.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,11 +22,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.example.szakdogafitness.R
-import com.example.szakdogafitness.domain.usecases.PasswordsMatchUseCase
-import com.example.szakdogafitness.domain.usecases.auth.AllAuthenticationUseCases
-import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
-import com.example.szakdogafitness.ui.model.toUiText
 
 @HiltViewModel
 class AuthenticationViewModel @Inject constructor(

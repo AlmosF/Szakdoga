@@ -3,7 +3,6 @@ package com.example.szakdogafitness.data.setup
 import android.util.Log
 import androidx.navigation.NavHostController
 import com.example.szakdogafitness.domain.model.DailyData
-import com.example.szakdogafitness.domain.model.DailyDatas
 import com.example.szakdogafitness.domain.model.FirestoreTrainee
 import com.example.szakdogafitness.domain.model.FirestoreTrainer
 import com.example.szakdogafitness.domain.model.FirestoreUser

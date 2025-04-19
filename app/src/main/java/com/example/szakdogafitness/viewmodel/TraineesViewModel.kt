@@ -6,14 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.DailyData
 import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
-import com.example.szakdogafitness.domain.usecases.trainees.AcceptRequestUseCase
-import com.example.szakdogafitness.domain.usecases.trainees.AddEventToCalendarUseCase
 import com.example.szakdogafitness.domain.usecases.trainees.AllTraineesUseCases
-import com.example.szakdogafitness.domain.usecases.trainees.DeleteRequestUseCase
-import com.example.szakdogafitness.domain.usecases.trainees.FetchRequestsUseCase
-import com.example.szakdogafitness.domain.usecases.trainees.FetchUsersDailyDatasByIdUseCase
-import com.example.szakdogafitness.domain.usecases.trainees.RemoveEventFromCalendarUseCase
-import com.example.szakdogafitness.domain.usecases.trainees.RemoveTraineeUseCase
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

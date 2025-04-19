@@ -1,6 +1,5 @@
 package com.example.szakdogafitness.data.trainers
 
-import com.example.szakdogafitness.domain.model.DailyData
 import com.example.szakdogafitness.domain.model.Rating
 import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User

@@ -18,7 +18,6 @@ import androidx.navigation.NavHostController
 import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
 import com.example.szakdogafitness.viewmodel.ProfileEvent
 import com.example.szakdogafitness.viewmodel.ProfileViewModel
-import kotlinx.coroutines.delay
 
 @Composable
 fun CheckUserStatusScreen(

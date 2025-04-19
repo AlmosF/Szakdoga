@@ -13,7 +13,6 @@ import com.example.szakdogafitness.domain.model.toUser
 import com.example.szakdogafitness.domain.usecases.auth.CurrentUserIdUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.dataObjects
-import com.google.firebase.firestore.snapshots
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

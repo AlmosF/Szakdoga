@@ -1,6 +1,5 @@
 package com.example.szakdogafitness.domain.usecases.setup
 
-import androidx.navigation.NavHostController
 import com.example.szakdogafitness.data.setup.ISetupService
 import com.example.szakdogafitness.viewmodel.SetupProfileState
 

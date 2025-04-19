@@ -21,7 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +42,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -67,8 +67,6 @@ import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
 import com.example.szakdogafitness.viewmodel.MealTypesEvent
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 
 
 /*@Composable

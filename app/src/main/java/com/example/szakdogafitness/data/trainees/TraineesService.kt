@@ -7,7 +7,6 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.CalendarContract
 import android.util.Log
-import com.example.szakdogafitness.data.main.MainService
 import com.example.szakdogafitness.domain.model.DailyData
 import com.example.szakdogafitness.domain.model.FirestoreTrainee
 import com.example.szakdogafitness.domain.model.FirestoreTrainer

@@ -30,16 +30,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.szakdogafitness.domain.model.Trainee
 import com.example.szakdogafitness.domain.model.User
-import com.example.szakdogafitness.feature.search.list
 import com.example.szakdogafitness.ui.common.NormalTextField
-import com.example.szakdogafitness.ui.common.TrainerCard
 import com.example.szakdogafitness.ui.common.appbars.TopBar
 import com.example.szakdogafitness.ui.common.request.TraineeRequestCard
 import com.example.szakdogafitness.viewmodel.AppBarEvent
 import com.example.szakdogafitness.viewmodel.AppBarViewModel
 import com.example.szakdogafitness.viewmodel.TraineesEvent
 import com.example.szakdogafitness.viewmodel.TraineesViewModel
-import com.google.common.collect.Multimaps.index
 import com.google.firebase.Timestamp
 
 @OptIn(ExperimentalMaterial3Api::class)

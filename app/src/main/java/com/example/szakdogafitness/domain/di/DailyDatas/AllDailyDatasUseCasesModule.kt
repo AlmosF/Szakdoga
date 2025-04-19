@@ -4,9 +4,9 @@ import com.example.szakdogafitness.data.dailydatas.IDailyDatasService
 import com.example.szakdogafitness.domain.usecases.dailyDatas.AllDailyDatasUseCases
 import com.example.szakdogafitness.domain.usecases.dailyDatas.FetchUsersDailyDatasUseCase
 import com.example.szakdogafitness.domain.usecases.dailyDatas.GenerateNewDailyDataUseCase
+import com.example.szakdogafitness.domain.usecases.dailyDatas.TargetKcalModifyUseCase
 import com.example.szakdogafitness.domain.usecases.dailyDatas.TargetWaterModifyUseCase
 import com.example.szakdogafitness.domain.usecases.dailyDatas.WaterIntakeModifyUseCase
-import com.example.szakdogafitness.domain.usecases.dailyDatas.TargetKcalModifyUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

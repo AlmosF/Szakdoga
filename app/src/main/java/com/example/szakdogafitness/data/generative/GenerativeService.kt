@@ -1,13 +1,12 @@
 package com.example.szakdogafitness.data.generative
 
-import android.R.attr.text
 import android.graphics.Bitmap
+import com.example.szakdogafitness.BuildConfig
 import com.example.szakdogafitness.domain.model.FoodAnalysisResult
 import com.google.ai.client.generativeai.GenerativeModel
-import javax.inject.Inject
-import com.example.szakdogafitness.BuildConfig
 import com.google.ai.client.generativeai.type.content
 import org.json.JSONObject
+import javax.inject.Inject
 
 class GenerativeService @Inject constructor(
 

@@ -1,6 +1,5 @@
 package com.example.szakdogafitness.ui.common.lifestyle
 
-import android.R.attr.top
 import android.content.Context
 import android.graphics.Typeface
 import android.util.Log
@@ -8,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -43,7 +40,6 @@ import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.DefaultValueFormatter
 
 @Composable
 fun DailyCaloriesBlock(

@@ -1,7 +1,5 @@
 package com.example.szakdogafitness.feature.nutrition
 
-import android.R.attr.enabled
-import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -17,8 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -60,7 +56,6 @@ import com.example.szakdogafitness.viewmodel.GenerativeEvent
 import com.example.szakdogafitness.viewmodel.GenerativeViewModel
 import com.example.szakdogafitness.viewmodel.MealTypesEvent
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

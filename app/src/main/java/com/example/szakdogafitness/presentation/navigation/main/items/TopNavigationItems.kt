@@ -1,8 +1,5 @@
 package com.example.szakdogafitness.presentation.navigation.main.items
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.HeartBroken
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.szakdogafitness.presentation.navigation.main.MainScreenRoute
 
 data class TopNavigationItem(

@@ -1,7 +1,5 @@
 package com.example.szakdogafitness.ui.common
 
-import android.R.attr.fontWeight
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +18,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,8 +38,6 @@ import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.model.User
-import com.example.szakdogafitness.util.calculateDistance
-import com.google.firebase.firestore.GeoPoint
 
 
 data class TrainerDemo (

@@ -1,6 +1,5 @@
 package com.example.szakdogafitness.data.mealTypes
 
-import android.util.Log
 import com.example.szakdogafitness.domain.model.FirestoreMealtypes
 import com.example.szakdogafitness.domain.model.Nutrition
 import com.google.firebase.firestore.FirebaseFirestore
@@ -8,14 +7,14 @@ import com.google.firebase.firestore.dataObjects
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emitAll
 import javax.inject.Inject
 
 class MealTypesService @Inject constructor(

@@ -1,6 +1,5 @@
 package com.example.szakdogafitness.ui.common
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActionScope
 import androidx.compose.material.icons.Icons

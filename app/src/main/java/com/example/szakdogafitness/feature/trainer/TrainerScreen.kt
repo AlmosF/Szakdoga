@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,7 +29,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.feature.search.TrainerFilter
-import com.example.szakdogafitness.feature.search.list
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.TrainerCard
 import com.example.szakdogafitness.ui.common.TrainerDemo
@@ -39,7 +36,6 @@ import com.example.szakdogafitness.ui.common.appbars.TopBar
 import com.example.szakdogafitness.util.calculateDistance
 import com.example.szakdogafitness.viewmodel.AppBarEvent
 import com.example.szakdogafitness.viewmodel.AppBarViewModel
-import com.example.szakdogafitness.viewmodel.AppBarViewModel_Factory
 import com.example.szakdogafitness.viewmodel.TrainersEvent
 import com.example.szakdogafitness.viewmodel.TrainersViewModel
 import com.google.firebase.firestore.GeoPoint

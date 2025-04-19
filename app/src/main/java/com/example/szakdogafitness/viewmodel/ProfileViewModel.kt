@@ -2,29 +2,18 @@ package com.example.szakdogafitness.viewmodel
 
 import android.net.Uri
 import android.util.Log
-import android.util.Log.e
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.usecases.location.RequestLocationUpdatesUseCase
-import com.example.szakdogafitness.domain.usecases.profile.FetchUserUseCase
-import com.example.szakdogafitness.domain.usecases.profile.UpdateUserUseCase
-import com.example.szakdogafitness.domain.usecases.profile.UploadProfilePictureUseCase
 import com.example.szakdogafitness.domain.usecases.profile.AllProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel

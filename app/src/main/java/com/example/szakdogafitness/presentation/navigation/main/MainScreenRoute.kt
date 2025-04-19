@@ -1,7 +1,5 @@
 package com.example.szakdogafitness.presentation.navigation.main
 
-import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
-
 sealed class MainScreenRoute(val route: String){
     object LifeStyle : MainScreenRoute("lifestyle")
     object Nutrition : MainScreenRoute("nutrition")

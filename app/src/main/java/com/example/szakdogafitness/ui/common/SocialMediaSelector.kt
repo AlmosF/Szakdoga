@@ -1,6 +1,5 @@
 package com.example.szakdogafitness.ui.common
 
-import android.R.attr.top
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

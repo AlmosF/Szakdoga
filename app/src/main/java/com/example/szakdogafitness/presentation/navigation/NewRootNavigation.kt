@@ -1,28 +1,12 @@
 package com.example.szakdogafitness.presentation.navigation
 
-import android.R.attr.data
-import android.R.attr.text
-import android.R.attr.visible
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkOut
-import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOut
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -31,19 +15,15 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -68,7 +48,6 @@ import com.example.szakdogafitness.feature.trainee.TraineesScreen
 import com.example.szakdogafitness.feature.trainer.TrainerDetailsScreen
 import com.example.szakdogafitness.feature.trainer.TrainerScreen
 import com.example.szakdogafitness.presentation.navigation.main.items.BottomNavigationItems
-import com.example.szakdogafitness.presentation.navigation.main.items.TopNavigationItem.Companion.items
 import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
 import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
 import com.example.szakdogafitness.ui.common.appbars.LifeStyleTitle
@@ -89,7 +68,6 @@ import com.example.szakdogafitness.viewmodel.TraineesEvent
 import com.example.szakdogafitness.viewmodel.TraineesViewModel
 import com.example.szakdogafitness.viewmodel.TrainersViewModel
 import kotlinx.coroutines.launch
-import java.lang.System.exit
 
 
 fun Context.startStepService(){

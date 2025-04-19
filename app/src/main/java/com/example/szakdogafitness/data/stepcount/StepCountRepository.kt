@@ -1,7 +1,6 @@
 package com.example.szakdogafitness.data.stepcount
 
 import android.util.Log
-import androidx.datastore.preferences.core.intPreferencesKey
 import com.example.szakdogafitness.datastore.FirestoreDataSource
 import com.example.szakdogafitness.datastore.StepDataStore
 import com.example.szakdogafitness.domain.usecases.auth.CurrentUserIdUseCase

@@ -1,6 +1,5 @@
 package com.example.szakdogafitness.feature.auth
 
-import android.R.attr.text
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +17,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -28,29 +26,21 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
 import com.example.szakdogafitness.ui.common.EmailTextField
 import com.example.szakdogafitness.ui.common.PasswordTextField
 import com.example.szakdogafitness.util.UiEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
-import com.example.szakdogafitness.viewmodel.ProfileEvent
-import com.example.szakdogafitness.viewmodel.ProfileState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable

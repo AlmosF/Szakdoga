@@ -7,15 +7,6 @@ import com.example.szakdogafitness.domain.model.Rating
 import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.usecases.trainers.AllTrainersUseCases
-import com.example.szakdogafitness.domain.usecases.trainers.ApplyToTrainerAppointmentUseCase
-import com.example.szakdogafitness.domain.usecases.trainers.FetchRequestedAppoint
-import com.example.szakdogafitness.domain.usecases.trainers.FetchRequestedAppointmentsUseCase
-import com.example.szakdogafitness.domain.usecases.trainers.FetchTrainersRequestsUseCase
-import com.example.szakdogafitness.domain.usecases.trainers.GetAcceptedTrainersUseCase
-import com.example.szakdogafitness.domain.usecases.trainers.GetTrainersUseCase
-import com.example.szakdogafitness.domain.usecases.trainers.LoadAllTrainersAllRateUseCase
-import com.example.szakdogafitness.domain.usecases.trainers.LoadTrainersRateUseCase
-import com.example.szakdogafitness.domain.usecases.trainers.RateTrainerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -1,6 +1,5 @@
 package com.example.szakdogafitness.feature.setup
 
-import android.R.attr.singleLine
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -41,7 +40,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.components.PhoneNumberVisualTransformation
 import com.example.szakdogafitness.ui.components.countryCodeToFlagEmoji

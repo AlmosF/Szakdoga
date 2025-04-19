@@ -1,6 +1,5 @@
 package com.example.szakdogafitness.feature.trainee
 
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -14,26 +13,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowLeft
-import androidx.compose.material.icons.automirrored.filled.ArrowRight
-import androidx.compose.material.icons.automirrored.filled.ArrowRightAlt
-import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.szakdogafitness.viewmodel.TraineesViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.input.key.Key.Companion.Ro
-import androidx.compose.ui.text.font.FontVariation.weight
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.szakdogafitness.domain.model.DailyData
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.ui.common.lifestyle.DailyCaloriesBlock
@@ -42,6 +34,7 @@ import com.example.szakdogafitness.ui.common.lifestyle.WaterIntakeBlock
 import com.example.szakdogafitness.ui.common.lifestyle.WeightControlBlock
 import com.example.szakdogafitness.viewmodel.MealTypesViewModel
 import com.example.szakdogafitness.viewmodel.TraineesEvent
+import com.example.szakdogafitness.viewmodel.TraineesViewModel
 
 @Composable
 fun TraineeLifestyleScreen(

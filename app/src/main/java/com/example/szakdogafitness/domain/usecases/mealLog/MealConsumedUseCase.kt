@@ -1,7 +1,6 @@
 package com.example.szakdogafitness.domain.usecases.mealLog
 
 import com.example.szakdogafitness.data.mealLog.IMealLog
-import com.example.szakdogafitness.domain.model.Nutrition
 import com.google.firebase.Timestamp
 
 class MealConsumedUseCase(private val repository: IMealLog){

@@ -1,14 +1,11 @@
 package com.example.szakdogafitness.viewmodel
 
-import android.R.attr.height
 import android.util.Log
-import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.usecases.setup.AllSetupUseCases
-import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
 import com.example.szakdogafitness.presentation.navigation.setup.SetupScreenRoute
 import com.example.szakdogafitness.util.UiEvent
 import com.google.firebase.Timestamp

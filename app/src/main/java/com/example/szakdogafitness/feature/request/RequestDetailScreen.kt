@@ -1,7 +1,5 @@
 package com.example.szakdogafitness.feature.request
 
-import android.R.attr.data
-import android.R.attr.text
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,11 +21,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -36,11 +32,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.R
 import com.example.szakdogafitness.feature.setup.toTriple
-import com.example.szakdogafitness.feature.trainee.TraineeBioScreen
 import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
 import com.example.szakdogafitness.viewmodel.AppBarEvent
 import com.example.szakdogafitness.viewmodel.AppBarViewModel
@@ -48,8 +45,6 @@ import com.example.szakdogafitness.viewmodel.TraineesEvent
 import com.example.szakdogafitness.viewmodel.TraineesViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.common.collect.Multimaps.index
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable

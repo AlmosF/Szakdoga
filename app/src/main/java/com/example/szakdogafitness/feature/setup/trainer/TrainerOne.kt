@@ -1,7 +1,5 @@
 package com.example.szakdogafitness.feature.setup.trainer
 
-import android.R.attr.enabled
-import android.R.attr.textStyle
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -32,13 +30,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.szakdogafitness.R
-import com.example.szakdogafitness.domain.usecases.setup.AllSetupUseCases
 import com.example.szakdogafitness.feature.setup.toTriple
 import com.example.szakdogafitness.ui.common.LargeDropdownMenu
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.TrainerTimetableView
 import com.example.szakdogafitness.ui.common.YearPickerDialog
-import com.example.szakdogafitness.ui.common.YearSelector
 import com.example.szakdogafitness.viewmodel.SetupEvent
 import com.example.szakdogafitness.viewmodel.SetupViewModel
 import com.google.firebase.Timestamp

@@ -45,14 +45,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.szakdogafitness.R
 import com.example.szakdogafitness.ui.common.HeightSelector
 import com.example.szakdogafitness.ui.common.LargeDropdownMenu
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.WeightSelector
 import com.example.szakdogafitness.viewmodel.SetupEvent
 import com.example.szakdogafitness.viewmodel.SetupViewModel
-import com.example.szakdogafitness.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)

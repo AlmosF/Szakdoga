@@ -8,7 +8,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
-import kotlin.collections.toMutableList
 
 class MealLog @Inject constructor(
     private val firestore: FirebaseFirestore,

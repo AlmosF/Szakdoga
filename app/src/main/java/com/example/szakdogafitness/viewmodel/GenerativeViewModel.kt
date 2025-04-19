@@ -1,6 +1,5 @@
 package com.example.szakdogafitness.viewmodel
 
-import android.R.attr.prompt
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel

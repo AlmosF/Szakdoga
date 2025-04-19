@@ -1,6 +1,5 @@
 package com.example.szakdogafitness.ui.common.lifestyle
 
-import android.R.attr.fontWeight
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
