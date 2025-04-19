@@ -1,6 +1,8 @@
 package com.example.szakdogafitness.domain.di.Trainers
 
+import com.example.szakdogafitness.data.trainees.ITraineesService
 import com.example.szakdogafitness.data.trainers.ITrainersService
+import com.example.szakdogafitness.domain.usecases.trainers.AllTrainersUseCases
 import com.example.szakdogafitness.domain.usecases.trainers.ApplyToTrainerAppointmentUseCase
 import com.example.szakdogafitness.domain.usecases.trainers.FetchRequestedAppoint
 import com.example.szakdogafitness.domain.usecases.trainers.FetchTrainersRequestsUseCase
@@ -58,5 +60,29 @@ object AllTrainersUseCasesModule{
     @Singleton
     fun provideLoadAllTrainersAllRateUseCase(repository: ITrainersService): LoadAllTrainersAllRateUseCase =
         LoadAllTrainersAllRateUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideAllTraineesUseCases(
+        repository: ITraineesService,
+        applyToTrainerAppointment: ApplyToTrainerAppointmentUseCase,
+        fetchRequestedAppointments: FetchRequestedAppoint,
+        fetchTrainersRequests: FetchTrainersRequestsUseCase,
+        getAcceptedTrainers: GetAcceptedTrainersUseCase,
+        getTrainers: GetTrainersUseCase,
+        loadTrainersRate: LoadTrainersRateUseCase,
+        loadAllTrainersAllRate: LoadAllTrainersAllRateUseCase,
+        rateTrainer: RateTrainerUseCase,
+    ): AllTrainersUseCases = AllTrainersUseCases(
+        repository,
+        applyToTrainerAppointment,
+        fetchRequestedAppointments,
+        fetchTrainersRequests,
+        getAcceptedTrainers,
+        getTrainers,
+        loadTrainersRate,
+        loadAllTrainersAllRate,
+        rateTrainer
+    )
 
 }
