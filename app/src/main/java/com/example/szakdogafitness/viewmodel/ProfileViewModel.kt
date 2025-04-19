@@ -29,11 +29,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileUseCases: AllProfileUseCases,
-    private val fetchUserUseCase: FetchUserUseCase,
-    private val updateUserUseCase: UpdateUserUseCase,
+    private val allProfileUseCases: AllProfileUseCases,
     private val location: RequestLocationUpdatesUseCase,
-    private val uploadProfilePicture: UploadProfilePictureUseCase
 ) : ViewModel(){
 
     private val _state = MutableStateFlow(ProfileState())
@@ -95,7 +92,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                uploadProfilePicture(uri)
+                allProfileUseCases.uploadProfilePicture(uri)
                 _state.update { it.copy(isLoading = false) }
             } catch (e: Exception){
                 Log.e("ProfileViewModel", "uploadProfilePic: ${e.message}")
@@ -129,7 +126,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                updateUserUseCase(_state.value.user ?: return@launch)
+                allProfileUseCases.updateUser(_state.value.user ?: return@launch)
                 _state.update { it.copy(isLoading = false) }
             } catch (e: Exception){
                 Log.e("ProfileViewModel", "updateUsersLocation: ${e.message}")
@@ -151,7 +148,7 @@ class ProfileViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             try {
                 val user = _state.value.editUser ?: return@launch
-                updateUserUseCase(user)
+                allProfileUseCases.updateUser(user)
                 _state.update { it.copy(switchEdit = false) }
             } catch (e: Exception){
                 Log.e("ProfileViewModel", "updateUser: ${e.message}")
@@ -168,7 +165,7 @@ class ProfileViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             try {
                 Log.d("ProfileViewModel", "getUser: ${_state.value.user}, loading: ${_state.value.isLoading}")
-                fetchUserUseCase.invoke().collect { user ->
+                allProfileUseCases.fetchUser.invoke().collect { user ->
                     _state.update { it.copy(user = user, isLoading = false, editUser = user) }
                     Log.d("ProfileViewModel-", "getUser: ${_state.value.user}, loading: ${_state.value.isLoading}")
                 }

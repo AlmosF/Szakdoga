@@ -40,10 +40,16 @@ object AllProfileUseCasesModule{
     @Singleton
     fun provideAllProfileUseCases(
         repository: IProfileService,
-        getProfileUseCase: GetProfileUseCase
+        getProfileUseCase: GetProfileUseCase,
+        fetchUser: FetchUserUseCase,
+        updateUser: UpdateUserUseCase,
+        uploadProfilePicture: UploadProfilePictureUseCase,
     ) : AllProfileUseCases = AllProfileUseCases(
         repository,
-        getProfileUseCase
+        getProfileUseCase,
+        fetchUser,
+        updateUser,
+        uploadProfilePicture
     )
 
 }
