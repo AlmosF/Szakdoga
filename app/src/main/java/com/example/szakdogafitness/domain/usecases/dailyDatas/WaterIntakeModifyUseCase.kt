@@ -1,7 +1,6 @@
-package com.example.szakdogafitness.domain.usecases.main
+package com.example.szakdogafitness.domain.usecases.dailyDatas
 
 import com.example.szakdogafitness.data.dailydatas.IDailyDatasService
-import com.example.szakdogafitness.data.main.IMainService
 import com.google.firebase.Timestamp
 
 /*
