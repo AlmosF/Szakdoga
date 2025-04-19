@@ -4,13 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.DailyData
-import com.example.szakdogafitness.domain.usecases.dailyDatas.FetchUsersDailyDatasUseCase
-import com.example.szakdogafitness.domain.usecases.dailyDatas.GenerateNewDailyDataUseCase
-import com.example.szakdogafitness.domain.usecases.dailyDatas.TargetWaterModifyUseCase
-import com.example.szakdogafitness.domain.usecases.dailyDatas.WaterIntakeModifyUseCase
-import com.example.szakdogafitness.domain.usecases.mealLog.MealConsumedUseCase
-import com.example.szakdogafitness.domain.usecases.mealLog.MealReplenishedUseCase
-import com.example.szakdogafitness.domain.usecases.dailyDatas.TargetKcalModifyUseCase
+import com.example.szakdogafitness.domain.usecases.dailyDatas.AllDailyDatasUseCases
+import com.example.szakdogafitness.domain.usecases.mealLog.AllMealLogUseCases
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,13 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DailyDatasViewModel @Inject constructor(
-    private val fetchUsersDailyDatas: FetchUsersDailyDatasUseCase,
-    private val generateNewDailyData: GenerateNewDailyDataUseCase,
-    private val mealConsumedUseCase: MealConsumedUseCase,
-    private val mealReplenishedUseCase: MealReplenishedUseCase,
-    private val targetKcalModifyUseCase: TargetKcalModifyUseCase,
-    private val targetWaterModifyUseCase: TargetWaterModifyUseCase,
-    private val waterIntakeModifyUseCase: WaterIntakeModifyUseCase,
+    private val allDailyDatasUseCases: AllDailyDatasUseCases,
+    private val allMealLogUseCases: AllMealLogUseCases
 ) : ViewModel(){
 
     private val _state = MutableStateFlow(DailyDatasState())
@@ -99,7 +89,7 @@ class DailyDatasViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                waterIntakeModifyUseCase.invoke(waterIntake, timestamp)
+                allDailyDatasUseCases.waterIntakeModify.invoke(waterIntake, timestamp)
                 _state.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -112,7 +102,7 @@ class DailyDatasViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                targetWaterModifyUseCase.invoke(targetWater, timestamp)
+                allDailyDatasUseCases.targetWaterModify.invoke(targetWater, timestamp)
                 _state.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -125,7 +115,7 @@ class DailyDatasViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                targetKcalModifyUseCase.invoke(targetKcal, timestamp)
+                allDailyDatasUseCases.targetKcalModify.invoke(targetKcal, timestamp)
                 _state.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -138,7 +128,7 @@ class DailyDatasViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                mealConsumedUseCase.invoke(nutritionID, mealType)
+                allMealLogUseCases.mealConsumed.invoke(nutritionID, mealType)
                 _state.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -151,7 +141,7 @@ class DailyDatasViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                mealReplenishedUseCase.invoke(nutritionID, mealType, date)
+                allMealLogUseCases.mealReplenished.invoke(nutritionID, mealType, date)
                 _state.update { it.copy(isLoading = false) }
             } catch (e: Exception){
                 e.printStackTrace()
@@ -165,7 +155,7 @@ class DailyDatasViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, currentDailyData = DailyData()) }
             try {
-                fetchUsersDailyDatas.invoke().collect { dailyDataList ->
+                allDailyDatasUseCases.fetchUsersDailyDatas.invoke().collect { dailyDataList ->
                     if (dailyDataList.isNotEmpty()){
 
                         if (state.value.dailyDataList.isNotEmpty()){
@@ -212,7 +202,7 @@ class DailyDatasViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                generateNewDailyData.invoke()
+                allDailyDatasUseCases.generateNewDailyData.invoke()
                 val latestDailyData = _state.value.dailyDataList.last()
                 val latestDate = latestDailyData.date.toDate().toString().substring(4, 10)
                 Log.d("DailyDatas", "GENERATING: $latestDailyData")

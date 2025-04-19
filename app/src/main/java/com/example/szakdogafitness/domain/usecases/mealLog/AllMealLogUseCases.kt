@@ -4,7 +4,7 @@ import com.example.szakdogafitness.data.mealLog.IMealLog
 
 class AllMealLogUseCases (
     val repository: IMealLog,
-    val mealConsumedUseCase: MealConsumedUseCase,
-    val mealRemovedUseCase: MealRemovedUseCase,
-    val mealReplenishedUseCase: MealReplenishedUseCase
+    val mealConsumed: MealConsumedUseCase,
+    val mealRemoved: MealRemovedUseCase,
+    val mealReplenished: MealReplenishedUseCase
 )
