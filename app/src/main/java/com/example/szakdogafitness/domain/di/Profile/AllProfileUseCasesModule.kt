@@ -1,9 +1,9 @@
 package com.example.szakdogafitness.domain.di.Profile
 
 import com.example.szakdogafitness.data.profile.IProfileService
-import com.example.szakdogafitness.domain.usecases.main.FetchUserUseCase
-import com.example.szakdogafitness.domain.usecases.main.UpdateUserUseCase
-import com.example.szakdogafitness.domain.usecases.main.UploadProfilePictureUseCase
+import com.example.szakdogafitness.domain.usecases.profile.FetchUserUseCase
+import com.example.szakdogafitness.domain.usecases.profile.UpdateUserUseCase
+import com.example.szakdogafitness.domain.usecases.profile.UploadProfilePictureUseCase
 import com.example.szakdogafitness.domain.usecases.profile.AllProfileUseCases
 import com.example.szakdogafitness.domain.usecases.profile.GetProfileUseCase
 import dagger.Module

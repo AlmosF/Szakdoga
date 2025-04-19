@@ -1,6 +1,5 @@
-package com.example.szakdogafitness.domain.usecases.main
+package com.example.szakdogafitness.domain.usecases.trainers
 
-import com.example.szakdogafitness.data.main.IMainService
 import com.example.szakdogafitness.data.trainers.ITrainersService
 
 /*

@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.usecases.location.RequestLocationUpdatesUseCase
-import com.example.szakdogafitness.domain.usecases.main.FetchUserUseCase
-import com.example.szakdogafitness.domain.usecases.main.UpdateUserUseCase
-import com.example.szakdogafitness.domain.usecases.main.UploadProfilePictureUseCase
+import com.example.szakdogafitness.domain.usecases.profile.FetchUserUseCase
+import com.example.szakdogafitness.domain.usecases.profile.UpdateUserUseCase
+import com.example.szakdogafitness.domain.usecases.profile.UploadProfilePictureUseCase
 import com.example.szakdogafitness.domain.usecases.profile.AllProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

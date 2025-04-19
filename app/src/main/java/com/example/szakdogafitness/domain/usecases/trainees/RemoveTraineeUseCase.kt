@@ -1,8 +1,6 @@
-package com.example.szakdogafitness.domain.usecases.main
+package com.example.szakdogafitness.domain.usecases.trainees
 
-import com.example.szakdogafitness.data.main.IMainService
 import com.example.szakdogafitness.data.trainees.ITraineesService
-
 
 /*
 class RemoveTraineeUseCase(private val repository: IMainService){
