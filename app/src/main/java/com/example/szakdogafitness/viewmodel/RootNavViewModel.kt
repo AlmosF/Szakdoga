@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
+@Deprecated("RootNavVM deprecated - REMOVE")
 @HiltViewModel
 class RootNavViewModel @Inject constructor(
     private val rootNavUseCase: AllRootNavUseCases

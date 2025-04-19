@@ -170,7 +170,7 @@ fun ProfileScreen(
 
     LaunchedEffect(Unit) {
         profileViewModel.onEvent(ProfileEvent.GetUser)
-        delay(100)
+        delay(100) //fixme: DELAY
         appBarViewModel.onEvent(
             AppBarEvent.TopBarComposableChanged(
                 {
