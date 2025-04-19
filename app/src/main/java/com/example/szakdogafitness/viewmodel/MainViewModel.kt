@@ -17,6 +17,8 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
 
+@Deprecated("MAINVIEWMODEL DEPRECATED - REMOVE")
+class MainViewModel ()
 /*@HiltViewModel
 class MainViewModel @Inject constructor(
     private val allMainUseCases: AllMainUseCases
