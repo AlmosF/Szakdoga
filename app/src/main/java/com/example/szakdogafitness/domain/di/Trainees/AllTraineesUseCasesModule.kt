@@ -3,6 +3,7 @@ package com.example.szakdogafitness.domain.di.Trainees
 import com.example.szakdogafitness.data.trainees.ITraineesService
 import com.example.szakdogafitness.domain.usecases.trainees.AcceptRequestUseCase
 import com.example.szakdogafitness.domain.usecases.trainees.AddEventToCalendarUseCase
+import com.example.szakdogafitness.domain.usecases.trainees.AllTraineesUseCases
 import com.example.szakdogafitness.domain.usecases.trainees.DeleteRequestUseCase
 import com.example.szakdogafitness.domain.usecases.trainees.FetchRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.trainees.FetchUsersDailyDatasByIdUseCase
@@ -53,5 +54,27 @@ object AllTraineesUseCasesModule {
     @Singleton
     fun provideFetchRequestsUseCase(repository: ITraineesService): FetchRequestsUseCase =
         FetchRequestsUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideAllTraineesUseCases(
+        repository: ITraineesService,
+        acceptRequest: AcceptRequestUseCase,
+        addEventToCalendar: AddEventToCalendarUseCase,
+        removeEventFromCalendar: RemoveEventFromCalendarUseCase,
+        deleteRequest: DeleteRequestUseCase,
+        removeTrainee: RemoveTraineeUseCase,
+        fetchRequests: FetchRequestsUseCase,
+        fetchUsersDailyDatasById: FetchUsersDailyDatasByIdUseCase,
+    ): AllTraineesUseCases = AllTraineesUseCases(
+        repository,
+        acceptRequest,
+        addEventToCalendar,
+        removeEventFromCalendar,
+        deleteRequest,
+        removeTrainee,
+        fetchRequests,
+        fetchUsersDailyDatasById
+    )
 
 }

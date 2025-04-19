@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.Rating
 import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
+import com.example.szakdogafitness.domain.usecases.trainers.AllTrainersUseCases
 import com.example.szakdogafitness.domain.usecases.trainers.ApplyToTrainerAppointmentUseCase
 import com.example.szakdogafitness.domain.usecases.trainers.FetchRequestedAppoint
 import com.example.szakdogafitness.domain.usecases.trainers.FetchRequestedAppointmentsUseCase
@@ -29,15 +30,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TrainersViewModel @Inject constructor(
-    private val getTrainersUseCase: GetTrainersUseCase,
-    private val applyToTrainerAppointmentUseCase: ApplyToTrainerAppointmentUseCase,
-    private val fetchTrainersRequestsUseCase: FetchTrainersRequestsUseCase,
-    private val fetchRequestedAppointmentsUseCase: FetchRequestedAppointmentsUseCase,
-    private val getAcceptedTrainersUseCase: GetAcceptedTrainersUseCase,
-    private val fetchRequestedAppoint: FetchRequestedAppoint,
-    private val rateTrainerUseCase: RateTrainerUseCase,
-    private val loadTrainersRateUseCase: LoadTrainersRateUseCase,
-    private val loadAllTrainersAllRatingUseCase: LoadAllTrainersAllRateUseCase
+    private val allTrainersUseCases: AllTrainersUseCases
 ) : ViewModel() {
 
 
@@ -65,7 +58,7 @@ class TrainersViewModel @Inject constructor(
             }
 
             is TrainersEvent.FetchRequestedAppointments -> {
-                fetchRequestedAppointments(event.trainerId)
+                /*fetchRequestedAppointments(event.trainerId)*/
             }
 
             TrainersEvent.LoadAcceptedTrainers -> {
@@ -100,7 +93,7 @@ class TrainersViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                loadAllTrainersAllRatingUseCase.invoke().collect { allTrainersAllRating ->
+                allTrainersUseCases.loadAllTrainersAllRate.invoke().collect { allTrainersAllRating ->
                     _state.update { it.copy(
                         allTrainersAllRating = allTrainersAllRating,
                         isLoading = false
@@ -121,7 +114,7 @@ class TrainersViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                rateTrainerUseCase.invoke(trainerId, rate)
+                allTrainersUseCases.rateTrainer.invoke(trainerId, rate)
                 _state.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
                 _state.update { it.copy(isLoading = false) }
@@ -135,7 +128,7 @@ class TrainersViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                loadTrainersRateUseCase.invoke(trainerId).collect { rate ->
+                allTrainersUseCases.loadTrainersRate.invoke(trainerId).collect { rate ->
                     _state.update { it.copy(
                         trainersRate = rate,
                         isLoading = false
@@ -156,7 +149,7 @@ class TrainersViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                fetchRequestedAppoint.invoke(trainerId).collect { requestedAppoint ->
+                allTrainersUseCases.fetchRequestedAppointments.invoke(trainerId).collect { requestedAppoint ->
                     Log.d("TrainersViewModel", "fetchRequestedAppoint: $requestedAppoint")
                     _state.update { it.copy(
                         requestedAppoint = requestedAppoint,
@@ -173,7 +166,7 @@ class TrainersViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                getAcceptedTrainersUseCase.invoke().collect { accepted->
+                allTrainersUseCases.getAcceptedTrainers.invoke().collect { accepted->
                     if (_state.value.allTrainersAllRating.isEmpty()){
                         loadAllTrainersAllRating()
                         _state.update { it.copy(
@@ -192,7 +185,7 @@ class TrainersViewModel @Inject constructor(
         }
     }
 
-    //FIXME: DEPRECATED - NOT USED
+    /*//FIXME: DEPRECATED - NOT USED
     private fun fetchRequestedAppointments(trainerId: String) {
         Log.d("TrainersViewModel", "fetchRequestedAppointments: $trainerId")
         viewModelScope.launch {
@@ -210,13 +203,13 @@ class TrainersViewModel @Inject constructor(
                 Log.e("TrainersViewModel", "fetchRequestedAppointments: ${e.message}")
             }
         }
-    }
+    }*/
 
     private fun fetchTrainersRequests(trainerId: String) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                fetchTrainersRequestsUseCase.invoke(trainerId).collect { trainersRequests ->
+                allTrainersUseCases.fetchTrainersRequests.invoke(trainerId).collect { trainersRequests ->
                     _state.update { it.copy(
                         trainersRequests = trainersRequests,
                         isLoading = false
@@ -235,7 +228,7 @@ class TrainersViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                applyToTrainerAppointmentUseCase.invoke(
+                allTrainersUseCases.applyToTrainerAppointment.invoke(
                     trainer = trainer,
                     appointment = appointment
                 )
@@ -251,7 +244,7 @@ class TrainersViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                getTrainersUseCase.invoke().collect { trainers ->
+                allTrainersUseCases.getTrainers.invoke().collect { trainers ->
                     if (_state.value.allTrainersAllRating.isEmpty()){
                         loadAllTrainersAllRating()
                         _state.update { it.copy(

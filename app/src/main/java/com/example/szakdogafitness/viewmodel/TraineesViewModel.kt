@@ -8,6 +8,7 @@ import com.example.szakdogafitness.domain.model.Requests
 import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.domain.usecases.trainees.AcceptRequestUseCase
 import com.example.szakdogafitness.domain.usecases.trainees.AddEventToCalendarUseCase
+import com.example.szakdogafitness.domain.usecases.trainees.AllTraineesUseCases
 import com.example.szakdogafitness.domain.usecases.trainees.DeleteRequestUseCase
 import com.example.szakdogafitness.domain.usecases.trainees.FetchRequestsUseCase
 import com.example.szakdogafitness.domain.usecases.trainees.FetchUsersDailyDatasByIdUseCase
@@ -29,13 +30,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class TraineesViewModel @Inject constructor(
-    private val fetchRequests: FetchRequestsUseCase,
-    private val declineRequest: DeleteRequestUseCase,
-    private val acceptRequest: AcceptRequestUseCase,
-    private val removeTrainee: RemoveTraineeUseCase,
-    private val fetchTraineesDailyData: FetchUsersDailyDatasByIdUseCase,
-    private val addEventToCalendar: AddEventToCalendarUseCase,
-    private val removeEventFromCalendar: RemoveEventFromCalendarUseCase
+    private val allTraineesUseCases: AllTraineesUseCases
 ) : ViewModel() {
 
 
@@ -116,8 +111,8 @@ class TraineesViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                removeTrainee.invoke(traineeId)
-                removeEventFromCalendar.invoke(
+                allTraineesUseCases.removeTrainee.invoke(traineeId)
+                allTraineesUseCases.removeEventFromCalendar.invoke(
                     state.value.selectedTrainee?.first?.appointment ?: emptyMap(),
                     "Appointment",
                     "Appointment with ${state.value.selectedTrainee?.second?.firstName} ${state.value.selectedTrainee?.second?.lastName}"
@@ -150,7 +145,7 @@ class TraineesViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try{
-                fetchTraineesDailyData.invoke(traineeId).collect { traineeDailyDataList ->
+                allTraineesUseCases.fetchUsersDailyDatasById.invoke(traineeId).collect { traineeDailyDataList ->
                     if (traineeDailyDataList.isNotEmpty()){
                         if (state.value.traineesDailyDataList.isNotEmpty()) { //Just Update
                             Log.d("TraineesViewModel", "Just update")
@@ -231,7 +226,7 @@ class TraineesViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                fetchRequests.invoke(status).collect { pendingRequests ->
+                allTraineesUseCases.fetchRequests.invoke(status).collect { pendingRequests ->
                     _state.update { it.copy(
                         pendingRequests = pendingRequests,
                         isLoading = false
@@ -249,9 +244,9 @@ class TraineesViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                acceptRequest.invoke(traineeId)
+                allTraineesUseCases.acceptRequest.invoke(traineeId)
                 if (state.value.appointmentsToCalendar){
-                    addEventToCalendar.invoke(
+                    allTraineesUseCases.addEventToCalendar.invoke(
                         state.value.selectedTrainee?.first?.appointment ?: emptyMap(),
                         "Appointment",
                         "Appointment with ${state.value.selectedTrainee?.second?.firstName} ${state.value.selectedTrainee?.second?.lastName}"
@@ -273,7 +268,7 @@ class TraineesViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                declineRequest.invoke(traineeId)
+                allTraineesUseCases.deleteRequest.invoke(traineeId)
             } catch (e: Exception) {
                 Log.e(
                     "TraineesViewModel",
@@ -290,7 +285,7 @@ class TraineesViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                fetchRequests.invoke(status).collect { acceptedRequests ->
+                allTraineesUseCases.fetchRequests.invoke(status).collect { acceptedRequests ->
                     //val currentSelectedId = _state.value.selectedTrainee?.second?.userId
                     //val selectedPair = _state.value.acceptedRequests.find { it.second.userId == currentSelectedId }
                     _state.update {
