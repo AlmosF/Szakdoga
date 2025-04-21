@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.User
+import com.example.szakdogafitness.domain.model.equalsExceptLocation
 import com.example.szakdogafitness.domain.usecases.location.RequestLocationUpdatesUseCase
 import com.example.szakdogafitness.domain.usecases.profile.AllProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -155,7 +156,17 @@ class ProfileViewModel @Inject constructor(
             try {
                 Log.d("ProfileViewModel", "getUser: ${_state.value.user}, loading: ${_state.value.isLoading}")
                 allProfileUseCases.fetchUser.invoke().collect { user ->
-                    _state.update { it.copy(user = user, isLoading = false, editUser = user) }
+                    //_state.update { it.copy(user = user, isLoading = false, editUser = user) }
+                    _state.update { it.copy(user = user, isLoading = false) }
+
+                    if(!_state.value.switchEdit) {
+                        _state.update {
+                            it.copy(
+                                editUser = user,
+                            )
+                        }
+                    }
+
                     Log.d("ProfileViewModel-", "getUser: ${_state.value.user}, loading: ${_state.value.isLoading}")
                 }
                 Log.d("ProfileViewModel", "getUser: ${_state.value.user}, loading: ${_state.value.isLoading}")

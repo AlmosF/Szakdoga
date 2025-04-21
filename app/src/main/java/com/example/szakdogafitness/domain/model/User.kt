@@ -148,6 +148,7 @@ fun User.toFirestoreUser(): FirestoreUser {
     )
 }
 
+
 fun User.toFirestoreTrainer(): FirestoreTrainer {
     return FirestoreTrainer(
         uid = userId,
