@@ -37,7 +37,7 @@ import com.example.szakdogafitness.feature.nutrition.MealTypesEvent
 import com.example.szakdogafitness.feature.nutrition.MealTypesViewModel
 import com.example.szakdogafitness.feature.profile.ProfileEvent
 import com.example.szakdogafitness.feature.profile.ProfileViewModel
-import com.example.szakdogafitness.viewmodel.StepCountViewModel
+import com.example.szakdogafitness.feature.lifestyle.StepCountViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState

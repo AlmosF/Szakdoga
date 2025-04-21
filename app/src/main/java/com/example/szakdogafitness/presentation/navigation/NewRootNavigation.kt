@@ -61,7 +61,7 @@ import com.example.szakdogafitness.feature.lifestyle.DailyDatasViewModel
 import com.example.szakdogafitness.feature.nutrition.MealTypesViewModel
 import com.example.szakdogafitness.feature.profile.ProfileEvent
 import com.example.szakdogafitness.feature.profile.ProfileViewModel
-import com.example.szakdogafitness.viewmodel.StepCountViewModel
+import com.example.szakdogafitness.feature.lifestyle.StepCountViewModel
 import com.example.szakdogafitness.feature.trainee.TraineesEvent
 import com.example.szakdogafitness.feature.trainee.TraineesViewModel
 import com.example.szakdogafitness.feature.trainer.TrainersViewModel
