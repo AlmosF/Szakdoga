@@ -1,7 +1,8 @@
-package com.example.szakdogafitness.presentation.navigation
+package com.example.szakdogafitness.presentation.navigation.root
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.padding
@@ -48,7 +49,6 @@ import com.example.szakdogafitness.feature.trainee.TraineesScreen
 import com.example.szakdogafitness.feature.trainer.TrainerDetailsScreen
 import com.example.szakdogafitness.feature.trainer.TrainerScreen
 import com.example.szakdogafitness.presentation.navigation.main.items.BottomNavigationItems
-import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
 import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
 import com.example.szakdogafitness.ui.common.appbars.LifeStyleTitle
 import com.example.szakdogafitness.ui.common.appbars.TopBar
@@ -65,12 +65,14 @@ import com.example.szakdogafitness.feature.lifestyle.StepCountViewModel
 import com.example.szakdogafitness.feature.trainee.TraineesEvent
 import com.example.szakdogafitness.feature.trainee.TraineesViewModel
 import com.example.szakdogafitness.feature.trainer.TrainersViewModel
+import com.example.szakdogafitness.presentation.navigation.AppBarEvent
+import com.example.szakdogafitness.presentation.navigation.AppBarViewModel
 import kotlinx.coroutines.launch
 
 
 fun Context.startStepService(){
     val intent = Intent(this, StepCountService::class.java)
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         startForegroundService(intent)
     } else {
         startService(intent)

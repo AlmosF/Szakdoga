@@ -18,7 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.szakdogafitness.presentation.navigation.NewRootNavigation
+import com.example.szakdogafitness.presentation.navigation.root.NewRootNavigation
 import com.example.szakdogafitness.ui.theme.SzakdogaFitnessTheme
 import dagger.hilt.android.AndroidEntryPoint
 

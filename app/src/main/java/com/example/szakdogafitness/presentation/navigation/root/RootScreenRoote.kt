@@ -44,10 +44,5 @@ sealed class RootScreenRoute(val route: String){
     object Menu: RootScreenRoute("menu")
     //###
 
-
-
-
-
-
     object SetupScreen: RootScreenRoute("setup")
 }

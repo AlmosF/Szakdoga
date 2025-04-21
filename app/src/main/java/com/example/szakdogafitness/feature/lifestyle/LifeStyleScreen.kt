@@ -23,7 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
-import com.example.szakdogafitness.presentation.navigation.startStepService
+import com.example.szakdogafitness.presentation.navigation.root.startStepService
 import com.example.szakdogafitness.ui.common.appbars.LifeStyleAction
 import com.example.szakdogafitness.ui.common.appbars.LifeStyleTitle
 import com.example.szakdogafitness.ui.common.appbars.TopBar
@@ -37,7 +37,6 @@ import com.example.szakdogafitness.feature.nutrition.MealTypesEvent
 import com.example.szakdogafitness.feature.nutrition.MealTypesViewModel
 import com.example.szakdogafitness.feature.profile.ProfileEvent
 import com.example.szakdogafitness.feature.profile.ProfileViewModel
-import com.example.szakdogafitness.feature.lifestyle.StepCountViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
