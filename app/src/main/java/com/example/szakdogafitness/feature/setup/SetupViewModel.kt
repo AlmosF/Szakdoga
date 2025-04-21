@@ -1,4 +1,4 @@
-package com.example.szakdogafitness.viewmodel
+package com.example.szakdogafitness.feature.setup
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

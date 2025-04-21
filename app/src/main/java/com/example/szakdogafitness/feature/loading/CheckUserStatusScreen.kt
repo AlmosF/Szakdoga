@@ -16,8 +16,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
-import com.example.szakdogafitness.viewmodel.ProfileEvent
-import com.example.szakdogafitness.viewmodel.ProfileViewModel
+import com.example.szakdogafitness.feature.profile.ProfileEvent
+import com.example.szakdogafitness.feature.profile.ProfileViewModel
 
 @Composable
 fun CheckUserStatusScreen(

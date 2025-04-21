@@ -32,9 +32,7 @@ import com.example.szakdogafitness.ui.common.lifestyle.DailyCaloriesBlock
 import com.example.szakdogafitness.ui.common.lifestyle.StepsBlock
 import com.example.szakdogafitness.ui.common.lifestyle.WaterIntakeBlock
 import com.example.szakdogafitness.ui.common.lifestyle.WeightControlBlock
-import com.example.szakdogafitness.viewmodel.MealTypesViewModel
-import com.example.szakdogafitness.viewmodel.TraineesEvent
-import com.example.szakdogafitness.viewmodel.TraineesViewModel
+import com.example.szakdogafitness.feature.nutrition.MealTypesViewModel
 
 @Composable
 fun TraineeLifestyleScreen(

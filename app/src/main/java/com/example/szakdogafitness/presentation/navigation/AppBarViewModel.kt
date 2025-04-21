@@ -1,4 +1,4 @@
-package com.example.szakdogafitness.viewmodel
+package com.example.szakdogafitness.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel

@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import com.example.szakdogafitness.presentation.navigation.root.RootScreenRoute
 import javax.inject.Inject
 
+@Deprecated("Deprecated class")
 class RootNavService @Inject constructor(
 
 ) : IRootNavService {

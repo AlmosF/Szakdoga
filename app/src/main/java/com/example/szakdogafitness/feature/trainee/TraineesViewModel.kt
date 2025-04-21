@@ -1,4 +1,4 @@
-package com.example.szakdogafitness.viewmodel
+package com.example.szakdogafitness.feature.trainee
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 import javax.inject.Inject
 
 /**
@@ -350,5 +351,5 @@ fun calculateAge(birthTimestamp: Timestamp): Int {
 }
 
 fun Timestamp.toLocalDateTime(): LocalDateTime {
-    return LocalDateTime.ofInstant(Instant.ofEpochSecond(seconds, nanoseconds.toLong()), java.time.ZoneId.systemDefault())
+    return LocalDateTime.ofInstant(Instant.ofEpochSecond(seconds, nanoseconds.toLong()), ZoneId.systemDefault())
 }

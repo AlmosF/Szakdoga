@@ -62,10 +62,8 @@ import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.appbars.TopBar
 import com.example.szakdogafitness.ui.common.nutrition.SearchNutritionCard
 import com.example.szakdogafitness.ui.common.nutrition.SearchNutritionLabels
-import com.example.szakdogafitness.viewmodel.DailyDatasEvent
-import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
-import com.example.szakdogafitness.viewmodel.MealTypesEvent
-import com.example.szakdogafitness.viewmodel.MealTypesViewModel
+import com.example.szakdogafitness.feature.lifestyle.DailyDatasEvent
+import com.example.szakdogafitness.feature.lifestyle.DailyDatasViewModel
 import kotlinx.coroutines.launch
 
 

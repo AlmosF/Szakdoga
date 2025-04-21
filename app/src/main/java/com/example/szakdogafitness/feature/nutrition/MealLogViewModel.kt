@@ -1,4 +1,4 @@
-package com.example.szakdogafitness.viewmodel
+package com.example.szakdogafitness.feature.nutrition
 
 import androidx.lifecycle.ViewModel
 import com.example.szakdogafitness.domain.model.Nutrition

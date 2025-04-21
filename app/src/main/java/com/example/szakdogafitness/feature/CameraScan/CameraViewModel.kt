@@ -1,4 +1,4 @@
-package com.example.szakdogafitness.viewmodel
+package com.example.szakdogafitness.feature.CameraScan
 
 import android.content.Context
 import androidx.camera.view.LifecycleCameraController

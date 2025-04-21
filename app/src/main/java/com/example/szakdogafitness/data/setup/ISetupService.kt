@@ -1,7 +1,7 @@
 package com.example.szakdogafitness.data.setup
 
 import androidx.navigation.NavHostController
-import com.example.szakdogafitness.viewmodel.SetupProfileState
+import com.example.szakdogafitness.feature.setup.SetupProfileState
 
 interface ISetupService {
     fun nextScreen(currentScreen: Int, role: Int, navHostController: NavHostController)

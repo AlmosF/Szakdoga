@@ -31,10 +31,8 @@ import com.example.szakdogafitness.domain.model.User
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.appbars.TopBar
 import com.example.szakdogafitness.ui.common.trainee.TraineeCard
-import com.example.szakdogafitness.viewmodel.AppBarEvent
-import com.example.szakdogafitness.viewmodel.AppBarViewModel
-import com.example.szakdogafitness.viewmodel.TraineesEvent
-import com.example.szakdogafitness.viewmodel.TraineesViewModel
+import com.example.szakdogafitness.presentation.navigation.AppBarEvent
+import com.example.szakdogafitness.presentation.navigation.AppBarViewModel
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)

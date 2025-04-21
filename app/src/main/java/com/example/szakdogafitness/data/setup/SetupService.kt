@@ -9,7 +9,7 @@ import com.example.szakdogafitness.domain.model.FirestoreUser
 import com.example.szakdogafitness.domain.usecases.auth.CurrentUserEmailUseCase
 import com.example.szakdogafitness.domain.usecases.auth.CurrentUserIdUseCase
 import com.example.szakdogafitness.presentation.navigation.setup.SetupScreenRoute
-import com.example.szakdogafitness.viewmodel.SetupProfileState
+import com.example.szakdogafitness.feature.setup.SetupProfileState
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await

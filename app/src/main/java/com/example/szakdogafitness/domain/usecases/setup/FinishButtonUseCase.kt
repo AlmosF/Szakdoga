@@ -1,7 +1,7 @@
 package com.example.szakdogafitness.domain.usecases.setup
 
 import com.example.szakdogafitness.data.setup.ISetupService
-import com.example.szakdogafitness.viewmodel.SetupProfileState
+import com.example.szakdogafitness.feature.setup.SetupProfileState
 
 class FinishButtonUseCase(private val repository: ISetupService){
 

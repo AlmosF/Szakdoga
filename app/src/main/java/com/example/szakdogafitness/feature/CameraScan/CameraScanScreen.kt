@@ -26,8 +26,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.szakdogafitness.viewmodel.CameraEvent
-import com.example.szakdogafitness.viewmodel.CameraViewModel
 import kotlinx.coroutines.delay
 
 @Composable

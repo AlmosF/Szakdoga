@@ -53,20 +53,18 @@ import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
 import com.example.szakdogafitness.ui.common.appbars.LifeStyleTitle
 import com.example.szakdogafitness.ui.common.appbars.TopBar
 import com.example.szakdogafitness.util.UiEvent
-import com.example.szakdogafitness.viewmodel.AppBarEvent
-import com.example.szakdogafitness.viewmodel.AppBarViewModel
-import com.example.szakdogafitness.viewmodel.AuthenticationEvent
-import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
-import com.example.szakdogafitness.viewmodel.CameraViewModel
-import com.example.szakdogafitness.viewmodel.DailyDatasEvent
-import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
-import com.example.szakdogafitness.viewmodel.MealTypesViewModel
-import com.example.szakdogafitness.viewmodel.ProfileEvent
-import com.example.szakdogafitness.viewmodel.ProfileViewModel
+import com.example.szakdogafitness.feature.auth.AuthenticationEvent
+import com.example.szakdogafitness.feature.auth.AuthenticationViewModel
+import com.example.szakdogafitness.feature.CameraScan.CameraViewModel
+import com.example.szakdogafitness.feature.lifestyle.DailyDatasEvent
+import com.example.szakdogafitness.feature.lifestyle.DailyDatasViewModel
+import com.example.szakdogafitness.feature.nutrition.MealTypesViewModel
+import com.example.szakdogafitness.feature.profile.ProfileEvent
+import com.example.szakdogafitness.feature.profile.ProfileViewModel
 import com.example.szakdogafitness.viewmodel.StepCountViewModel
-import com.example.szakdogafitness.viewmodel.TraineesEvent
-import com.example.szakdogafitness.viewmodel.TraineesViewModel
-import com.example.szakdogafitness.viewmodel.TrainersViewModel
+import com.example.szakdogafitness.feature.trainee.TraineesEvent
+import com.example.szakdogafitness.feature.trainee.TraineesViewModel
+import com.example.szakdogafitness.feature.trainer.TrainersViewModel
 import kotlinx.coroutines.launch
 
 

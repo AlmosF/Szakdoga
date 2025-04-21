@@ -1,6 +1,6 @@
 package com.example.szakdogafitness.presentation.navigation.main
 
-//import com.example.szakdogafitness.viewmodel.ProfileViewModel
+//import com.example.szakdogafitness.feature.profile.ProfileViewModel
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,10 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
+import com.example.szakdogafitness.feature.auth.AuthenticationViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
+@Deprecated("MainScreen Deprecated")
 fun MainScreen(
     modifier: Modifier = Modifier,
     authViewModel: AuthenticationViewModel = hiltViewModel(),

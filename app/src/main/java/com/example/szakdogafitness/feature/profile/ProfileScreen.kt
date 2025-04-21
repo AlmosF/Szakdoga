@@ -95,10 +95,8 @@ import com.example.szakdogafitness.ui.common.appbars.TopBar
 import com.example.szakdogafitness.ui.components.PhoneNumberVisualTransformation
 import com.example.szakdogafitness.ui.components.countryCodeToFlagEmoji
 import com.example.szakdogafitness.ui.components.extractRegionCode
-import com.example.szakdogafitness.viewmodel.AppBarEvent
-import com.example.szakdogafitness.viewmodel.AppBarViewModel
-import com.example.szakdogafitness.viewmodel.ProfileEvent
-import com.example.szakdogafitness.viewmodel.ProfileViewModel
+import com.example.szakdogafitness.presentation.navigation.AppBarEvent
+import com.example.szakdogafitness.presentation.navigation.AppBarViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState

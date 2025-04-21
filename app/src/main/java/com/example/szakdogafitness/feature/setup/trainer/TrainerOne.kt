@@ -35,8 +35,8 @@ import com.example.szakdogafitness.ui.common.LargeDropdownMenu
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.TrainerTimetableView
 import com.example.szakdogafitness.ui.common.YearPickerDialog
-import com.example.szakdogafitness.viewmodel.SetupEvent
-import com.example.szakdogafitness.viewmodel.SetupViewModel
+import com.example.szakdogafitness.feature.setup.SetupEvent
+import com.example.szakdogafitness.feature.setup.SetupViewModel
 import com.google.firebase.Timestamp
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -48,14 +48,10 @@ import com.example.szakdogafitness.domain.model.Nutrition
 import com.example.szakdogafitness.ui.common.nutrition.AddNutrientsBlock
 import com.example.szakdogafitness.ui.common.nutrition.TargetKcalBlock
 import com.example.szakdogafitness.ui.common.nutrition.logblock.LogBlock
-import com.example.szakdogafitness.viewmodel.CameraEvent
-import com.example.szakdogafitness.viewmodel.CameraViewModel
-import com.example.szakdogafitness.viewmodel.DailyDatasEvent
-import com.example.szakdogafitness.viewmodel.DailyDatasViewModel
-import com.example.szakdogafitness.viewmodel.GenerativeEvent
-import com.example.szakdogafitness.viewmodel.GenerativeViewModel
-import com.example.szakdogafitness.viewmodel.MealTypesEvent
-import com.example.szakdogafitness.viewmodel.MealTypesViewModel
+import com.example.szakdogafitness.feature.CameraScan.CameraEvent
+import com.example.szakdogafitness.feature.CameraScan.CameraViewModel
+import com.example.szakdogafitness.feature.lifestyle.DailyDatasEvent
+import com.example.szakdogafitness.feature.lifestyle.DailyDatasViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

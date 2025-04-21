@@ -25,8 +25,8 @@ import com.example.szakdogafitness.R
 import com.example.szakdogafitness.ui.common.LargeDropdownMenu
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.SocialMediaSelector
-import com.example.szakdogafitness.viewmodel.SetupEvent
-import com.example.szakdogafitness.viewmodel.SetupViewModel
+import com.example.szakdogafitness.feature.setup.SetupEvent
+import com.example.szakdogafitness.feature.setup.SetupViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

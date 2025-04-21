@@ -39,10 +39,10 @@ import coil3.compose.rememberAsyncImagePainter
 import com.example.szakdogafitness.R
 import com.example.szakdogafitness.feature.setup.toTriple
 import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
-import com.example.szakdogafitness.viewmodel.AppBarEvent
-import com.example.szakdogafitness.viewmodel.AppBarViewModel
-import com.example.szakdogafitness.viewmodel.TraineesEvent
-import com.example.szakdogafitness.viewmodel.TraineesViewModel
+import com.example.szakdogafitness.presentation.navigation.AppBarEvent
+import com.example.szakdogafitness.presentation.navigation.AppBarViewModel
+import com.example.szakdogafitness.feature.trainee.TraineesEvent
+import com.example.szakdogafitness.feature.trainee.TraineesViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 

@@ -51,10 +51,10 @@ import com.example.szakdogafitness.ui.common.RatingStarsTen
 import com.example.szakdogafitness.ui.common.TraineeTimetableView
 import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
 import com.example.szakdogafitness.util.calculateDistance
-import com.example.szakdogafitness.viewmodel.AppBarEvent
-import com.example.szakdogafitness.viewmodel.AppBarViewModel
-import com.example.szakdogafitness.viewmodel.TrainersEvent
-import com.example.szakdogafitness.viewmodel.TrainersViewModel
+import com.example.szakdogafitness.presentation.navigation.AppBarEvent
+import com.example.szakdogafitness.presentation.navigation.AppBarViewModel
+import com.example.szakdogafitness.feature.trainer.TrainersEvent
+import com.example.szakdogafitness.feature.trainer.TrainersViewModel
 
 @Composable
 fun SearchTrainerDetailsScreen(

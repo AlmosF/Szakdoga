@@ -44,10 +44,10 @@ import com.example.szakdogafitness.ui.common.TrainerCard
 import com.example.szakdogafitness.ui.common.TrainerDemo
 import com.example.szakdogafitness.ui.common.appbars.TopBar
 import com.example.szakdogafitness.util.calculateDistance
-import com.example.szakdogafitness.viewmodel.AppBarEvent
-import com.example.szakdogafitness.viewmodel.AppBarViewModel
-import com.example.szakdogafitness.viewmodel.TrainersEvent
-import com.example.szakdogafitness.viewmodel.TrainersViewModel
+import com.example.szakdogafitness.presentation.navigation.AppBarEvent
+import com.example.szakdogafitness.presentation.navigation.AppBarViewModel
+import com.example.szakdogafitness.feature.trainer.TrainersEvent
+import com.example.szakdogafitness.feature.trainer.TrainersViewModel
 import com.google.firebase.firestore.GeoPoint
 
 @OptIn(ExperimentalMaterial3Api::class)

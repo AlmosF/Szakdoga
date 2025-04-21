@@ -1,4 +1,4 @@
-package com.example.szakdogafitness.viewmodel
+package com.example.szakdogafitness.feature.nutrition
 
 import android.graphics.Bitmap
 import android.util.Log

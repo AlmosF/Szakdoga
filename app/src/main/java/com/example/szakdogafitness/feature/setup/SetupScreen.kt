@@ -44,8 +44,6 @@ import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.components.PhoneNumberVisualTransformation
 import com.example.szakdogafitness.ui.components.countryCodeToFlagEmoji
 import com.example.szakdogafitness.ui.components.extractRegionCode
-import com.example.szakdogafitness.viewmodel.SetupEvent
-import com.example.szakdogafitness.viewmodel.SetupViewModel
 import com.google.firebase.Timestamp
 import java.util.Calendar
 

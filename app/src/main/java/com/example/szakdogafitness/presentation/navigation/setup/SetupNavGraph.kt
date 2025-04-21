@@ -13,7 +13,7 @@ import com.example.szakdogafitness.feature.setup.trainee.TraineeOne
 import com.example.szakdogafitness.feature.setup.trainee.TraineeTwo
 import com.example.szakdogafitness.feature.setup.trainer.TrainerOne
 import com.example.szakdogafitness.feature.setup.trainer.TrainerTwo
-import com.example.szakdogafitness.viewmodel.SetupViewModel
+import com.example.szakdogafitness.feature.setup.SetupViewModel
 
 @Composable
 fun SetupNavGraph(

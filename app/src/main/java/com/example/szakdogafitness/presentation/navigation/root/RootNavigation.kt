@@ -1,6 +1,6 @@
 package com.example.szakdogafitness.presentation.navigation.root
 
-//import com.example.szakdogafitness.viewmodel.ProfileViewModel
+//import com.example.szakdogafitness.feature.profile.ProfileViewModel
 
 /*@OptIn(ExperimentalMaterial3Api::class)
 @Composable

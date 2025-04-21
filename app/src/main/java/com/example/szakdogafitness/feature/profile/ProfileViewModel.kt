@@ -1,4 +1,4 @@
-package com.example.szakdogafitness.viewmodel
+package com.example.szakdogafitness.feature.profile
 
 import android.net.Uri
 import android.util.Log

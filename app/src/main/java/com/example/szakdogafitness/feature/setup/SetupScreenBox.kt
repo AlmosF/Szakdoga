@@ -35,8 +35,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.szakdogafitness.presentation.navigation.setup.SetupNavGraph
 import com.example.szakdogafitness.ui.common.ProgressBar
-import com.example.szakdogafitness.viewmodel.SetupEvent
-import com.example.szakdogafitness.viewmodel.SetupViewModel
 
 
 @SuppressLint("StateFlowValueCalledInComposition")
