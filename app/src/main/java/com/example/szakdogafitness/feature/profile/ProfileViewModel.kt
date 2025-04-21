@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.szakdogafitness.domain.model.User
-import com.example.szakdogafitness.domain.model.equalsExceptLocation
 import com.example.szakdogafitness.domain.usecases.location.RequestLocationUpdatesUseCase
 import com.example.szakdogafitness.domain.usecases.profile.AllProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
