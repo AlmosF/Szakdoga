@@ -48,7 +48,7 @@ import com.example.szakdogafitness.feature.trainee.TraineeDetailScreen
 import com.example.szakdogafitness.feature.trainee.TraineesScreen
 import com.example.szakdogafitness.feature.trainer.TrainerDetailsScreen
 import com.example.szakdogafitness.feature.trainer.TrainerScreen
-import com.example.szakdogafitness.presentation.navigation.main.items.BottomNavigationItems
+import com.example.szakdogafitness.presentation.navigation.root.BottomNavigationItems
 import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
 import com.example.szakdogafitness.ui.common.appbars.LifeStyleTitle
 import com.example.szakdogafitness.ui.common.appbars.TopBar
@@ -226,12 +226,14 @@ fun NewRootNavigation(
             navController=navController,
             startDestination = startDestination
         ){
+            //Authentication
             composable(RootScreenRoute.Authentication.route) {
                 AuthenticateScreen(
                     viewModel = authViewModel,
                     navController = navController
                 )
             }
+            //Loading - CheckUser
             composable(RootScreenRoute.Loading.route) {
                 CheckUserStatusScreen(
                     modifier = Modifier.padding(innerPadding),
@@ -239,11 +241,13 @@ fun NewRootNavigation(
                     profileViewModel = profileViewModel
                 )
             }
+            //Setup
             composable(RootScreenRoute.SetupScreen.route) {
                 SetupScreenBox(){
                     navController.navigate(RootScreenRoute.Loading.route)
                 }
             }
+            //LifeStyle - First
             composable(RootScreenRoute.LifeStyle.route) {
                 LifeStyleScreen(
                     modifier = Modifier,
@@ -256,6 +260,7 @@ fun NewRootNavigation(
                 )
 
             }
+            //Nutrition - Second
             composable(RootScreenRoute.Nutrition.route){
                 appBarViewModel.onEvent(
                     AppBarEvent.TopBarComposableChanged(
@@ -319,6 +324,7 @@ fun NewRootNavigation(
             composable(RootScreenRoute.NutritionBarcode.route) {
                 Text(text = "NutritionBarcode")
             }
+            //Profile - None
             composable(RootScreenRoute.Profile.route){
                 ProfileScreen (
                     appBarViewModel = appBarViewModel,
@@ -364,7 +370,7 @@ fun NewRootNavigation(
                     navController.popBackStack()
                 }
             }
-
+            //Search - Third
             composable(RootScreenRoute.Search.route){
                 //Text(text = "Search")
                 SearchTrainerScreen( //fixme: TrainersVM needed
@@ -392,7 +398,7 @@ fun NewRootNavigation(
                     navController.popBackStack()
                 } // FIXME: !! is not safe
             }
-
+            //Trainer - Fourth
             composable(RootScreenRoute.Trainer.route){
                 TrainerScreen(
                     currentUser = profileState.user ?: User(),
@@ -417,7 +423,7 @@ fun NewRootNavigation(
                 }
             }
 
-
+            //Trainees - Third
             composable(RootScreenRoute.Trainees.route){
                 TraineesScreen(
                     traineesViewModel = traineesViewModel,
@@ -461,7 +467,7 @@ fun NewRootNavigation(
                 )
             }
 
-
+            //Requests - Fourth
             composable(RootScreenRoute.Requests.route){
                 RequestScreen(
                     traineesViewModel = traineesViewModel,
@@ -494,7 +500,7 @@ fun NewRootNavigation(
                 )*/
             }
 
-
+            //Menu - Deprecated
             composable(RootScreenRoute.Menu.route){
                 Text(text = "Menu")
             }
