@@ -12,6 +12,7 @@
     <string name="success_registration">Registration successful</string>
     <string name="success_logout">Successfully signed out</string>
     <string name="success_recovery_email">Recovery email successfully sent</string>
+    <string name="default_food_image_url">https://www.pngall.com/wp-content/uploads/10/Plus-Symbol-Vector-PNG-Cutout.png</string>
     <string-array name="trainer_preference">
         <item>No trainer preference</item>
         <item>Male</item>

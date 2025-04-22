@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,7 +35,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
@@ -41,21 +46,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
+import com.example.szakdogafitness.R
 import com.example.szakdogafitness.domain.model.Nutrition
 import com.example.szakdogafitness.ui.common.NormalTextField
 import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
@@ -76,6 +87,7 @@ fun ModifyNutritionScreen(
     onBack: () -> Unit,
 ) {
     val mealTypesState by mealTypesViewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         appBarVIewModel.onEvent(
@@ -190,7 +202,8 @@ fun ModifyNutritionScreen(
                     item{
                         SearchNutritionCard(
                             data = Nutrition(
-                                image = "https://www.pngall.com/wp-content/uploads/10/Plus-Symbol-Vector-PNG-Cutout.png",
+                                //image = "https://www.pngall.com/wp-content/uploads/10/Plus-Symbol-Vector-PNG-Cutout.png",
+                                image = context.resources.getString(R.string.default_food_image_url),
                                 foodName = "Add New Nutrition",
                             )
                         ) {
@@ -240,6 +253,7 @@ fun ManageNutritionItemScreen(
     val painter = rememberAsyncImagePainter(
         state.selectedNutrition?.image
     )
+    val context = LocalContext.current
     val painterState by painter.state.collectAsState()
     LaunchedEffect(Unit) {
         //mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritionDetail(id))
@@ -286,19 +300,6 @@ fun ManageNutritionItemScreen(
                 Spacer(modifier = Modifier.width(8.dp))
                 OutlinedButton(
                     onClick = {
-                        TODO("DELETE")
-                        onBack()
-                    },
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.outlinedButtonColors().copy(
-                        containerColor = Color(0xFFBB0000)
-                    )
-                ) {
-                    Text("Delete")
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                OutlinedButton(
-                    onClick = {
                         when(id){
                             "add" -> mealTypesViewModel.onEvent(MealTypesEvent.AddNutrition)
                             else -> mealTypesViewModel.onEvent(MealTypesEvent.UpdateNutrition)
@@ -332,23 +333,40 @@ fun ManageNutritionItemScreen(
                         .fillMaxWidth()
                         .padding(8.dp),
                 ){
-                    if (painterState is AsyncImagePainter.State.Success){
-                        Image(
-                            painter = painter,
-                            contentDescription = "Nutrition Image",
+                    Box(
+                        modifier = Modifier.weight(1f)
+                            .size(170.dp)
+                    ) {
+                        if (painterState is AsyncImagePainter.State.Success){
+                            Image(
+                                painter = painter,
+                                contentDescription = "Nutrition Image",
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    //.weight(1f)
+                                    .height(170.dp)
+                                    .clip(RoundedCornerShape(8.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    //.weight(1f)
+                                    .height(170.dp)
+                            )
+                        }
+                        Surface(
                             modifier = Modifier
+                                .fillMaxSize()
                                 .padding(8.dp)
-                                .weight(1f)
-                                .height(170.dp)
-                                .clip(RoundedCornerShape(8.dp)),
-                            contentScale = ContentScale.Crop
-                        )
-                    } else {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(170.dp)
-                        )
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable{
+                                    mealTypesViewModel.onEvent(
+                                        MealTypesEvent.ChangeDialogState
+                                    )
+                                },
+                            color = Color.Transparent,
+                        ){}
                     }
                     MealTypeSelector(
                         modifier = Modifier
@@ -503,6 +521,81 @@ fun ManageNutritionItemScreen(
                             disabledContainerColor = MaterialTheme.colorScheme.surface,
                         )
                     )
+                }
+                AnimatedVisibility(
+                    visible = state.dialogOpen
+                ) {
+                    Dialog(
+                        onDismissRequest = {
+                            mealTypesViewModel.onEvent(
+                                MealTypesEvent.ChangeDialogState
+                            )
+                        }
+                    ) {
+                        var saveUrl by remember {mutableStateOf(
+                            state.selectedNutrition?.image ?: "https://static.vecteezy.com/system/resources/previews/000/463/565/original/healthy-food-clipart-vector.jpg"
+                        )}
+                        val painterDialog = rememberAsyncImagePainter(
+                            saveUrl
+                        )
+                        val painterStateDialog by painterDialog.state.collectAsState()
+                        Column (
+                            modifier = Modifier
+                                .width(300.dp)
+                                .padding(8.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.White)
+                                .padding(16.dp)
+                                .wrapContentHeight()
+                        ) {
+                            if (painterStateDialog is AsyncImagePainter.State.Success){
+                                Image(
+                                    painter = painterDialog,
+                                    contentDescription = "Nutrition Image",
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .height(170.dp)
+                                        .clip(RoundedCornerShape(8.dp)),
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .height(170.dp)
+                                )
+                            }
+                            OutlinedTextField(
+                                value= saveUrl,
+                                onValueChange = {
+                                    saveUrl = it
+                                },
+                                singleLine = true,
+                                label = { Text("Image URL") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Row (
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceAround,
+                            ) {
+                                Button(onClick = {
+                                    mealTypesViewModel.onEvent(
+                                        MealTypesEvent.ChangeDialogState
+                                    )
+                                }) {Text("Cancel") }
+                                Button(onClick = {
+                                    mealTypesViewModel.onEvent(
+                                        MealTypesEvent.EditSelectedNutrition(
+                                            state.selectedNutrition?.copy(image = saveUrl) ?: Nutrition()
+                                        )
+                                    )
+                                    mealTypesViewModel.onEvent(
+                                        MealTypesEvent.ChangeDialogState
+                                    )
+                                }) {Text("Ok") }
+                            }
+                        }
+                    }
                 }
                 Row (
                     modifier = Modifier
