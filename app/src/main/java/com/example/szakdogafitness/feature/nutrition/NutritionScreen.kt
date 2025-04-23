@@ -182,6 +182,7 @@ fun NutritionScreen(
             },
             onDecrease = {
                 //targetKcal -= it
+                if (dailyDatasState.currentDailyData.targetKcal - it <= 0) return@TargetKcalBlock
                 dailyDatasViewModel.onEvent(
                     DailyDatasEvent.UpdateTargetKcal(
                         dailyDatasState.currentDailyData.targetKcal - it,

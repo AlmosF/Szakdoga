@@ -88,7 +88,8 @@ fun TargetIncreaseRow(
         horizontalArrangement = Arrangement.Center
     ) {
         IconButton(
-            onClick = { onDecrease(100) }
+            onClick = { onDecrease(100) },
+            enabled = targetKcal > 100
         ) {
             Icon(
                 imageVector = Icons.Default.Remove,
