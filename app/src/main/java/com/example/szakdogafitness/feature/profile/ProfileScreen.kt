@@ -103,6 +103,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.delay
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -1073,7 +1074,7 @@ fun ProfileScreenTrainee(
                                                 trainee = profileState.editUser?.trainee?.copy(
                                                     weight = (if (profileState.editUser?.trainee?.unit?.equals(1) == true) weightDialog
                                                         else
-                                                        weightDialog?.div(2.2))?.let {String.format("%.1f", it).toDouble()}
+                                                        weightDialog?.div(2.2))?.let {String.format(Locale.US, "%.1f", it).toDouble()}
                                                             ?: 0.0
                                                 )!!
                                             )!!
