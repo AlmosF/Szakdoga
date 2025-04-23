@@ -429,7 +429,7 @@ fun ProfileScreen(
                         onValueChange = { value ->
                             profileViewModel.onEvent(
                                 ProfileEvent.EditUser(
-                                    profileState.user?.copy(
+                                    profileState.editUser?.copy(
                                         firstName = value
                                     )!!
                                 )
@@ -580,7 +580,7 @@ fun ProfileScreen(
                 }
                 if (isDateOfBirthVisible){
                     DatePick(
-                        date = profileState.user?.dateOfBirth?.toMillis() ?: System.currentTimeMillis(),
+                        date = profileState.editUser?.dateOfBirth?.toMillis() ?: System.currentTimeMillis(),
                         selectRange = Timestamp.now().toMillis(),
                         onDateSelected = {
                             profileViewModel.onEvent(ProfileEvent.EditUser(
@@ -840,7 +840,7 @@ fun ProfileScreenTrainee(
         SingleChoiceSegmentedButtonRow (
             modifier = Modifier
                 .padding(8.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
             SegmentedButton(
                 //selected = state.unit == 1,
@@ -1213,6 +1213,7 @@ fun ProfileScreenTrainee(
                         )
                     )
                 },
+                enabled = profileState.switchEdit,
                 shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
                 icon = {
                     Icon(
@@ -1248,6 +1249,7 @@ fun ProfileScreenTrainee(
                         contentDescription = null
                     )
                 },
+                enabled = profileState.switchEdit,
                 colors = SegmentedButtonDefaults.colors(
                     activeContainerColor = Color(0xFFEB00FF),
                     activeContentColor = Color.White
@@ -1265,6 +1267,7 @@ fun ProfileScreenTrainee(
             items = healtInformationList,
             selectedIndices = profileState.editUser?.trainee?.healthInformation ?: emptyList(),
             multiSelect = true,
+            enabled = profileState.switchEdit,
             onItemsSelected = { index, item ->
                 profileState.editUser?.let {
                     val updatedHealthInf = if (it.trainee.healthInformation.contains(index)){
@@ -1293,6 +1296,7 @@ fun ProfileScreenTrainee(
             items = dietInfList,
             selectedIndices = profileState.editUser?.trainee?.dietaryPreferences ?: emptyList(),
             multiSelect = true,
+            enabled = profileState.switchEdit,
             onItemsSelected = { index, item ->
                 profileState.editUser?.let {
                     val updatedDietInf = if (it.trainee.dietaryPreferences.contains(index)){
@@ -1319,6 +1323,7 @@ fun ProfileScreenTrainee(
                 .fillMaxWidth(),
             label = "Equipment Available",
             items = equipmentList,
+            enabled = profileState.switchEdit,
             selectedIndices = profileState.editUser?.trainee?.availableEquipment ?: emptyList(),
             multiSelect = true,
             onItemsSelected = { index, item ->
