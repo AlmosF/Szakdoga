@@ -52,6 +52,10 @@ import com.example.szakdogafitness.feature.CameraScan.CameraEvent
 import com.example.szakdogafitness.feature.CameraScan.CameraViewModel
 import com.example.szakdogafitness.feature.lifestyle.DailyDatasEvent
 import com.example.szakdogafitness.feature.lifestyle.DailyDatasViewModel
+import com.example.szakdogafitness.presentation.navigation.AppBarEvent
+import com.example.szakdogafitness.presentation.navigation.AppBarViewModel
+import com.example.szakdogafitness.ui.common.appbars.LifeStyleTitle
+import com.example.szakdogafitness.ui.common.appbars.TopBar
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,6 +67,7 @@ fun NutritionScreen(
     mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
     cameraViewModel: CameraViewModel = hiltViewModel(),
     generativeViewModel: GenerativeViewModel = hiltViewModel(),
+    appBarViewModel: AppBarViewModel = hiltViewModel(),
     onAINavigate: () -> Unit,
     onSearchNavigate: () -> Unit,
     onBarcodeNavigate: () -> Unit
@@ -80,6 +85,32 @@ fun NutritionScreen(
     var capturedPhoto by remember { mutableStateOf(cameraState.image?.asImageBitmap()) }
 
     val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        appBarViewModel.onEvent(
+            AppBarEvent.TopBarComposableChanged(
+                {
+                    TopBar(
+                        title = {
+                            LifeStyleTitle(
+                                title = dailyDatasState.lifeStyleTitle,
+                                previousButtonEnabled = dailyDatasState.isPreviousDayAvailable,
+                                onPreviousDayClick = {
+                                    Log.d("RootNavigation", "onPreviousDayClick")
+                                    dailyDatasViewModel.onEvent(DailyDatasEvent.PreviousDay)
+                                },
+                                nextButtonEnabled = dailyDatasState.isNextDayAvailable,
+                                onNextDayClick = {
+                                    Log.d("RootNavigation", "onNextDayClick")
+                                    dailyDatasViewModel.onEvent(DailyDatasEvent.NextDay)
+                                }
+                            )
+                        },
+                    )
+                }
+            )
+        )
+    }
 
     LaunchedEffect(cameraState.image){
         capturedPhoto = cameraState.image?.asImageBitmap()

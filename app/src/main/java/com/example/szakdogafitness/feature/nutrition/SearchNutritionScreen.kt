@@ -64,6 +64,10 @@ import com.example.szakdogafitness.ui.common.nutrition.SearchNutritionCard
 import com.example.szakdogafitness.ui.common.nutrition.SearchNutritionLabels
 import com.example.szakdogafitness.feature.lifestyle.DailyDatasEvent
 import com.example.szakdogafitness.feature.lifestyle.DailyDatasViewModel
+import com.example.szakdogafitness.presentation.navigation.AppBarEvent
+import com.example.szakdogafitness.presentation.navigation.AppBarViewModel
+import com.example.szakdogafitness.presentation.navigation.AppBarViewModel_Factory
+import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
 import kotlinx.coroutines.launch
 
 
@@ -184,11 +188,25 @@ fun SearchNutritionScreen(
     modifier: Modifier = Modifier,
     mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
     dailyDatasViewModel: DailyDatasViewModel = hiltViewModel(),
+    appBarViewModel: AppBarViewModel = hiltViewModel(),
+    onBack: () -> Unit = {}
 ) {
 
     val mealTypesState by mealTypesViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
+        appBarViewModel.onEvent(
+            AppBarEvent.TopBarComposableChanged(
+                {
+                    BackNavWithTitle(title = "Search Nutrition") {
+                        mealTypesViewModel.onEvent(
+                            MealTypesEvent.MealTypeSelected("bf")
+                        )
+                        onBack()
+                    }
+                }
+            )
+        )
         mealTypesViewModel.onEvent(MealTypesEvent.MealTypeSelected("bf"))
         //mealTypesViewModel.onEvent(MealTypesEvent.LoadMealTypes)
         //mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)

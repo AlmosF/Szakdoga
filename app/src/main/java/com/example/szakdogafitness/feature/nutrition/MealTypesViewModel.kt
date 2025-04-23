@@ -57,6 +57,7 @@ class MealTypesViewModel @Inject constructor(
                 _sortState.update {
                     MealTypesSortState()
                 }
+                Log.d("SelectedMealTitle", "${_state.value.selectedMealTitle}")
             }
 
             is MealTypesEvent.NutritionSelected -> {

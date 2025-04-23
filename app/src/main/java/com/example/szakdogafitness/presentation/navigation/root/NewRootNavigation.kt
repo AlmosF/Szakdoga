@@ -262,33 +262,11 @@ fun NewRootNavigation(
             }
             //Nutrition - Second
             composable(RootScreenRoute.Nutrition.route){
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            TopBar(
-                                title = {
-                                    LifeStyleTitle(
-                                        title = dailyDatasState.lifeStyleTitle,
-                                        previousButtonEnabled = dailyDatasState.isPreviousDayAvailable,
-                                        onPreviousDayClick = {
-                                            Log.d("RootNavigation", "onPreviousDayClick")
-                                            dailyDatasViewModel.onEvent(DailyDatasEvent.PreviousDay)
-                                        },
-                                        nextButtonEnabled = dailyDatasState.isNextDayAvailable,
-                                        onNextDayClick = {
-                                            Log.d("RootNavigation", "onNextDayClick")
-                                            dailyDatasViewModel.onEvent(DailyDatasEvent.NextDay)
-                                        }
-                                    )
-                                },
-                            )
-                        }
-                    )
-                )
                 NutritionScreen(
                     mealTypesViewModel = mealTypesViewModel,
                     dailyDatasViewModel = dailyDatasViewModel,
                     cameraViewModel = cameraViewModel,
+                    appBarViewModel = appBarViewModel,
                     onAINavigate = {
                         navController.navigate(RootScreenRoute.NutritionAI.route)
                     },
@@ -308,18 +286,12 @@ fun NewRootNavigation(
                 }
             }
             composable(RootScreenRoute.NutritionSearch.route) {
-                appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            BackNavWithTitle(title = "Search Nutrition") {
-                                navController.popBackStack()
-                            }
-                        }
-                    )
-                )
                 SearchNutritionScreen(
                     mealTypesViewModel = mealTypesViewModel,
-                )
+                    appBarViewModel = appBarViewModel
+                ) {
+                    navController.popBackStack()
+                }
             }
             composable(RootScreenRoute.NutritionBarcode.route) {
                 Text(text = "NutritionBarcode")
