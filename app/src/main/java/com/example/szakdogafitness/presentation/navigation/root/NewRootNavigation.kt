@@ -53,8 +53,6 @@ import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
 import com.example.szakdogafitness.ui.common.appbars.LifeStyleTitle
 import com.example.szakdogafitness.ui.common.appbars.TopBar
 import com.example.szakdogafitness.util.UiEvent
-import com.example.szakdogafitness.feature.auth.AuthenticationEvent
-import com.example.szakdogafitness.feature.auth.AuthenticationViewModel
 import com.example.szakdogafitness.feature.CameraScan.CameraViewModel
 import com.example.szakdogafitness.feature.lifestyle.DailyDatasEvent
 import com.example.szakdogafitness.feature.lifestyle.DailyDatasViewModel
@@ -67,6 +65,8 @@ import com.example.szakdogafitness.feature.trainee.TraineesViewModel
 import com.example.szakdogafitness.feature.trainer.TrainersViewModel
 import com.example.szakdogafitness.presentation.navigation.AppBarEvent
 import com.example.szakdogafitness.presentation.navigation.AppBarViewModel
+import com.example.szakdogafitness.viewmodel.AuthenticationEvent
+import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
 import kotlinx.coroutines.launch
 
 

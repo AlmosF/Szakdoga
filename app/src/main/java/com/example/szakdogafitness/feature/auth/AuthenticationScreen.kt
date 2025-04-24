@@ -39,6 +39,8 @@ import androidx.navigation.NavHostController
 import com.example.szakdogafitness.ui.common.EmailTextField
 import com.example.szakdogafitness.ui.common.PasswordTextField
 import com.example.szakdogafitness.util.UiEvent
+import com.example.szakdogafitness.viewmodel.AuthenticationEvent
+import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
 import kotlinx.coroutines.launch
 
 @Composable

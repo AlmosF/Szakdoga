@@ -10,8 +10,8 @@ import com.example.szakdogafitness.domain.usecases.setup.NextButtonLabelUseCase
 import com.example.szakdogafitness.domain.usecases.setup.NextScreenUseCase
 import com.example.szakdogafitness.domain.usecases.setup.PreviousButtonVisibleUseCase
 import com.example.szakdogafitness.domain.usecases.setup.PreviousScreenUseCase
-import com.example.szakdogafitness.viewmodel.SetupEvent
-import com.example.szakdogafitness.viewmodel.SetupViewModel
+import com.example.szakdogafitness.feature.setup.SetupEvent
+import com.example.szakdogafitness.feature.setup.SetupViewModel
 import com.google.firebase.Timestamp
 import io.mockk.MockKMatcherScope
 import io.mockk.every

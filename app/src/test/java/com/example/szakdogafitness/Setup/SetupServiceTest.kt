@@ -3,7 +3,7 @@ package com.example.szakdogafitness.Setup
 import androidx.compose.runtime.currentComposer
 import com.example.szakdogafitness.data.setup.ISetupService
 import com.example.szakdogafitness.domain.model.User
-import com.example.szakdogafitness.viewmodel.SetupProfileState
+import com.example.szakdogafitness.feature.setup.SetupProfileState
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertFalse
