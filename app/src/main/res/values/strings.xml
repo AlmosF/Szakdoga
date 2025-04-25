@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SzakdogaFitness</string>
+    <string name="app_name">FitNessy</string>
     <string name="some_error_message">Something went wrong!</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="email_blank">Email cannot be empty</string>
