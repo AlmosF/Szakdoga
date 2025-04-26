@@ -85,6 +85,7 @@ data class Trainer(
     val experience: Int = 0,
     val availability: Map<String, List<Int>> = emptyMap(),
     val pricing: Int = 0,
+    @Deprecated("rating Deprecated")
     val rating: Int = 0,
     val specializations: List<Int> = emptyList(),
     //val socialMediaLinks: Map<String, String> = emptyMap(),
@@ -98,7 +99,9 @@ data class Trainer(
         "Pinterest" to "",
         "Twitch" to "",
     ),
+    @Deprecated("pendingRequests Deprecated")
     val pendingRequests: List<String> = emptyList(),
+    @Deprecated("acceptedRequests Deprecated")
     val acceptedRequests: List<String> = emptyList(),
 )
 
@@ -127,6 +130,7 @@ data class Trainee(
     val healthInformation: List<Int> = emptyList(),
     val dietaryPreferences: List<Int> = emptyList(),
     val availableEquipment: List<Int> = emptyList(),
+    @Deprecated("activeTrainers Deprecated")
     val activeTrainers: List<String> = emptyList(),
 )
 
