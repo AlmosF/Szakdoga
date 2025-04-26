@@ -14,12 +14,6 @@ data class DailyData(
     val targetWater: Double = 2.0,
     val steps: Int = 0,
     val targetSteps: Int = 6000,
-    @Deprecated("Use foodIntakeM instead")
-    val foodIntake: Map<String, List<Nutrition>> = mapOf(),
     val foodIntakeM: Map<String, List<Int>> = mapOf(),
     val targetKcal: Int = 1700,
-    @Deprecated("Use foodIntakeM instead")
-    val manualFoodIntake: Map<String, List<Nutrition>> = mapOf(),
-    @Deprecated("Use foodIntakeM instead")
-    val manualFoodIntakeM: Map<String, List<Int>> = mapOf(),
 )

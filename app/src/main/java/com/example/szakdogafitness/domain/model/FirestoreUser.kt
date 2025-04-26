@@ -15,7 +15,6 @@ data class FirestoreUser(
     val role: Int = 0,
     val email: String = "",
     val bio: String = "",
-    val fcmToken: String = "",
     val profileImageUrl: String = "",
     val location: GeoPoint? = null,
     val setupDone: Boolean = false
@@ -29,11 +28,8 @@ data class FirestoreTrainer(
     val experience: Int = 0,
     val availability: Map<String, List<Int>> = emptyMap(),
     val pricing: Int = 0,
-    val rating: Int = 0,
     val specializations: List<Int> = emptyList(),
     val socialMediaLinks: Map<String, String> = emptyMap(),
-    val pendingRequests: List<String> = emptyList(),
-    val acceptedRequests: List<String> = emptyList(),
 )
 
 data class FirestoreTrainee(
@@ -48,7 +44,6 @@ data class FirestoreTrainee(
     val healthInformation: List<Int> = emptyList(),
     val dietaryPreferences: List<Int> = emptyList(),
     val availableEquipment: List<Int> = emptyList(),
-    val activeTrainers: List<String> = emptyList(),
 )
 
 fun FirestoreUser.toUser(trainer: FirestoreTrainer): User {
@@ -63,7 +58,6 @@ fun FirestoreUser.toUser(trainer: FirestoreTrainer): User {
         role = role,
         email = email,
         bio = bio,
-        fcmToken = fcmToken,
         profileImageUrl = profileImageUrl,
         location = location,
         trainer = Trainer(
@@ -73,11 +67,8 @@ fun FirestoreUser.toUser(trainer: FirestoreTrainer): User {
             experience = trainer.experience,
             availability = trainer.availability,
             pricing = trainer.pricing,
-            rating = trainer.rating,
             specializations = trainer.specializations,
             socialMediaLinks = trainer.socialMediaLinks,
-            pendingRequests = trainer.pendingRequests,
-            acceptedRequests = trainer.acceptedRequests
         ),
         isSetupDone = setupDone,
         isAdmin = email == "feketealmos0@gmail.com"
@@ -96,7 +87,6 @@ fun FirestoreUser.toUser(trainee: FirestoreTrainee): User {
         role = role,
         email = email,
         bio = bio,
-        fcmToken = fcmToken,
         profileImageUrl = profileImageUrl,
         location = location,
         trainee = Trainee(
@@ -110,7 +100,6 @@ fun FirestoreUser.toUser(trainee: FirestoreTrainee): User {
             healthInformation = trainee.healthInformation,
             dietaryPreferences = trainee.dietaryPreferences,
             availableEquipment = trainee.availableEquipment,
-            activeTrainers = trainee.activeTrainers
         ),
         isSetupDone = setupDone,
         isAdmin = email == "feketealmos0@gmail.com"

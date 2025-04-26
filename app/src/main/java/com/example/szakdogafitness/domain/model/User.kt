@@ -15,7 +15,6 @@ import com.google.firebase.firestore.GeoPoint
  * @param role: Int (Role of the user - 0: Not selected, 1: Trainer, 2: Trainee)
  * @param email: String (Email of the user)
  * @param bio: String (Biography of the user)
- * @param fcmToken: String (Firebase Cloud Messaging token of the user)
  * @param profileImageUrl: String (URL of the profile image of the user)
  * @param location: GeoPoint? (Location of the user)
  * @param isSetupDone: Boolean (Is the setup done for the user)
@@ -31,7 +30,6 @@ data class User(
     val role: Int = 0,
     val email: String = "",
     val bio: String = "",
-    val fcmToken: String = "",
     val profileImageUrl: String = "",
     val location: GeoPoint? = null,
     val trainer: Trainer = Trainer(),
@@ -72,11 +70,8 @@ data class User(
  * @param experience: Int (Experience of the trainer)
  * @param availability: Map<String, List<Int>> (Availability of the trainer)
  * @param pricing: Int (Pricing of the trainer)
- * @param rating: Float (Rating of the trainer)
  * @param specializations: List<String> (Specializations of the trainer)
  * @param socialMediaLinks: Map<String, String> (Social media links of the trainer)
- * @param pendingRequests: List<String> (Pending requests of the trainer)
- * @param acceptedRequests: List<String> (Accepted requests of the trainer)
  */
 data class Trainer(
     val certifications: List<Int> = emptyList(),
@@ -85,8 +80,6 @@ data class Trainer(
     val experience: Int = 0,
     val availability: Map<String, List<Int>> = emptyMap(),
     val pricing: Int = 0,
-    @Deprecated("rating Deprecated")
-    val rating: Int = 0,
     val specializations: List<Int> = emptyList(),
     //val socialMediaLinks: Map<String, String> = emptyMap(),
     val socialMediaLinks: Map<String, String> = mapOf(
@@ -99,10 +92,6 @@ data class Trainer(
         "Pinterest" to "",
         "Twitch" to "",
     ),
-    @Deprecated("pendingRequests Deprecated")
-    val pendingRequests: List<String> = emptyList(),
-    @Deprecated("acceptedRequests Deprecated")
-    val acceptedRequests: List<String> = emptyList(),
 )
 
 /**
@@ -116,7 +105,6 @@ data class Trainer(
  * @param healthInformation: List<String> (Health information of the trainee)
  * @param dietaryPreferences: List<String> (Dietary preferences of the trainee)
  * @param availableEquipment: List<String> (Available equipment of the trainee)
- * @param activeTrainers: List<String> (Active trainers of the trainee)
  */
 
 data class Trainee(
@@ -130,8 +118,6 @@ data class Trainee(
     val healthInformation: List<Int> = emptyList(),
     val dietaryPreferences: List<Int> = emptyList(),
     val availableEquipment: List<Int> = emptyList(),
-    @Deprecated("activeTrainers Deprecated")
-    val activeTrainers: List<String> = emptyList(),
 )
 
 fun User.toFirestoreUser(): FirestoreUser {
@@ -145,7 +131,6 @@ fun User.toFirestoreUser(): FirestoreUser {
         role = role,
         email = email,
         bio = bio,
-        fcmToken = fcmToken,
         profileImageUrl = profileImageUrl,
         location = location,
         setupDone = isSetupDone
@@ -162,11 +147,8 @@ fun User.toFirestoreTrainer(): FirestoreTrainer {
         experience = trainer.experience,
         availability = trainer.availability,
         pricing = trainer.pricing,
-        rating = trainer.rating,
         specializations = trainer.specializations,
         socialMediaLinks = trainer.socialMediaLinks,
-        pendingRequests = trainer.pendingRequests,
-        acceptedRequests = trainer.acceptedRequests
     )
 }
 
@@ -183,6 +165,5 @@ fun User.toFirestoreTrainee(): FirestoreTrainee {
         healthInformation = trainee.healthInformation,
         dietaryPreferences = trainee.dietaryPreferences,
         availableEquipment = trainee.availableEquipment,
-        activeTrainers = trainee.activeTrainers
     )
 }

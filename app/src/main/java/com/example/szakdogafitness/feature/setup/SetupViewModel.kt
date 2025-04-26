@@ -217,14 +217,6 @@ class SetupViewModel @Inject constructor(
                     )
                 )
             }
-            is SetupEvent.FcmTokenChanged -> {
-                //_state.value = _state.value.copy(fcmToken = event.fcmToken)
-                _state.value = _state.value.copy(
-                    user = _state.value.user.copy(
-                        fcmToken = event.fcmToken
-                    )
-                )
-            }
             is SetupEvent.FirstNameChanged -> {
                 //_state.value = _state.value.copy(firstName = event.firstName)
                 _state.value = _state.value.copy(
@@ -310,16 +302,6 @@ class SetupViewModel @Inject constructor(
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         profileImageUrl = event.profileImageUrl
-                    )
-                )
-            }
-            is SetupEvent.RatingChanged -> {
-                //_state.value = _state.value.copy(rating = event.rating)
-                _state.value = _state.value.copy(
-                    user = _state.value.user.copy(
-                        trainer = _state.value.user.trainer.copy(
-                            rating = event.rating
-                        )
                     )
                 )
             }
@@ -514,7 +496,6 @@ sealed class SetupEvent{
     data class PhoneNumberChanged(val phoneNumber: String) : SetupEvent()
     data class RoleChanged(val role: Int) : SetupEvent()
     data class BioChanged(val bio: String) : SetupEvent()
-    data class FcmTokenChanged(val fcmToken: String) : SetupEvent()
     data class ProfileImageUrlChanged(val profileImageUrl: String) : SetupEvent()
     data class LocationChanged(val location: GeoPoint) : SetupEvent()
     //trainer
@@ -524,7 +505,6 @@ sealed class SetupEvent{
     data class ExperienceChanged(val experience: Int) : SetupEvent()
     data class AvailabilityChanged(val availability: Map<String, List<Int>>) : SetupEvent()
     data class PricingChanged(val pricing: Int) : SetupEvent()
-    data class RatingChanged(val rating: Int) : SetupEvent()
     data class SpecializationsChanged(val specializations: List<Int>) : SetupEvent()
     data class SocialMediaLinksChanged(val socialMediaLinks: Map<String, String>) : SetupEvent()
     //trainee

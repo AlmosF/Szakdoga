@@ -204,7 +204,6 @@ class SetupService @Inject constructor(
                     phoneNumber = state.user.phoneNumber,
                     role = state.user.role,
                     bio = state.user.bio,
-                    fcmToken = state.user.fcmToken,
                     //profileImageUrl = state.user.profileImageUrl,
                     profileImageUrl = "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Download-Image.png",
                     location = state.user.location,
@@ -223,11 +222,8 @@ class SetupService @Inject constructor(
                             experience = state.user.trainer.experience,
                             availability = state.user.trainer.availability,
                             pricing = state.user.trainer.pricing,
-                            rating = state.user.trainer.rating,
                             specializations = state.user.trainer.specializations,
                             socialMediaLinks = state.user.trainer.socialMediaLinks,
-                            pendingRequests = state.user.trainer.pendingRequests,
-                            acceptedRequests = state.user.trainer.acceptedRequests
                         )
                     ).await()
                 }
@@ -245,7 +241,6 @@ class SetupService @Inject constructor(
                             healthInformation = state.user.trainee.healthInformation,
                             dietaryPreferences = state.user.trainee.dietaryPreferences,
                             availableEquipment = state.user.trainee.availableEquipment,
-                            activeTrainers = state.user.trainee.activeTrainers
                         )
                     ).await()
                 }
