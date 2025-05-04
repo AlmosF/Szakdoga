@@ -11,7 +11,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.google.dagger.hilt.android)
-
+    id("com.google.firebase.crashlytics")
 
 }
 
@@ -143,6 +143,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.analytics)
+    implementation("com.google.firebase:firebase-crashlytics")
     //Hilt
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
