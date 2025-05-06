@@ -34,7 +34,6 @@ class ProfileViewModel @Inject constructor(
                 _state.update { it.copy(editUser = event.user) }
             }
             ProfileEvent.GetUser -> {
-                Log.d("ProfileViewModel", "onEvent: GetUser")
                 getUser()
             }
 
@@ -125,8 +124,6 @@ class ProfileViewModel @Inject constructor(
 
 
     private fun updateUser() {
-        Log.d("ProfileViewModel", "updateUser")
-        Log.d("ProfileViewModel", "updateUser Location: ${_state.value.editUser?.location}")
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
@@ -134,7 +131,6 @@ class ProfileViewModel @Inject constructor(
                 allProfileUseCases.updateUser(user)
                 _state.update { it.copy(switchEdit = false) }
             } catch (e: Exception){
-                Log.e("ProfileViewModel", "updateUser: ${e.message}")
                 _state.update { it.copy(isLoading = false, switchEdit = false) }
             } finally {
                 _state.update { it.copy(isLoading = false, switchEdit = false) }
@@ -143,12 +139,10 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun getUser(){
-        Log.d("ProfileViewModel", "getUser")
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                Log.d("ProfileViewModel", "getUser: ${_state.value.user}, loading: ${_state.value.isLoading}")
-                allProfileUseCases.fetchUser.invoke().collect { user ->
+               allProfileUseCases.fetchUser.invoke().collect { user ->
                     //_state.update { it.copy(user = user, isLoading = false, editUser = user) }
                     _state.update { it.copy(user = user, isLoading = false) }
 
@@ -159,10 +153,7 @@ class ProfileViewModel @Inject constructor(
                             )
                         }
                     }
-
-                    Log.d("ProfileViewModel-", "getUser: ${_state.value.user}, loading: ${_state.value.isLoading}")
                 }
-                Log.d("ProfileViewModel", "getUser: ${_state.value.user}, loading: ${_state.value.isLoading}")
             } catch (e: Exception){
                 Log.e("ProfileViewModel", "getUser: ${e.message}")
                 _state.update { it.copy(isLoading = false) }
