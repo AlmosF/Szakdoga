@@ -31,12 +31,7 @@ class ProfileViewModel @Inject constructor(
     fun onEvent(event: ProfileEvent){
         when(event){
             is ProfileEvent.EditUser -> {
-                Log.d(
-                    "ProfileViewModel",
-                    "onEvent: EditUser ${event.user}"
-                )
                 _state.update { it.copy(editUser = event.user) }
-                Log.d("ProfileViewModel", "onEvent: EditUser ${_state.value.editUser?.trainee?.height}")
             }
             ProfileEvent.GetUser -> {
                 Log.d("ProfileViewModel", "onEvent: GetUser")
@@ -44,7 +39,6 @@ class ProfileViewModel @Inject constructor(
             }
 
             ProfileEvent.SwitchEdit -> {
-                Log.e("ProfileViewModel", "ARE YOU IN A NEW PROFILE????")
                 _state.update { it.copy(
                     switchEdit = !it.switchEdit,
                     editUser = it.user,
