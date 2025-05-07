@@ -26,7 +26,6 @@ class MealTypesViewModel @Inject constructor(
     fun onEvent(event: MealTypesEvent) {
         when(event){
             MealTypesEvent.LoadMealTypes -> {
-                Log.d("MealTypesViewModel", "LoadMealTypes")
                 loadMealTypes()
             }
             is MealTypesEvent.MealTypeSelected -> {
@@ -57,12 +56,10 @@ class MealTypesViewModel @Inject constructor(
                 _sortState.update {
                     MealTypesSortState()
                 }
-                Log.d("SelectedMealTitle", "${_state.value.selectedMealTitle}")
             }
 
             is MealTypesEvent.NutritionSelected -> {
                 _state.update { it.copy(selectedNutrition = event.nutrition) }
-                Log.e("MealTypesViewModel", "NutritionSelected - EVENT: ${event.nutrition}")
             }
 
             MealTypesEvent.ChangeDialogState -> {
