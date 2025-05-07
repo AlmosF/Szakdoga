@@ -110,7 +110,6 @@ class ProfileService @Inject constructor(
             }.flowOn(Dispatchers.IO)
 
     override suspend fun updateUser(user: User) {
-        Log.d("MainService", "Updating user: ${user.location}")
         val currentUserId = userIdUseCase()
         val updatedFirestoreUser = user.toFirestoreUser()
 

@@ -2,6 +2,7 @@ package com.example.szakdogafitness.Setup
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.example.szakdogafitness.data.setup.ISetupService
 import com.example.szakdogafitness.domain.usecases.setup.AllSetupUseCases
 import com.example.szakdogafitness.domain.usecases.setup.FinishButtonUseCase
@@ -16,6 +17,7 @@ import com.google.firebase.Timestamp
 import io.mockk.MockKMatcherScope
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
@@ -111,6 +113,7 @@ class SetupStatesTest {
         val areasOfE = listOf(1,2)
         val trainingS = listOf(1,2)
         val avaliability = mapOf<String, List<Int>>("Monday" to listOf(1,2))
+        val availableEquipment = listOf(1,2)
         val trainingExperience = 2000
         val pricing = 1000
         val bio = "lorem ipsum"
@@ -129,6 +132,7 @@ class SetupStatesTest {
         viewModel.onEvent(SetupEvent.AreasOfExpertiesChanged(areasOfE))
         viewModel.onEvent(SetupEvent.TrainingStylesChanged(trainingS))
         viewModel.onEvent(SetupEvent.AvailabilityChanged(avaliability))
+        viewModel.onEvent(SetupEvent.AvailableEquipmentChanged(availableEquipment))
         viewModel.onEvent(SetupEvent.ExperienceChanged(trainingExperience))
         viewModel.onEvent(SetupEvent.PricingChanged(pricing))
         viewModel.onEvent(SetupEvent.BioChanged(bio))
@@ -179,7 +183,25 @@ class SetupStatesTest {
             (weight * 2.2046).toBigDecimal().setScale(1, RoundingMode.HALF_UP).toDouble(),
             viewModel.state.value.user.trainee.weight
         )
+    }
 
+    @Test
+    fun nextButtonClickedAndCallsNextScreen() = runTest {
+        every { nextScreen.invoke(any(),any(),any()) } returns Unit
+        every { previousScreen.invoke(any(), any(), any()) } returns Unit
+        every { previousButtonVisible.invoke(any()) } returns true
+        every { nextButtonEnabled.invoke(any()) } returns true
+        every { nextButtonLabel.invoke(any()) } returns "Finish"
+
+        viewModel.onEvent(SetupEvent.RoleChanged(1))
+        val initialScreen = 0
+        val navHostController = mockk<NavHostController>(relaxed = true)
+        viewModel.setNavController(navHostController)
+        viewModel.onEvent(SetupEvent.NextButtonClicked)
+
+
+        verify { nextScreen(initialScreen, 1, navHostController) }
+        assertEquals(1, viewModel.state.value.currentScreen)
 
     }
 
