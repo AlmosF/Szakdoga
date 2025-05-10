@@ -62,7 +62,8 @@ fun CameraScreen(
                 Icon(
                     imageVector = Icons.Default.Camera,
                     contentDescription = "takePhoto",
-                    modifier = Modifier.size(50.dp)
+                    modifier = Modifier.size(50.dp),
+                    tint = androidx.compose.ui.graphics.Color.White
                 )
             }
         },

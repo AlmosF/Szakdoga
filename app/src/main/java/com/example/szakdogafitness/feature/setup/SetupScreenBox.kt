@@ -92,6 +92,7 @@ fun SetupScreenBox(
     ConstraintLayout (
         modifier = Modifier
             .padding(paddingValues)
+            .padding(top = 26.dp)
             .fillMaxSize()
     ) {
         val (progressBar, setupScreen, buttons, div1) = createRefs()

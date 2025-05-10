@@ -151,14 +151,53 @@ fun TraineeBioScreen(
             }
         }
         Spacer(modifier = Modifier.size(32.dp))
-        Text(
-            text = "Contact Information",
-            fontSize = 20.sp
-        )
+        data.second.trainee.healthInformation.let {
+            if (it.isNotEmpty()){
+                Column (
+                    modifier = Modifier.fillMaxWidth(0.95f)
+                ) {
+                    Text(
+                        text = "Health Information",
+                        fontSize = 20.sp
+                    )
+                    val healthInformationList = context.resources.getStringArray(R.array.health_information).toList()
+                    Text(
+                        text = data.second.trainee.healthInformation.joinToString(", ") { healthInformationList[it] },
+                        modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
+                        fontSize = 16.sp
+                    )
+                }
+            }
+        }
+        data.second.trainee.dietaryPreferences.let {
+            if (it.isNotEmpty()){
+                Spacer(modifier = Modifier.size(16.dp))
+                Column (
+                    modifier = Modifier.fillMaxWidth(0.95f)
+                ) {
+
+                    Text(
+                        text = "Dietary Preferences",
+                        fontSize = 20.sp
+                    )
+                    val dietaryPreferencesList = context.resources.getStringArray(R.array.diet_information).toList()
+                    Text(
+                        text = data.second.trainee.dietaryPreferences.joinToString(", ") { dietaryPreferencesList[it] },
+                        modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
+                        fontSize = 16.sp
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.size(16.dp))
         Column (
             modifier = Modifier
                 .fillMaxWidth(0.95f),
         ) {
+            Text(
+                text = "Contact Information",
+                fontSize = 20.sp
+            )
             Row (
                 modifier = Modifier
                     .fillMaxWidth()
