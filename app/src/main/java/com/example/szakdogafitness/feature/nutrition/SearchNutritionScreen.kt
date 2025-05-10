@@ -357,7 +357,8 @@ fun SearchNutritionScreen(
             ) {
                 ModalBottomSheetContent(
                     nutrition = mealTypesState.selectedNutrition ?: Nutrition(),
-                    mealTypeTitle = mealTypesState.selectedMealTitle
+                    //mealTypeTitle = mealTypesState.selectedMealTitle
+                    mealTypeTitle = labelsMap[mealTypesState.selectedMealTitle] ?: "Unknown"
                 ) {
                     scope.launch {
                         sheetState.hide()
