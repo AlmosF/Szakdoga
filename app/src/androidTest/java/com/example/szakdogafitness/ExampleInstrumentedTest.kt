@@ -1,6 +1,7 @@
 package com.example.szakdogafitness
 
 import android.util.Log
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.szakdogafitness.data.auth.AuthService
@@ -31,6 +32,7 @@ import org.junit.runner.RunWith
 
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Rule
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -56,6 +58,8 @@ class AuthenticationViewModelIntegrationTest {
     private lateinit var firebaseAuth: FirebaseAuth
     private val testEmail = "feketealmos0@gmail.com"
     private val testPassword = "Almos123"
+
+
 
 
     @Before

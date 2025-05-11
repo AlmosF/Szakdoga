@@ -142,7 +142,7 @@ class TraineesViewModel @Inject constructor(
                 allTraineesUseCases.fetchUsersDailyDatasById.invoke(traineeId).collect { traineeDailyDataList ->
                     if (traineeDailyDataList.isNotEmpty()){
                         if (state.value.traineesDailyDataList.isNotEmpty()) { //Just Update
-                            Log.d("TraineesViewModel", "Just update")
+                            //Log.d("TraineesViewModel", "Just update")
                             val currentDailyData = traineeDailyDataList.find { it.date.toDate() == state.value.selectedTraineesDailyData?.date?.toDate() } ?: traineeDailyDataList.last()
 
                             val latestDate = currentDailyData.date.toDate().toString().substring(4, 10)
@@ -155,7 +155,7 @@ class TraineesViewModel @Inject constructor(
                                 )
                             }
                         }else { //First Load
-                            Log.d("TraineesViewModel", "First Load")
+                            //Log.d("TraineesViewModel", "First Load")
                             val currentDailyData = traineeDailyDataList.last()
                             val latestDate = currentDailyData.date.toDate().toString().substring(4, 10)
                             _state.update {
@@ -192,7 +192,7 @@ class TraineesViewModel @Inject constructor(
         /*val trainee = state.value.acceptedRequests.find {
             it.first.traineeId == traineeId
         } ?: error("Error finding trainee")*/
-        Log.d("TraineesViewModel", "selectTrainee: $traineeId")
+        //Log.d("TraineesViewModel", "selectTrainee: $traineeId")
         _state.update { it.copy(isLoading = true) }
         try {
             val trainee = state.value.acceptedRequests.find {

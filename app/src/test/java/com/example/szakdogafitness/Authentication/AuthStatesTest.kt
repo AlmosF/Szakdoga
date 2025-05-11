@@ -16,6 +16,7 @@ import com.example.szakdogafitness.domain.usecases.auth.SendRecoveryEmailUseCase
 import com.example.szakdogafitness.domain.usecases.auth.SignInUseCase
 import com.example.szakdogafitness.domain.usecases.auth.SignOutUseCase
 import com.example.szakdogafitness.domain.usecases.auth.SignUpUseCase
+import com.example.szakdogafitness.feature.auth.AuthenticateScreen
 import com.example.szakdogafitness.util.UiEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationEvent
 import com.example.szakdogafitness.viewmodel.AuthenticationViewModel
@@ -37,6 +38,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -94,7 +96,6 @@ class AuthStatesTest {
         Dispatchers.resetMain()
         viewModel.viewModelScope.cancel()
     }
-
     @Test
     fun onEventEmailChanged() {
         val newEmail = "feketealmos0@gmail.com"
@@ -104,6 +105,8 @@ class AuthStatesTest {
             newEmail
         )
     }
+
+
 
     @Test
     fun onEventPasswordChanged() {
@@ -285,6 +288,8 @@ class AuthStatesTest {
             }
             assertTrue(event is UiEvent.Failure)
         }
+
+
 
     @Test
     fun forgotPasswordButtonClickedWithInvalidEmailAddressTriggersFailureEvent() = runTest {

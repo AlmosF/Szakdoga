@@ -33,7 +33,7 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@RunWith(RobolectricTestRunner::class)
+//@RunWith(RobolectricTestRunner::class)
 @OptIn(ExperimentalCoroutinesApi::class)
 class SetupStatesTest {
 
@@ -79,7 +79,8 @@ class SetupStatesTest {
     fun onFirstSetupScreenFieldsChangedAssertEqualsWithStatusBarAndButtonStatuses() {
         val firstName = "Test"
         val lastName = "Tester"
-        val dateOfBirth = Timestamp.now()
+        //val dateOfBirth = Timestamp.now()
+        val dateOfBirth = mockk<Timestamp>(relaxed = true)
         val gender = 1
         val phoneNumber = "123456789"
         val role = 1
@@ -204,10 +205,4 @@ class SetupStatesTest {
         assertEquals(1, viewModel.state.value.currentScreen)
 
     }
-
-
-
-
-
-
 }

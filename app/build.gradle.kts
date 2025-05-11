@@ -1,6 +1,10 @@
+import org.gradle.kotlin.dsl.androidTestImplementation
 import org.gradle.kotlin.dsl.implementation
+import org.gradle.kotlin.dsl.test
 import org.gradle.kotlin.dsl.testImplementation
+import java.util.Locale
 import java.util.Properties
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 
 plugins {
     alias(libs.plugins.android.application)
@@ -12,9 +16,12 @@ plugins {
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.google.dagger.hilt.android)
     id("com.google.firebase.crashlytics")
+    jacoco
 
 }
-
+jacoco {
+    toolVersion = "0.8.10" // Use the latest compatible version
+}
 android {
     namespace = "com.example.szakdogafitness"
     compileSdk = 35
@@ -44,6 +51,10 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -57,6 +68,41 @@ android {
         buildConfig = true
     }
 }
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest") // Ensure unit tests run before generating the report
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val fileFilter = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        "**/*Screen*.*",
+        "**/*Kt$*.*",
+        "**/*Composable*.*",
+        "com/example/szakdogafitness/ui/common/**/*.*",
+        "com/example/szakdogafitness/presentation/navigation.root/**/*.*",
+        "com/example/szakdogafitness/feature/setup/trainee/**/*.*",
+        "com/example/szakdogafitness/feature/setup/trainer/**/*.*",
+        "com/example/szakdogafitness/ui/components/**/*.*"
+    )
+
+    classDirectories.setFrom(
+        fileTree("${buildDir}/tmp/kotlin-classes/debug") {
+            exclude(fileFilter)
+        }
+    )
+
+    sourceDirectories.setFrom(files("src/main/java", "src/main/kotlin"))
+    executionData.setFrom(fileTree(buildDir) { include("**/*.exec", "**/*.ec") })
+}
+
 dependencies {
 
     testImplementation("org.robolectric:robolectric:4.11.1")
@@ -65,6 +111,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
+
 
     // Unit testing
     testImplementation("junit:junit:4.13.2")

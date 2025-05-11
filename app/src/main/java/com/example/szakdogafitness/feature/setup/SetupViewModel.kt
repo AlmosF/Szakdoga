@@ -410,7 +410,7 @@ class SetupViewModel @Inject constructor(
             }
 
             SetupEvent.NextButtonClicked -> {
-                Log.d("SetupViewModel", "NextButtonClicked")
+                //Log.d("SetupViewModel", "NextButtonClicked")
                 /*navigationUseCase.navigateNext(
                     navHostController = navHostController,
                     currentScreen = _state.value.currentScreen,
@@ -435,7 +435,7 @@ class SetupViewModel @Inject constructor(
         incrementBarStatus()
         updateButtonsState()
         //Log.d("SetupViewModel", "State: ${_state.value.availability}")
-        Log.d("SetupViewModel", "State: ${_state.value.user.trainer.availability}")
+        //Log.d("SetupViewModel", "State: ${_state.value.user.trainer.availability}")
     }
 
     private fun onFinishButton(state: SetupProfileState) {

@@ -159,12 +159,12 @@ class DailyDatasViewModel @Inject constructor(
                     if (dailyDataList.isNotEmpty()){
 
                         if (state.value.dailyDataList.isNotEmpty()){
-                            Log.d("DailyDatas", "DailyDataList is not empty - Just updating")
+                            //Log.d("DailyDatas", "DailyDataList is not empty - Just updating")
                             val currentDailyData = dailyDataList.find { it.date.toDate() == state.value.currentDailyData.date.toDate() } ?: dailyDataList.last()
 
                             val latestDate = currentDailyData.date.toDate().toString().substring(4, 10)
-                            Log.d("DailyDatas", "CurrentDailyData: $currentDailyData")
-                            Log.d("DailyDatas", "LatestDate: $latestDate")
+                            //Log.d("DailyDatas", "CurrentDailyData: $currentDailyData")
+                            //Log.d("DailyDatas", "LatestDate: $latestDate")
                             _state.update {
                                 it.copy(
                                     dailyDataList = dailyDataList,
@@ -174,7 +174,7 @@ class DailyDatasViewModel @Inject constructor(
                                 )
                             }
                         } else {
-                            Log.d("DailyDatas", "DailyDataList is empty - First Start")
+                            //Log.d("DailyDatas", "DailyDataList is empty - First Start")
                             val latestDailyData = dailyDataList.last()
                             val latestDate = latestDailyData.date.toDate().toString().substring(4, 10)
                             _state.update {
@@ -205,7 +205,7 @@ class DailyDatasViewModel @Inject constructor(
                 allDailyDatasUseCases.generateNewDailyData.invoke()
                 val latestDailyData = _state.value.dailyDataList.last()
                 val latestDate = latestDailyData.date.toDate().toString().substring(4, 10)
-                Log.d("DailyDatas", "GENERATING: $latestDailyData")
+                //Log.d("DailyDatas", "GENERATING: $latestDailyData")
                 _state.update { it.copy(
                     isLoading = false,
                     currentDailyData = latestDailyData,
