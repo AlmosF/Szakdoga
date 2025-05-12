@@ -160,29 +160,31 @@ fun AuthenticateScreen(
                         .width(TextFieldDefaults.MinWidth)
                         .width(64.dp)
                 )
-                PasswordTextField(
-                    value = state.password,
-                    label = "Password",
-                    onValueChange = {
-                        viewModel.onEvent(AuthenticationEvent.PasswordChanged(it))
-                    },
-                    onDone = {},
-                    modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .width(TextFieldDefaults.MinWidth)
-                        .height(64.dp),
-                    isVisible = state.passwordVisibility,
-                    onVisibilityChanged = {
-                        viewModel.onEvent(AuthenticationEvent.PasswordVisibilityChanged)
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Password,
-                            contentDescription = null
-                        )
-                    }
-                )
-                AnimatedVisibility(visible = state.isInRegisterMode) {
+                AnimatedVisibility(visible = !state.isInForgotPwMode) {
+                    PasswordTextField(
+                        value = state.password,
+                        label = "Password",
+                        onValueChange = {
+                            viewModel.onEvent(AuthenticationEvent.PasswordChanged(it))
+                        },
+                        onDone = {},
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                            .width(TextFieldDefaults.MinWidth)
+                            .height(64.dp),
+                        isVisible = state.passwordVisibility,
+                        onVisibilityChanged = {
+                            viewModel.onEvent(AuthenticationEvent.PasswordVisibilityChanged)
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Password,
+                                contentDescription = null
+                            )
+                        }
+                    )
+                }
+                AnimatedVisibility(visible = state.isInRegisterMode && !state.isInForgotPwMode) {
                     PasswordTextField(
                         value = state.confirmPassword,
                         label = "Password again",
@@ -212,34 +214,41 @@ fun AuthenticateScreen(
                 ) {
                     TextButton(
                         onClick = {
-                            viewModel.onEvent(AuthenticationEvent.ForgotPasswordButtonClicked)
+                            //viewModel.onEvent(AuthenticationEvent.ForgotPasswordButtonClicked)
+                            viewModel.onEvent(AuthenticationEvent.ForgotPwChangeMode)
                         }
                     ) {
                         Text(
-                            text = "Forgot password?"
+                            text = if (!state.isInForgotPwMode) "Forgot password?" else "Cancel"
                         )
                     }
                 }
                 Button(
                     onClick = {
-                        viewModel.onEvent(AuthenticationEvent.AuthenticationButtonClicked)
+                        if (state.isInForgotPwMode)
+                            viewModel.onEvent(AuthenticationEvent.ForgotPasswordButtonClicked)
+                        else
+                            viewModel.onEvent(AuthenticationEvent.AuthenticationButtonClicked)
                     }
                 ) {
                     Text(
-                        text = if (state.isInRegisterMode) "Register" else "Login"
+                        text = if (state.isInRegisterMode && !state.isInForgotPwMode) "Register" else if (!state.isInForgotPwMode)"Login" else "Send email"
                     )
                 }
-                Text(
-                    text = if (state.isInRegisterMode) "Already have an account?" else "Don't have an account?",
-                )
-                TextButton(
-                    onClick = {
-                        viewModel.onEvent(AuthenticationEvent.ChangeMode)
-                    }
-                ) {
+                if (!state.isInForgotPwMode){
                     Text(
-                        text = if (state.isInRegisterMode) "Login" else "Register"
+                        text = if (state.isInRegisterMode) "Already have an account?" else "Don't have an account?",
                     )
+                    TextButton(
+                        onClick = {
+                            viewModel.onEvent(AuthenticationEvent.ChangeMode)
+                        }
+                    ) {
+                        Text(
+                            text = if (state.isInRegisterMode) "Login" else "Register"
+                        )
+                    }
+
                 }
             }
         }

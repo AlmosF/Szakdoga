@@ -81,12 +81,21 @@ class AuthenticationViewModel @Inject constructor(
                 }
             }
             AuthenticationEvent.ChangeMode -> {
-                _state.update { it.copy(isInRegisterMode = !state.value.isInRegisterMode) }
+                _state.update { it.copy(
+                    isInRegisterMode = !state.value.isInRegisterMode,
+                    isInForgotPwMode = false
+                ) }
             }
             AuthenticationEvent.ForgotPasswordButtonClicked -> {
                 onForgotPassword()
             }
 
+            AuthenticationEvent.ForgotPwChangeMode -> {
+                _state.update { it.copy(
+                    isInForgotPwMode = !state.value.isInForgotPwMode,
+                    isInRegisterMode = false
+                ) }
+            }
         }
     }
 
@@ -196,6 +205,7 @@ class AuthenticationViewModel @Inject constructor(
                             UiText.StringResource(R.string.success_recovery_email)
                         )
                     )
+                    _state.update { it.copy(isInForgotPwMode = false) }
                 }
             } catch (e: Exception) {
                 _uiEvent.send(
@@ -226,6 +236,7 @@ data class AuthenticationState(
     val passwordVisibility: Boolean = false,
     val confirmPasswordVisibility: Boolean = false,
     val isInRegisterMode: Boolean = false,
+    val isInForgotPwMode: Boolean = false,
     val isLoggedIn: Boolean = false,
     val isOnline: Boolean = false
 )
@@ -240,6 +251,7 @@ sealed class AuthenticationEvent {
     object AuthenticationButtonClicked : AuthenticationEvent()
     object LogoutButtonClicked : AuthenticationEvent()
     object ChangeMode: AuthenticationEvent()
+    object ForgotPwChangeMode: AuthenticationEvent()
     object ForgotPasswordButtonClicked: AuthenticationEvent()
 }
 
