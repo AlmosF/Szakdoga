@@ -187,9 +187,8 @@ fun TrainerTwo(
                 },
             label = "Social Media",
             selectedTextColor = MaterialTheme.colorScheme.primary,
-            socialMedia = socialMediaMap,
+            socialMedia = state.user.trainer.socialMediaLinks,
             onSocialMediaSelected = {
-                socialMediaMap = it
                 setupViewModel.onEvent(
                     SetupEvent.SocialMediaLinksChanged(
                         it
