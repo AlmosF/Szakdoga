@@ -204,7 +204,8 @@ fun TrainerScreen(
                             rateSize = trainersState.allTrainersAllRating.find { rating ->
                                 rating?.first == currentTrainer.second.userId
                             }?.second?.size ?: 0,
-                            locationDistance = distance
+                            locationDistance = distance,
+                            unit = currentUser.trainee.unit
                         ) { userId ->
                             onTrainerClick(userId)
                         }

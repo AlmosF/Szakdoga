@@ -1,5 +1,6 @@
 package com.example.szakdogafitness.ui.common
 
+import android.R.attr.fontWeight
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -61,6 +62,7 @@ fun TrainerCard(
     ratingData: Int,
     rateSize: Int,
     locationDistance: Pair<Int?, Int?>?,
+    unit: Int,
     onClick: (String) -> Unit
 ) {
     //val painter = rememberAsyncImagePainter(data.image)
@@ -197,7 +199,12 @@ fun TrainerCard(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = if (locationDistance?.first != null) "${locationDistance.first} km away" else "N/A",
+                        //text = if (locationDistance?.first != null) "${locationDistance.first} km away" else "N/A",
+                        text = if (locationDistance?.first != null) { if (unit == 1){
+                            "${locationDistance.first} km away"
+                        } else {
+                            "${locationDistance.second} miles away"
+                        }} else "N/A",//"${locationDistance.first} km away" else "N/A",
                         fontSize = 16.sp,
                         color = Color.Black,
                         fontWeight = Bold

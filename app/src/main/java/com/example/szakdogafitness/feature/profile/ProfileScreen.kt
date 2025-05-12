@@ -724,7 +724,7 @@ fun ProfileScreenTrainer(
             onDone = {},
             trailingIcon = {
                 Text(
-                    text = "HUF",
+                    text = "$",
                     modifier = Modifier.padding(end = 8.dp)
                 )
             },
