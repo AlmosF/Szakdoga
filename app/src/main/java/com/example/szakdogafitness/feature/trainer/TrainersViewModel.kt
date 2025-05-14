@@ -89,7 +89,6 @@ class TrainersViewModel @Inject constructor(
                         allTrainersAllRating = allTrainersAllRating,
                         isLoading = false
                     ) }
-                    Log.d("TrainersViewModel", "Rating Star Loaded")
                 }
             } catch (e: Exception) {
                 _state.update { it.copy(isLoading = false) }
@@ -141,7 +140,6 @@ class TrainersViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             try {
                 allTrainersUseCases.fetchRequestedAppointments.invoke(trainerId).collect { requestedAppoint ->
-                    Log.d("TrainersViewModel", "fetchRequestedAppoint: $requestedAppoint")
                     _state.update { it.copy(
                         requestedAppoint = requestedAppoint,
                         isLoading = false

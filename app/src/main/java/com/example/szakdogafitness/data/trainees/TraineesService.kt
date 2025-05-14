@@ -253,7 +253,7 @@ class TraineesService @Inject constructor(
             .whereEqualTo("status", status)
             .dataObjects<Requests>()
             .flatMapLatest { requests ->
-                if (requests.isEmpty()) return@flatMapLatest flowOf(emptyList()) // 🔥 Emit immediately if empty
+                if (requests.isEmpty()) return@flatMapLatest flowOf(emptyList())
 
                 val requestFlows = requests.map { request ->
                     getUserById(request.traineeId)

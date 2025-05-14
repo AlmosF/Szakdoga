@@ -86,6 +86,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*Screen*.*",
         "**/*Kt$*.*",
         "**/*Composable*.*",
+        "**/*Service*.*",
         "com/example/szakdogafitness/ui/common/**/*.*",
         "com/example/szakdogafitness/presentation/navigation.root/**/*.*",
         "com/example/szakdogafitness/feature/setup/trainee/**/*.*",

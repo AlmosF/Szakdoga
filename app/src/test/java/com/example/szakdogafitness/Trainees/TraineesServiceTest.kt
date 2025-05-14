@@ -22,6 +22,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -47,7 +48,7 @@ class TraineesServiceTest {
     private val removeEventFromCalendar: RemoveEventFromCalendarUseCase = mockk(relaxed = true)
     private val deleteRequest: DeleteRequestUseCase = mockk(relaxed = true)
     private val removeTrainee: RemoveTraineeUseCase = mockk(relaxed = true)
-    private val fetchRequests: FetchRequestsUseCase = mockk(relaxed = true)
+    private val fetchRequests: FetchRequestsUseCase = mockk()
     private val fetchUsersDailyDatasById: FetchUsersDailyDatasByIdUseCase = mockk(relaxed = true)
 
     val dispatcher = StandardTestDispatcher()
