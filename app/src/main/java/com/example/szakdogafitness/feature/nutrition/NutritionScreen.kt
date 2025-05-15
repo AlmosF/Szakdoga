@@ -62,7 +62,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun NutritionScreen(
     modifier: Modifier = Modifier,
-    //mainViewModel: MainViewModel = hiltViewModel(),
     dailyDatasViewModel: DailyDatasViewModel = hiltViewModel(),
     mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
     cameraViewModel: CameraViewModel = hiltViewModel(),
@@ -79,7 +78,6 @@ fun NutritionScreen(
     )
     val cameraState by cameraViewModel.state.collectAsStateWithLifecycle()
     val mealTypesState by mealTypesViewModel.state.collectAsStateWithLifecycle()
-    //val mainState by mainViewModel.state.collectAsStateWithLifecycle()
     val dailyDatasState by dailyDatasViewModel.state.collectAsStateWithLifecycle()
     val generativeState by generativeViewModel.state.collectAsStateWithLifecycle()
     var capturedPhoto by remember { mutableStateOf(cameraState.image?.asImageBitmap()) }
@@ -170,10 +168,6 @@ fun NutritionScreen(
         }
     }
 
-    /*LaunchedEffect(Unit) {
-        mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
-    }*/
-
     Column (
         modifier = modifier
             .fillMaxSize()
@@ -223,8 +217,6 @@ fun NutritionScreen(
             }
         )
         LogBlock(
-            //data = mainState.currentDailyData.foodIntake, //fixme("Workingone")
-            //data = mainState.currentDailyData.foodIntakeM, //fixme("Workingone - With MAINVM")
             data = dailyDatasState.currentDailyData.foodIntakeM,
             mealTypesViewModel = mealTypesViewModel
         ) { nutritionID, mealType ->

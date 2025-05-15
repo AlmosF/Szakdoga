@@ -33,30 +33,6 @@ data class User(
     val profileImageUrl: String = "",
     val location: GeoPoint? = null,
     val trainer: Trainer = Trainer(),
-
-    //Trainer
-    /*val certifications: List<Int> = emptyList(), //Külön dataclass trainer-trainee
-    val areasOfExperties: List<Int> = emptyList(),
-    val trainingStyles: List<Int> = emptyList(),
-    val experience: Int = 0,
-    val availability: Map<String, List<Int>> = emptyMap(),
-    val pricing: Int = 0,
-    val rating: Float = 0f,
-    val specializations: List<Int> = emptyList(),
-    val socialMediaLinks: Map<String, String> = emptyMap(),*/
-
-    //trainee
-    /*val unit: Int = 0,
-    val height: Int = 0,
-    val weight: Double = 0.0,
-    val trainings: Int = 0,
-    val fitnessGoals: List<Int> = emptyList(),
-    val currentFitnessLevel: Int = 0, //Vagy int?
-    val trainingPreference: Int = 0,
-    val healthInformation: List<String> = emptyList(),
-    val dietaryPreferences: List<String> = emptyList(),
-    val availableEquipment: List<String> = emptyList(),*/
-
     val trainee: Trainee = Trainee(),
 
     val isSetupDone: Boolean = false,
@@ -81,7 +57,6 @@ data class Trainer(
     val availability: Map<String, List<Int>> = emptyMap(),
     val pricing: Int = 0,
     val specializations: List<Int> = emptyList(),
-    //val socialMediaLinks: Map<String, String> = emptyMap(),
     val socialMediaLinks: Map<String, String> = mapOf(
         "Facebook" to "",
         "Instagram" to "",

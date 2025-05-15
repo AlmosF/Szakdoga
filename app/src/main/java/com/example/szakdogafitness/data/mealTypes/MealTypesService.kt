@@ -20,45 +20,6 @@ import javax.inject.Inject
 class MealTypesService @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : IMealTypesService {
-    /*override fun getMealTypes(): Flow<Map<String, List<Nutrition>>> = flow {
-
-        val mealTypes = mutableMapOf<String, List<Nutrition>>()
-
-        val mealTypeNames = listOf("breakfast", "morning_snack", "lunch", "afternoon_snack", "dinner", "evening_snack")
-
-        mealTypeNames.forEach { mealType ->
-            try {
-                val snapshot = firestore.collection("mealtype").document(mealType).get().await()
-
-                val foodList = snapshot.get("foods") as? List<Map<String, Any>> ?: emptyList()
-                val nutritionList = foodList.map { food ->
-                    Nutrition(
-                        foodId = (food["foodId"] as? Int) ?: 0,
-                        foodName = food["foodName"] as? String ?: "",
-                        servingSize = food["servingSize"] as? Int ?: 0,
-                        calories = (food["calories"] as? Int) ?: 0,
-                        protein = (food["protein"] as? Int) ?: 0,
-                        carbs = (food["carbs"] as? Int) ?: 0,
-                        fat = (food["fat"] as? Int) ?: 0,
-                        image = food["image"] as? String ?: ""
-                    )
-                }
-                mealTypes[mealType] = nutritionList
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        emit(mealTypes)
-    }.flowOn(Dispatchers.IO)*/
-    /*override fun getMealTypes(): Flow<Map<String, List<Nutrition>>> = //Working for one
-        firestore.collection("mealtype")
-            .document("breakfast")
-            .dataObjects<FirestoreMealtypes>()
-            .map { mealTypesList ->
-                Log.d("MealTypesService", "getMealTypes: $mealTypesList")
-                mealTypesList?.let { mapOf("breakfast" to it.foods) } ?: emptyMap()
-            }
-            .flowOn(Dispatchers.IO)*/
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getMealTypes(): Flow<Map<String, List<Nutrition>>> = flow {

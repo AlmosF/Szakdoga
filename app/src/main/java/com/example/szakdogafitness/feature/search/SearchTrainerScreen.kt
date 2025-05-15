@@ -59,7 +59,6 @@ fun SearchTrainerScreen(
     appBarViewModel: AppBarViewModel = hiltViewModel(),
     currentUser: User,
     onTrainerClick: (String) -> Unit
-    //VMs
 ) {
 
     val trainersState by trainersViewModel.state.collectAsStateWithLifecycle()
@@ -77,16 +76,11 @@ fun SearchTrainerScreen(
                 }
             )
         )
-        //mainViewModel.onEvent(MainEvent.FetchTrainers)
         trainersViewModel.onEvent(TrainersEvent.LoadTrainers)
-        //if (trainersState.allTrainersAllRating.isEmpty()){
-        //    trainersViewModel.onEvent(TrainersEvent.LoadAllTrainersAllRating)
-        //} //removed because its loading with the loadtrainers fun, bercause it was stopping the loading var.
         Log.d("SearchTrainerScreen", "AllTrainersAllRating: ${trainersState.allTrainersAllRating}")
 
     }
 
-    //val mainState by mainViewModel.state.collectAsStateWithLifecycle()
     Column (
         modifier = modifier
             .fillMaxSize(),
@@ -111,12 +105,6 @@ fun SearchTrainerScreen(
                 )
             },
             trailingIcon = {
-                /*Icon(
-                    imageVector = Icons.Filled.FilterAlt,
-                    contentDescription = "Filter",
-                    modifier = Modifier
-                        .size(32.dp)
-                )*/
                 TrainerFilter(
                     trainersViewModel = trainersViewModel,
                 )
@@ -170,36 +158,6 @@ fun SearchTrainerScreen(
                     modifier = Modifier
                         .fillMaxWidth(0.95f),
                 ) {
-                    /*items(list.size) {
-                        TrainerCard(
-                            data = list[it],
-                        )
-                    }*/
-
-                    /*items(trainersState.trainers.size) {
-                        val user = trainersState.trainers[it]!!
-                        val rating = trainersState.allTrainersAllRating.find { rating ->
-                            rating?.first == user.userId
-                        }?.second?.sumOf {
-                            it.rating
-                        }?.div(
-                            trainersState.allTrainersAllRating.find { rating ->
-                                rating?.first == user.userId
-                            }?.second?.size ?: 1
-                        )
-                        val distance = user.location?.calculateDistance(currentUser.location ?: GeoPoint(0.0,0.0))
-                        Log.d("SearchTrainerScreen", "Rating: $rating")
-                        TrainerCard(
-                            currentTrainer = trainersState.trainers[it]!!,
-                            ratingData = rating ?: 0,
-                            rateSize = trainersState.allTrainersAllRating.find { rating ->
-                                rating?.first == user.userId
-                            }?.second?.size ?: 0,
-                            locationDistance = distance
-                        ) { userId ->
-                            onTrainerClick(userId)
-                        }
-                    }*/
                     items(filteredList.size) {
                         val user = filteredList[it]!!
                         val rating = trainersState.allTrainersAllRating.find { rating ->
@@ -352,16 +310,4 @@ fun TrainerFilter(
             )
         }
     }
-}
-
-
-
-
-
-@Composable
-@Preview
-fun SearchTrainerScreenPreview() {
-    /*SearchTrainerScreen(
-
-    )*/
 }

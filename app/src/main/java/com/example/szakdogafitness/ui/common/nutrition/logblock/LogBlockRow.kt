@@ -39,7 +39,6 @@ import com.example.szakdogafitness.domain.model.Nutrition
 fun LogBlockRow(
     modifier : Modifier = Modifier,
     title: String,
-    //data: List<Nutrition>, //fixme("Workingone")
     data: List<Int>,
     meals: List<Nutrition>,
     onOpen: () -> Unit,
@@ -47,7 +46,6 @@ fun LogBlockRow(
     onRemove: (Int, String) -> Unit
 ) {
     var isOpened = state.name == title.replace(" ", "")
-    //val value = data.sumOf { it.calories } //fixme("Workingone")
     val value = meals.filter {it.foodId in data}.sumOf { it.calories }
 
     LaunchedEffect(data, isOpened) {
@@ -176,26 +174,3 @@ fun RowValue(
         )
     }
 }
-
-
-
-/*@Composable
-@Preview
-fun LogBlockRowPreview() {
-    
-    LogBlockRow(
-        modifier = Modifier
-            .safeDrawingPadding(),
-        title = "Breakfast",
-        data = listOf(
-            Nutrition(1, "Egg", 100, 10, 10, 10, 10, ""),
-            Nutrition(2, "Bread", 100, 10, 10, 10, 10, ""),
-            Nutrition(3, "Butter", 100, 10, 10, 10, 10, ""),
-            Nutrition(4, "Milk", 100, 10, 10, 10, 10, ""),
-        ),
-        onOpen = {},
-        onRemove = { _, _ ->
-
-        }
-    )
-}*/

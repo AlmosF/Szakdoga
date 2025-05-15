@@ -28,7 +28,6 @@ fun DateSelector(
     textStyle: TextStyle,
     textColor: Color,
     selectedTextColor: Color,
-    //date: Timestamp = Timestamp.now(),
     date: Long = System.currentTimeMillis(),
     onDateSelected: (day: Int, month: Int, year: Int) -> Unit = { _, _, _ -> }
 ) {
@@ -40,7 +39,6 @@ fun DateSelector(
     val currentMonth = remember { mutableIntStateOf(month) }
     val currentDay = remember { mutableIntStateOf(day) }
 
-    // Recalculate days in the selected month and year
     val daysInMonth = remember(currentYear.intValue, currentMonth.intValue) {
         when (currentMonth.intValue) {
             1, 3, 5, 7, 8, 10, 12 -> 31
@@ -65,7 +63,7 @@ fun DateSelector(
         InfiniteCircularList(
             width = width,
             itemHeight = itemHeight,
-            items = (1..daysInMonth).toList(), // Dynamically update days
+            items = (1..daysInMonth).toList(),
             initialItem = currentDay.intValue,
             textStyle = textStyle,
             textColor = textColor,
@@ -89,18 +87,6 @@ fun DateSelector(
             }
         )
         Spacer(modifier = Modifier.width(8.dp))
-        /*InfiniteCircularList(
-            width = width,
-            itemHeight = itemHeight,
-            items = (1900..2100).toList(),
-            initialItem = currentYear.intValue,
-            textStyle = textStyle,
-            textColor = textColor,
-            selectedTextColor = selectedTextColor,
-            onItemSelected = { _, year ->
-                currentYear.intValue = year
-            }
-        )*/
         InfiniteCircularList(
             width = width,
             itemHeight = itemHeight,

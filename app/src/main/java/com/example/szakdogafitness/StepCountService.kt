@@ -76,38 +76,6 @@ class StepCountService : Service(), SensorEventListener {
 
         return START_STICKY
     }
-    /*override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        stepSensor?.let {
-            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
-        }
-        return START_STICKY
-    }*/
-
-    /*override fun onSensorChanged(event: SensorEvent?) {
-        val totalSteps = event?.values?.firstOrNull()?.toInt() ?: return
-        if (initialSteps == -1) initialSteps = totalSteps
-        val delta = totalSteps - initialSteps
-        Log.d("StepCountService", "Steps: $delta")
-        CoroutineScope(Dispatchers.IO).launch {
-            repository.saveStepsLocally(delta)
-        }
-    }*/
-    /*override fun onSensorChanged(event: SensorEvent?) {
-        val totalSteps = event?.values?.firstOrNull()?.toInt() ?: return
-        //if (initialSteps == -1) initialSteps = totalSteps
-        val delta = totalSteps - initialSteps
-        Log.d("StepCountService", "Total Steps: $totalSteps, Initial Steps: $initialSteps, Delta: $delta")
-
-        // Debugging step to check
-        Log.d("StepCountService", "Steps detected: $delta")
-
-        if (delta > 0) {
-            // Save the delta value to DataStore
-            CoroutineScope(Dispatchers.IO).launch {
-                repository.saveStepsLocally(delta)
-            }
-        }
-    }*/
     override fun onSensorChanged(event: SensorEvent?) {
         val totalSteps = event?.values?.firstOrNull()?.toInt() ?: return
         if (initialSteps == -1) {

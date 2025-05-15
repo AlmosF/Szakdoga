@@ -303,10 +303,6 @@ fun PieChartComp(
                             this.legend.isEnabled = true
 
                             this.legend.textSize = 14F
-
-                            //this.setUsePercentValues(true)
-
-
                             this.setDrawSliceText(false)
 
 

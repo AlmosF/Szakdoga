@@ -46,7 +46,6 @@ import com.example.szakdogafitness.feature.setup.toTriple
 @Composable
 fun TraineeBioScreen(
     modifier: Modifier = Modifier,
-    //data: User,
     data: Pair<Requests, User>,
     onTraineeRemoved: (String) -> Unit,
 ) {

@@ -30,13 +30,10 @@ fun WeightSelector(
     weight: Double = 50.0,
     onWeightSelected: (weight: Double) -> Unit = { _ -> }
 ){
-    //val decimalWeight = remember { mutableIntStateOf(((weight * 10) % 10).toInt()) }
-    //val sWeight = remember { mutableIntStateOf(weight.toInt()) }
     val decimalWeight = remember { mutableIntStateOf(
         if (unit) { //kg
             ((weight * 10) % 10).toInt()
         } else { //lbs
-            //((weight * 10 * 2.20462) % 10).toInt()
             ((weight * 10 * 2.2) % 10).toInt()
         }
     ) }
@@ -44,7 +41,6 @@ fun WeightSelector(
         if (unit) { //kg
             weight.toInt()
         } else { //lbs
-            //(weight * 2.20462).toInt()
             (weight * 2.2).toInt()
         }
     ) }
@@ -91,16 +87,16 @@ fun WeightSelector(
 
 fun convertWeightToStoredUnit(weightInKg: Double, unit: Boolean): Double {
     return if (unit) {
-        weightInKg // In kg, just return the weight as is
+        weightInKg
     } else {
-        weightInKg * 2.20462 // Convert kg to lbs
+        weightInKg * 2.20462
     }
 }
 
 fun convertWeightToKg(weightInStoredUnit: Double, unit: Boolean): Double {
     return if (unit) {
-        weightInStoredUnit // If unit is kg, return as is
+        weightInStoredUnit
     } else {
-        weightInStoredUnit / 2.20462 // Convert lbs to kg
+        weightInStoredUnit / 2.20462
     }
 }

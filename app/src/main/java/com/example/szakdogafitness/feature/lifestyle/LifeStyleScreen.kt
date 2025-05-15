@@ -47,41 +47,13 @@ import kotlinx.coroutines.delay
 @Composable
 fun LifeStyleScreen(
     modifier: Modifier = Modifier,
-    //mainViewModel: MainViewModel = hiltViewModel(),
     navController: NavHostController,
     appBarViewModel: AppBarViewModel = hiltViewModel(),
     dailyDatasViewModel: DailyDatasViewModel = hiltViewModel(),
-    profileViewModel: ProfileViewModel = hiltViewModel(), //Mimic of the MainVM
+    profileViewModel: ProfileViewModel = hiltViewModel(),
     mealTypesViewModel: MealTypesViewModel = hiltViewModel(),
     stepCountViewModel: StepCountViewModel = hiltViewModel(),
-    //VMs
 ){
-    /*Scaffold (
-        modifier = modifier.fillMaxSize(),
-        topBar = {
-            TopBar(
-                title = {
-                    LifeStyleTitle(
-                        title = "DAYA",
-                        onPreviousDayClick = {
-                            Log.d("RootNavigation", "onPreviousDayClick")
-                        },
-                        onNextDayClick = {
-
-                        }
-                    )
-
-                },
-                navigationIcon = {
-                    LifeStyleAction (
-                        image = "https://th.bing.com/th/id/R.714e3da50d7cbbdc01a4cfa6d6db7749?rik=WLlLJErQ5mSgQA&pid=ImgRaw&r=0"
-                    ) {
-
-                    }
-                },
-            )
-        }
-    ){ innerPadding ->*/
 
     val context = LocalContext.current
 
@@ -91,7 +63,6 @@ fun LifeStyleScreen(
 
     val appBarState by appBarViewModel.state.collectAsStateWithLifecycle()
 
-    //val mainState by mainViewModel.state.collectAsStateWithLifecycle()
 
     val dailyDatasState by dailyDatasViewModel.state.collectAsStateWithLifecycle()
 
@@ -101,21 +72,7 @@ fun LifeStyleScreen(
 
     val permissionState = rememberPermissionState(android.Manifest.permission.ACTIVITY_RECOGNITION)
     val activityPermissionGranted = permissionState.status.isGranted
-    /*LaunchedEffect(Unit, activityPermissionGranted) {
-        if (!activityPermissionGranted) {
-            permissionState.launchPermissionRequest()
-        } else {
-            stepCountViewModel.loadSteps()
-            context.startStepService()
-            stepCountViewModel.syncSteps()
-        }
-    }*/
 
-    /*LaunchedEffect(Unit) {
-        stepCountViewModel.loadSteps()
-        context.startStepService()
-        stepCountViewModel.syncSteps()
-    }*/
     val locationPermission = rememberMultiplePermissionsState(
         listOf(
             android.Manifest.permission.ACCESS_FINE_LOCATION,
@@ -125,7 +82,7 @@ fun LifeStyleScreen(
 
     val permissionsGranted = locationPermission.allPermissionsGranted
     LaunchedEffect(Unit, permissionsGranted, activityPermissionGranted) {
-        // Request both permissions
+
         if (!permissionState.status.isGranted) {
             permissionState.launchPermissionRequest()
         }
@@ -133,64 +90,22 @@ fun LifeStyleScreen(
             locationPermission.launchMultiplePermissionRequest()
         }
 
-        // Handle activity recognition permission
         if (permissionState.status.isGranted) {
             stepCountViewModel.loadSteps()
             context.startStepService()
             stepCountViewModel.syncSteps()
         }
 
-        // Handle location permissions
         if (locationPermission.allPermissionsGranted) {
             profileViewModel.onEvent(ProfileEvent.StartLocationMonitoring)
         }
     }
-    /*LaunchedEffect(Unit, permissionsGranted) {
-        if (permissionsGranted){
-            //dailyDatasViewModel.onEvent(DailyDatasEvent.StartLocationMonitoring)
-            profileViewModel.onEvent(ProfileEvent.StartLocationMonitoring)
-        } else {
-            locationPermission.launchMultiplePermissionRequest()
-        }
-    }*/
 
     LaunchedEffect(Unit) {
         dailyDatasViewModel.onEvent(DailyDatasEvent.LoadDailyDatas)
         mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
         delay(100) //fixme: Remove delay - somehow
 
-        //Log.d("LifeStyleScreen", "LaunchedEffect: ${mainState.currentDailyData}")
-        /*appBarViewModel.onEvent( //WITH MAINSTATE
-            AppBarEvent.TopBarComposableChanged(
-                {
-                    TopBar(
-                        title = {
-                            LifeStyleTitle(
-                                title = mainState.lifeStyleTitle,
-                                previousButtonEnabled = mainState.isPreviousDayAvailable,
-                                onPreviousDayClick = {
-                                    Log.d("RootNavigation", "onPreviousDayClick")
-                                    mainViewModel.onEvent(MainEvent.PreviousDayDailyData)
-                                    //authViewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
-                                },
-                                nextButtonEnabled = mainState.isNextDayAvailable,
-                                onNextDayClick = {
-                                    Log.d("RootNavigation", "onNextDayClick")
-                                    mainViewModel.onEvent(MainEvent.NextDayDailyData)
-                                }
-                            )
-                        },
-                        navigationIcon = {
-                            LifeStyleAction (
-                                image = mainState.user?.profileImageUrl ?: "",
-                            ) {
-                                navController.navigate(RootScreenRoute.Profile.route)
-                            }
-                        }
-                    )
-                }
-            )
-        )*/
         appBarViewModel.onEvent(
             AppBarEvent.TopBarComposableChanged(
                 {
@@ -208,13 +123,6 @@ fun LifeStyleScreen(
                                 }
                             )
                         },
-                        /*navigationIcon = { //WITH MAINSTATE
-                            LifeStyleAction (
-                                image = mainState.user?.profileImageUrl ?: "",
-                            ) {
-                                navController.navigate(RootScreenRoute.Profile.route)
-                            }
-                        }*/
                         navigationIcon = {
                             LifeStyleAction (
                                 image = profileState.user?.profileImageUrl ?: "",
@@ -226,27 +134,17 @@ fun LifeStyleScreen(
                 }
             )
         )
-        //Log.d("LifeStyle", "${mainState.user}")
     }
 
 
     ConstraintLayout (
-        modifier = modifier//.padding(innerPadding)
+        modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ){
         val (caloryBlock, waterBlock, weightBlock, stepsBlock) = createRefs()
 
-        /*DailyCaloriesBlock( //WITH MAINSTATE
-            modifier = Modifier
-                .constrainAs(caloryBlock){
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-                .fillMaxWidth(0.9f),
-            dailyData = mainState.currentDailyData
-        )*/
+
         DailyCaloriesBlock(
             modifier = Modifier
                 .constrainAs(caloryBlock){
@@ -258,17 +156,6 @@ fun LifeStyleScreen(
             dailyData = dailyDatasState.currentDailyData,
             nutritions = mealTypesState.nutritions
         )
-        /*WaterIntakeBlock( //WITH MAINSTATE
-            modifier = Modifier
-                .constrainAs(waterBlock){
-                    top.linkTo(caloryBlock.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-                .fillMaxWidth(0.9f),
-            consumedWater = mainState.currentDailyData.waterIntake,
-            goalWater = mainState.currentDailyData.targetWater
-        )*/
         WaterIntakeBlock(
             modifier = Modifier
                 .constrainAs(waterBlock){
@@ -325,31 +212,7 @@ fun LifeStyleScreen(
                 goalSteps = dailyDatasState.currentDailyData.targetSteps
             )
         }
-        /*WeightControlBlock(
-            modifier = Modifier
-                .constrainAs(weightBlock){
-                    top.linkTo(waterBlock.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-                .fillMaxWidth(0.9f),
-            weight = profileState.user?.trainee?.weight ?: 0.0,
-        )
-        StepsBlock(
-            modifier = Modifier
-                .constrainAs(stepsBlock){
-                    top.linkTo(weightBlock.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-                .fillMaxWidth(0.9f),
-            steps = dailyDatasState.currentDailyData.steps,
-            goalSteps = dailyDatasState.currentDailyData.targetSteps
-        )*/
-
-
     }
-    //}
 }
 
 @Composable

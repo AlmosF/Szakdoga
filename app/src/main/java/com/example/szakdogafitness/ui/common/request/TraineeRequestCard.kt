@@ -107,7 +107,6 @@ fun TraineeRequestCard(
             ) {
                 Text(
                     text = "${data.firstName} ${data.lastName}",
-                    //text = data.userId
                 )
                 Text(
                     text = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(data.dateOfBirth?.toDate()).toString()

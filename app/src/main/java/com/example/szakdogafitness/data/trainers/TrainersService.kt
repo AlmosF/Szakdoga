@@ -188,10 +188,6 @@ class TrainersService @Inject constructor(
                 .collection("trainerRatings")
                 .document(userId)
 
-            /*val rating = Rating(
-                rating = rate,
-                timestamp = Timestamp.now()
-            )*/
             val rating = mapOf(
                 "rating" to rate,
                 "timestamp" to Timestamp.now()

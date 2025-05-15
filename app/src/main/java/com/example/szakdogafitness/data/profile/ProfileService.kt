@@ -30,54 +30,6 @@ class ProfileService @Inject constructor(
     private val storage: FirebaseStorage
 ) : IProfileService{
 
-    /*override suspend fun getUser() : Flow<User> {
-        if (userIdUseCase() != null){
-            Log.d("ProfileService", "User found: ${userIdUseCase()}")
-            val querySnapshot = firestore.collection("users")
-                .whereEqualTo("uid", userIdUseCase())
-                .limit(1)
-                .get()
-                .await()
-            Log.d("ProfileService", "User found: ${querySnapshot.documents}")
-            val fireStoreUser = querySnapshot.documents.firstOrNull()?.toObject(FirestoreUser::class.java)
-            return fireStoreUser
-        } else {
-            Log.d("ProfileService", "User not found: ${userIdUseCase()}")
-            return User()
-        }
-    }*/
-    /*override suspend fun getUser(): Flow<User> =
-        firestore.collection("users")
-            .whereEqualTo("uid", userIdUseCase())
-            .limit(1)
-            .get()
-            .await()
-            .documents
-            .firstOrNull()
-            ?.toObject(FirestoreUser::class.java)
-            ?.let { flowOf(it.toUser(FirestoreTrainer())) }
-            ?: flowOf(User())*/
-
-    /*override suspend fun getUser(): Flow<User?> =
-        firestore.collection("users")
-            .whereEqualTo("uid", userIdUseCase())
-            .limit(1)
-            //.snapshots()
-            .dataObjects<FirestoreUser>()
-            .map { list ->
-                list.firstOrNull()?.toUser(FirestoreTrainer())
-            }
-            /*.map { list -> //ez jo volt
-                val fireStoreUser = list.firstOrNull()
-                fireStoreUser?.toUser(FirestoreTrainer()) ?: User()
-            }*/
-            /*.map { querySnapshot ->
-                val fireStoreUser = querySnapshot.documents.firstOrNull()?.toObject(FirestoreUser::class.java)
-                fireStoreUser?.toUser(FirestoreTrainer()) ?: User()
-            }*/
-
-     */
-
     @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getUser(): Flow<User?> =
         firestore.collection("users")

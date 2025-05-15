@@ -31,43 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
-/*@Composable
-fun TimetableView(
-    modifier : Modifier = Modifier,
-    selectedHours: Map<String, List<Int>> = emptyMap(),
-    onHourSelected : (String, Int) -> Unit = { _, _ -> },
-    test: Boolean = false
-) {
-    val days = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
-
-    Row (
-        modifier = modifier
-            .padding(8.dp)
-            .horizontalScroll(rememberScrollState())
-            .fillMaxWidth()
-            .background(Color.Gray, shape = RoundedCornerShape(16.dp))
-            .heightIn(max = 400.dp)
-    ) {
-        days.forEach(){
-            TimetableColumn(
-                it,
-                onHourSelected = onHourSelected,
-                selectedHours = selectedHours,
-                select = test
-            )
-            if (it != days.last()){
-                VerticalDivider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterVertically)
-                        .heightIn(max = 400.dp),
-                    thickness = 1.dp,
-                    Color.Black
-                )
-            }
-        }
-    }
-}*/
 @Composable
 fun TrainerTimetableView(
     modifier: Modifier = Modifier,
@@ -78,7 +41,7 @@ fun TrainerTimetableView(
     val days = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
     var selectedDay by remember { mutableStateOf(days.first()) }
 
-    Column(modifier = modifier/*.padding(16.dp)*/) {
+    Column(modifier = modifier) {
         Text(text = "Select Available Appointments", fontWeight = FontWeight.Bold, fontSize = 18.sp)
 
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -88,12 +51,10 @@ fun TrainerTimetableView(
                     day = day,
                     isSelected = selectedDay == day,
                     onClick = { selectedDay = day },
-                    //isEnabled = enabled
                 )
             }
         }
 
-        //Spacer(modifier = Modifier.height(8.dp))
 
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             items(9) { index ->
@@ -118,11 +79,9 @@ fun TraineeTimetableView(
     selectedHours: Map<String, List<Int>> = emptyMap(), // Set by trainee
     onHourSelected: (String, Int) -> Unit
 ) {
-    //val days = availableHours.keys.toList()
     val days = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
     var selectedDay by remember { mutableStateOf(days.firstOrNull() ?: "") }
 
-    //if (selectedDay.isEmpty()) return // No available days
 
     Column(modifier = modifier.padding(16.dp)) {
         Text(text = "Select Your Appointments", fontWeight = FontWeight.Bold, fontSize = 18.sp)
@@ -171,7 +130,6 @@ fun DayChip(day: String, isSelected: Boolean, onClick: () -> Unit, isEnabled : B
             disabledContainerColor = if (isSelected) Color.Blue.copy(alpha = 0.5f) else Color.Transparent //Not fix yet
         ),
         enabled = isEnabled,
-        //border = BorderStroke(1.dp, if (isSelected) Color.Blue else Color.Gray),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier.padding(4.dp)
     ) {
@@ -194,105 +152,6 @@ fun TimeChip(time: String, isSelected: Boolean, onClick: () -> Unit, enabled: Bo
         Text(text = time)
     }
 }
-
-/*@Composable
-fun TimetableView(
-    modifier: Modifier = Modifier,
-    selectedHours: Map<String, List<Int>> = emptyMap(),
-    onHourSelected: (String, Int) -> Unit = { _, _ -> },
-    onTrainee: Boolean = false,
-    onTraineeSelectedHours : Map<String, List<Int>> = emptyMap(),
-) {
-    val days = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
-    var selectedDay by remember { mutableStateOf(days.firstOrNull { selectedHours[it]?.isNotEmpty() == true } ?: "") }
-
-    Column(
-        modifier = modifier.padding(16.dp)
-    ) {
-        Text(text = "Day", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(days.size) { day ->
-                val day = days[day]
-                val hasAppointments = selectedHours[day]?.isNotEmpty() == true
-                val isEnabled = !onTrainee || hasAppointments  // Disable if no appointments in test mode
-                DayChip(
-                    day = day,
-                    isSelected = selectedDay == day,
-                    onClick = { if (isEnabled) selectedDay = day },
-                    enabled = isEnabled,
-                    onTrainee = onTrainee
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(text = "Time", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(9) { index ->
-                val hour = index + 8
-                TimeChip(
-                    time = "$hour:00",
-                    isSelected = selectedHours[selectedDay]?.contains(hour) == true,
-                    onClick = { if (selectedDay.isNotEmpty()) onHourSelected(selectedDay, hour) },
-                    enabled = (!onTrainee && selectedDay.isNotEmpty()) || (onTrainee && selectedHours[selectedDay]?.contains(hour) == true),
-                    onTrainee = onTrainee
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun DayChip(day: String, isSelected: Boolean, onClick: () -> Unit, enabled: Boolean, onTrainee: Boolean) {
-    OutlinedButton(
-        onClick = onClick,
-        enabled = enabled,
-        colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = if (isSelected && !onTrainee) Color.Green else if (!isSelected) Color.Transparent else Color.Green,
-            contentColor = if (isSelected) Color.White else if (enabled) Color.Black else Color.Gray
-        ),
-        border = BorderStroke(1.dp, if (isSelected) Color.Blue else Color.Gray),
-        shape = RoundedCornerShape(20.dp),
-        modifier = Modifier.padding(4.dp)
-    ) {
-        Text(text = day.take(3)) // Show first 3 letters (Mon, Tue, etc.)
-    }
-}
-
-@Composable
-fun TimeChip(time: String, isSelected: Boolean, onClick: () -> Unit, enabled: Boolean, onTrainee: Boolean) {
-    OutlinedButton(
-        onClick = onClick,
-        enabled = enabled,
-        colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = if (isSelected && !onTrainee)
-                Color.Green
-            else if (!isSelected)
-                Color.Transparent
-            else
-                Color.Transparent.copy(alpha = 0.5f),
-            contentColor = if (isSelected) Color.White else if (enabled) Color.Black else Color.Gray
-        ),
-        border = BorderStroke(1.dp, if (isSelected) Color.Blue else Color.Gray),
-        shape = RoundedCornerShape(20.dp),
-        modifier = Modifier.padding(4.dp)
-    ) {
-        Text(text = time)
-    }
-}*/
-
-
-
-
 @Composable
 fun TimetableColumn(
     day: String,
@@ -346,19 +205,3 @@ fun TimetableColumn(
         }
     }
 }
-
-
-@Composable
-@Preview
-fun PreviewTimetableColumn() {
-    //TimetableColumn("Monday")
-}
-
-
-@Composable
-@Preview
-fun PreviewTimetableView() {
-    //TimetableView()
-
-}
-

@@ -177,10 +177,6 @@ class TraineesViewModel @Inject constructor(
                         }
                         buttonsAvailable()
                     }
-                    /*_state.update { it.copy(
-                        traineesDailyDataList = traineeDailyDataList,
-                        isLoading = false
-                    ) }*/
                 }
             } catch (e: Exception) {
                 _state.update { it.copy(isLoading = false) }
@@ -189,10 +185,6 @@ class TraineesViewModel @Inject constructor(
     }
 
     private fun selectTrainee(traineeId: String){
-        /*val trainee = state.value.acceptedRequests.find {
-            it.first.traineeId == traineeId
-        } ?: error("Error finding trainee")*/
-        //Log.d("TraineesViewModel", "selectTrainee: $traineeId")
         _state.update { it.copy(isLoading = true) }
         try {
             val trainee = state.value.acceptedRequests.find {
@@ -280,22 +272,15 @@ class TraineesViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             try {
                 allTraineesUseCases.fetchRequests.invoke(status).collect { acceptedRequests ->
-                    //val currentSelectedId = _state.value.selectedTrainee?.second?.userId
-                    //val selectedPair = _state.value.acceptedRequests.find { it.second.userId == currentSelectedId }
                     _state.update {
                         it.copy(
                             acceptedRequests = acceptedRequests,
                             isLoading = false,
-                            //selectedTrainee = selectedPair
                         )
                     }
                     state.value.selectedTrainee?.let {
                         selectTrainee(it.second.userId)
                     }
-                    /*_state.update { it.copy(
-                        acceptedRequests = acceptedRequests,
-                        isLoading = false
-                    ) }*/
                 }
             } catch (e: Exception) {
                 _state.update { it.copy(isLoading = false) }
@@ -311,9 +296,7 @@ class TraineesViewModel @Inject constructor(
  */
 data class TraineesState(
     val isLoading: Boolean = false,
-    //val pendingRequests: List<Requests> = emptyList(),
     val pendingRequests: List<Pair<Requests, User>> = emptyList(),
-    //val acceptedRequests: List<Requests> = emptyList()
     val acceptedRequests: List<Pair<Requests, User>> = emptyList(),
     val detailMode: Boolean = false,
     val selectedTrainee: Pair<Requests, User>? = null,

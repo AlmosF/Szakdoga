@@ -9,21 +9,19 @@ class WeightVisualTransformation : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
         val originalText = text.text
 
-        // Trim unnecessary ".0" but preserve user input correctly
         val transformedText = if (originalText.contains(".")) {
             originalText.trimEnd('0').trimEnd('.')
         } else {
             originalText
         }
 
-        // Create a correct OffsetMapping
         val offsetMapping = object : OffsetMapping {
             override fun originalToTransformed(offset: Int): Int {
-                return minOf(offset, transformedText.length) // Prevent out-of-bounds errors
+                return minOf(offset, transformedText.length)
             }
 
             override fun transformedToOriginal(offset: Int): Int {
-                return minOf(offset, originalText.length) // Ensure cursor position is valid
+                return minOf(offset, originalText.length)
             }
         }
 

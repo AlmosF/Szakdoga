@@ -151,11 +151,6 @@ fun TrainerDetailsScreen(
                 horizontalAlignment = Alignment.Start
             ) {
                 val specializationsList = context.resources.getStringArray(R.array.specializations).toList()
-                /*Text(
-                    text = data.trainer.specializations.joinToString(", ") {specializationsList[it]},
-                    modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
-                    fontSize = 16.sp
-                )*/
                 val specializationsText = remember { mutableStateOf(false) }
                 Text(
                     text = if (specializationsText.value) {
@@ -285,42 +280,6 @@ fun TrainerDetailsScreen(
                 modifier = Modifier.padding(8.dp)
             )
             Spacer(modifier = Modifier.size(16.dp))
-            /*LazyRow (
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                items(data.second.trainer.socialMediaLinks.size) {
-                    val socialMedia = data.second.trainer.socialMediaLinks.keys.toList()[it]
-                    val link = data.second.trainer.socialMediaLinks.values.toList()[it]
-                    val painter = when {
-                        socialMedia.equals("facebook", ignoreCase = true) -> painterResource(id = R.drawable.facebook)
-                        socialMedia.equals("instagram", ignoreCase = true) -> painterResource(id = R.drawable.instagram)
-                        socialMedia.equals("linkedin", ignoreCase = true) -> painterResource(id = R.drawable.linkedin)
-                        socialMedia.equals("pinterest", ignoreCase = true) -> painterResource(id = R.drawable.pinterest)
-                        socialMedia.equals("tiktok", ignoreCase = true) -> painterResource(id = R.drawable.tiktok)
-                        socialMedia.equals("x", ignoreCase = true) -> painterResource(id = R.drawable.twitter)
-                        socialMedia.equals("youtube", ignoreCase = true) -> painterResource(id = R.drawable.youtube)
-                        else -> painterResource(id = R.drawable.tiktok)
-                    }
-                    if (link.isNotEmpty()){
-                        Image(
-                            painter = painter,
-                            contentDescription = socialMedia,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .size(40.dp)
-                                .clickable{
-                                    val intent = context.packageManager.getLaunchIntentForPackage(link)
-                                    if (intent != null) {
-                                        context.startActivity(intent)
-                                    } else {
-                                        Log.e("TrainerDetailsScreen", "Unable to open link: $link")
-                                    }
-                                }
-                        )
-                    }
-                }
-            }*/
             SocialMediaLazyRow(
                 socialMediaLinks = data.second.trainer.socialMediaLinks
             )

@@ -23,17 +23,8 @@ import com.example.szakdogafitness.feature.profile.ProfileViewModel
 fun CheckUserStatusScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    //mainViewModel: MainViewModel = hiltViewModel(),
     profileViewModel: ProfileViewModel = hiltViewModel()
     ) {
-    /*LaunchedEffect(Unit) { //With MainVM
-        mainViewModel.onEvent(MainEvent.FetchUser)
-        mainViewModel.onEvent(MainEvent.FetchDailyData)
-        delay(1000)
-        val isNewUser = mainViewModel.checkIfUserIsNew()
-        val destination = if (isNewUser) RootScreenRoute.SetupScreen.route else RootScreenRoute.LifeStyle.route
-        navController.navigate(destination) { popUpTo(0) }
-    }*/
     val profileState = rememberUpdatedState(profileViewModel.state.collectAsStateWithLifecycle()).value
 
     LaunchedEffect(profileState.value.isLoading) {
@@ -43,12 +34,6 @@ fun CheckUserStatusScreen(
     LaunchedEffect(Unit) {
         Log.d("ProfileViewModel", "ProfileState: ${profileState.value}")
         profileViewModel.onEvent(ProfileEvent.GetUser)
-        //delay(1000)
-        /*if(!profileState.value.isLoading){
-            val isNewUser = profileViewModel.checkIfUserIsNewP()
-            val destination = if (isNewUser) RootScreenRoute.SetupScreen.route else RootScreenRoute.LifeStyle.route
-            navController.navigate(destination) { popUpTo(0) }
-        }*/
     }
     LaunchedEffect(profileState.value.user != null, profileState.value.isLoading == false) {
         if(!profileState.value.isLoading && profileState.value.user != null){

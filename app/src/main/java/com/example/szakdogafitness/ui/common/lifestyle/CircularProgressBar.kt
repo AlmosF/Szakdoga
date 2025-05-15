@@ -74,11 +74,6 @@ fun CircularProgressBar(
             )
 
         }
-        /*Text(
-            text = "${(curPercentage.value * number).toInt()} %",
-            fontSize = fontSize,
-            color = Color.Black
-        )*/
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center

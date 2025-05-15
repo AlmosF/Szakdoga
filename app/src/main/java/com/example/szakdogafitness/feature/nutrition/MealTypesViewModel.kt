@@ -43,11 +43,7 @@ class MealTypesViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         selectedMealTitle = event.mealType,
-                        /*selectedMealType = it.mealTypes[event.mealType]?.filter { nutrition ->
-                            nutrition.foodName.contains(it.queryString, ignoreCase = true)
-                        } ?: listOf()*/
                         selectedMealType = it.nutritions.filter { nutrition ->
-                            //it.mealType.contains(event.mealType, ignoreCase = true)
                             nutrition.mealType.contains(event.mealType, ignoreCase = true) &&
                                     nutrition.foodName.contains(it.queryString, ignoreCase = true)
                         }
@@ -67,14 +63,6 @@ class MealTypesViewModel @Inject constructor(
             }
 
             is MealTypesEvent.SearchQuery -> {
-                /*_state.update {
-                    it.copy(
-                        queryString = event.query,
-                        selectedMealType = it.mealTypes[it.selectedMealTitle]?.filter { nutrition ->
-                            nutrition.foodName.contains(event.query, ignoreCase = true)
-                        } ?: listOf()
-                    )
-                }*/
                 _state.update {
                     it.copy(
                         queryString = event.query,

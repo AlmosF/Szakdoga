@@ -5,7 +5,6 @@ import com.google.firebase.Timestamp
 
 data class DailyDatas(
     val uid: String = "",
-    //val dailyData: List<DailyData> = listOf() //fixme("Workingone")
 )
 
 data class DailyData(

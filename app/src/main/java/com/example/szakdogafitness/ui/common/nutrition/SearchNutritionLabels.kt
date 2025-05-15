@@ -18,16 +18,6 @@ fun SearchNutritionLabels(
     selectedLabel: String = "bf",
     onLabelSelected: (String) -> Unit
 ) {
-
-    /*val labels = listOf(
-        "breakfast",
-        //"Morning Snack",
-        "morning_snack",
-        "lunch",
-        "afternoon_snack",
-        "dinner",
-        "evening_snack"
-    )*/
     val labelsMap = mapOf(
         "breakfast" to "bf",
         "morning_snack" to "ms",
@@ -51,7 +41,6 @@ fun SearchNutritionLabels(
                 colors = ButtonDefaults.buttonColors(
 
                 ).copy(
-                    //containerColor = if (labels[label] == selectedLabel) {
                     containerColor = if (labelsMap.values.elementAt(label) == selectedLabel) {
                         Color.DarkGray
                     } else {

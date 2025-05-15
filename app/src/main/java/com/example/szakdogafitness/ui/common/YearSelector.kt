@@ -57,7 +57,6 @@ fun YearPickerDialog(
     val listState = rememberLazyListState()
     var tempSelectedYear by remember { mutableStateOf(selectedYear) }
 
-    // Auto-scroll to selected year
     LaunchedEffect(Unit) {
         val selectedIndex = years.indexOf(tempSelectedYear).coerceAtLeast(0)
         listState.scrollToItem(selectedIndex)
@@ -239,45 +238,6 @@ fun YearSelector(
                         }
                     }
                 }
-                /*SzakdogaFitnessTheme {
-                    Surface (
-                        modifier = Modifier
-                            .padding(32.dp),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        var selectedYear by remember { mutableStateOf(initialYear) }
-                        val items = range.toList()
-                        InfiniteCircularList(
-                            items = items,
-                            initialItem = initialYear,
-                            textStyle = textStyle,
-                            textColor = textColor,
-                            width = dialogWidth,
-                            itemHeight = dialogHeight,
-                            selectedTextColor = selectedTextColor,
-                            onItemSelected = { index, item ->
-                                selectedYear = item
-                            }
-                        )
-                        OutlinedButton(
-                            onClick = {
-                                onYearSelected(selectedYear)
-                                dialogOpened = false
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Text(
-                                text = "Done",
-                                modifier = Modifier.padding(8.dp),
-                                fontSize = 20.sp
-                            )
-                        }
-
-                    }
-                }*/
             }
         }
 

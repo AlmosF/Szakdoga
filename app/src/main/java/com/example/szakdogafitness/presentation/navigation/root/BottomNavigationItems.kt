@@ -61,7 +61,6 @@ sealed class BottomNavigationItems (
     //"menu" - deprecated
     data object MenuItem : BottomNavigationItems(
         title = "Menu",
-        //route = MainScreenRoute.Menu.route,
         route = RootScreenRoute.Menu.route,
         icon = Icons.Default.Menu
     )

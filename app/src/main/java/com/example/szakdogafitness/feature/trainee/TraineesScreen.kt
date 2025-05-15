@@ -42,7 +42,6 @@ fun TraineesScreen(
     traineesViewModel: TraineesViewModel = hiltViewModel(),
     appBarViewModel: AppBarViewModel = hiltViewModel(),
     onClick: (String) -> Unit = {}
-    //VMs
 ) {
 
     LaunchedEffect(Unit) {
@@ -133,20 +132,10 @@ fun TraineesScreen(
                     modifier = Modifier
                         .fillMaxWidth(0.95f)
                 ) {
-                    /*items(filtered.size) {
-                        TraineeCard(
-                            data = filtered[it],
-                            onCardClick = {},
-                            onMessageClick = {}
-                        )
-                    }*/
-                    //items(traineesState.acceptedRequests.size) {
                     items(filtered.size) {
                         TraineeCard(
-                            //data = traineesState.acceptedRequests[it].second,
                             data = filtered[it].second,
                             onCardClick = {
-                                //onClick(traineesState.acceptedRequests[it].second.userId)
                                 onClick(filtered[it].second.userId)
                             },
                             onMessageClick = {}
@@ -158,13 +147,3 @@ fun TraineesScreen(
 
     }
 }
-
-val testData = listOf<User>(
-    User(firstName = "John", lastName = "Doe", phoneNumber = "123456789", profileImageUrl = "https://www.mariefranceasia.com/wp-content/uploads/sites/7/2018/02/breakfast.jpg"),
-    User(firstName = "Jane", lastName = "Smith", phoneNumber = "987654321", profileImageUrl = "https://www.mariefranceasia.com/wp-content/uploads/sites/7/2018/02/breakfast.jpg"),
-    User(firstName = "Alice", lastName = "Johnson", phoneNumber = "555555555", profileImageUrl = "https://www.mariefranceasia.com/wp-content/uploads/sites/7/2018/02/breakfast.jpg"),
-    User(firstName = "Bob", lastName = "Brown", phoneNumber = "444444444", profileImageUrl = "https://www.mariefranceasia.com/wp-content/uploads/sites/7/2018/02/breakfast.jpg"),
-    User(firstName = "Charlie", lastName = "Davis", phoneNumber = "333333333", profileImageUrl = "https://www.mariefranceasia.com/wp-content/uploads/sites/7/2018/02/breakfast.jpg"),
-    User(firstName = "David", lastName = "Wilson", phoneNumber = "222222222", profileImageUrl = "https://www.mariefranceasia.com/wp-content/uploads/sites/7/2018/02/breakfast.jpg"),
-    User(firstName = "Eve", lastName = "Moore", phoneNumber = "111111111", profileImageUrl = "https://www.mariefranceasia.com/wp-content/uploads/sites/7/2018/02/breakfast.jpg"),
-)

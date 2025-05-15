@@ -47,37 +47,6 @@ fun SocialMediaSelector(
     socialMedia: Map<String, String>,
     onSocialMediaSelected: (socialMedia: Map<String, String>) -> Unit = { _ -> },
 ) {
-    /*var dialogOpened by remember { mutableStateOf(false) }
-    Box(
-        modifier = modifier.height(IntrinsicSize.Min)
-    ) {
-        NormalTextField(
-            label = label,
-            value = "",
-            enabled = enabled,
-            onValueChange = {},
-            onDone = {},
-            readOnly = true,
-            modifier = Modifier.fillMaxWidth(),
-            trailingIcon = null,
-            leadingIcon = null,
-            singleLine = true,
-            textStyle = textStyle,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                disabledContainerColor = MaterialTheme.colorScheme.surface,
-            ),
-        )
-        Surface (
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 8.dp)
-                .clip(MaterialTheme.shapes.extraSmall)
-                .clickable(enabled = enabled) { dialogOpened = true },
-            color = Color.Transparent
-        ) {}
-    }*/
     var selectedSocialMedia by remember { mutableStateOf("") }
     var socialMediaDialogOpened by remember { mutableStateOf(false) }
     val socialMediaImages = mapOf(

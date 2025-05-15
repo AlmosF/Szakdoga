@@ -23,20 +23,15 @@ class DailyDatasService @Inject constructor(
 ): IDailyDatasService {
     override suspend fun getUsersDailyDatas(): Flow<List<DailyData>> = flow {
         val userId = userIdUseCase()
-        Log.d("MainService", "Fetching daily data for userId: $userId")
         try {
             firestore.collection("dailyDatas")
                 .document(userId!!)
                 .collection("dailyData")
                 .dataObjects<DailyData>()
                 .catch { e ->
-                    Log.e("MainService", "Error fetching daily data: ${e.message}", e)
                     emit(emptyList())
                 }
                 .collect { dailyDataList ->
-                    //val sortedDailyDataList = dailyDataList.sortedBy { it.date.toDate() }
-                    //emit(sortedDailyDataList)
-                    //Log.d("MainService", "Fetched real-time daily data: $sortedDailyDataList")
                     emit(dailyDataList.sortedBy { it.date.toDate() })
                 }
         } catch (e: Exception) {
@@ -48,21 +43,17 @@ class DailyDatasService @Inject constructor(
     override suspend fun generateNewDailyData() {
         val userId = userIdUseCase()
 
-        // Format today's date as "YYYY-MM-DD"
         val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        Log.d("MainService", "Generating new daily data for user: $userId")
 
         try {
             val userDocRef = firestore.collection("dailyDatas").document(userId!!)
             val dailyDataCollectionRef = userDocRef.collection("dailyData")
 
-            // Check if today's entry exists
             val existingDoc = dailyDataCollectionRef.document(todayDate).get().await()
 
             if (!existingDoc.exists()) {
                 val newDailyData = DailyData(date = Timestamp.now())
 
-                // Create the new daily entry with today's date as the document ID
                 dailyDataCollectionRef
                     .document(todayDate)
                     .set(newDailyData)

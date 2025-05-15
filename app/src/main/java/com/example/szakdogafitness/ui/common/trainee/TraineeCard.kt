@@ -110,23 +110,6 @@ fun TraineeCard(
                     text = data.phoneNumber
                 )
             }
-            /*Column (
-                modifier = Modifier
-                    .weight(1f),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                IconButton(
-                    onClick = {
-                        onMessageClick()
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.Message,
-                        contentDescription = "Message",
-                    )
-                }
-            }*/
         }
     }
 }

@@ -57,7 +57,6 @@ data class TrainerDemo (
 
 @Composable
 fun TrainerCard(
-    //data : TrainerDemo
     currentTrainer : User,
     ratingData: Int,
     rateSize: Int,
@@ -65,7 +64,6 @@ fun TrainerCard(
     unit: Int,
     onClick: (String) -> Unit
 ) {
-    //val painter = rememberAsyncImagePainter(data.image)
     val painter = rememberAsyncImagePainter(currentTrainer.profileImageUrl)
     val painterState = painter.state.collectAsState()
     val context = LocalContext.current
@@ -230,9 +228,7 @@ fun RatingStars( //Five star rating system
     rateSize: Int
 ){
     Row (
-        modifier = modifier
-        //.padding(8.dp)
-        ,
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         repeat(rating / 2) {
@@ -296,7 +292,4 @@ fun TrainerCardPreview() {
         gender = "male",
         specializations = listOf("cardio", "yoga", "pilates", "weightlifting", "crossfit")
     )
-    /*TrainerCard(
-        data = trainer
-    )*/
 }

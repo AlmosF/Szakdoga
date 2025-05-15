@@ -56,22 +56,16 @@ import kotlinx.coroutines.launch
 @ExcludeFromCodeCoverage
 fun AuthenticateScreen(
     modifier : Modifier = Modifier,
-    //snackbarHostState: SnackbarHostState, //nem kell feltetlen
     viewModel: AuthenticationViewModel = viewModel(),
-    //profileViewModel: ProfileViewModel = hiltViewModel(),
     navController : NavHostController
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    //val profileState by profileViewModel.state.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = SnackbarHostState()
     val context = LocalContext.current
 
-    //LaunchedEffect(state.isLoggedIn == true) {
-    //    profileViewModel.onEvent(ProfileEvent.GetUser)
-    //}
     LaunchedEffect(key1 = true) {
         viewModel.checkSignInState()
         viewModel.checkOnlineState(context)
@@ -111,18 +105,6 @@ fun AuthenticateScreen(
                 color = Color.Red
             )
             Text("AuthIF")
-            /*OutlinedButton(
-                onClick = {
-                    viewModel.onEvent(AuthenticationEvent.LogoutButtonClicked)
-                }
-            ) {
-                Text(
-                    text = "Logout!!!"
-                )
-            }
-            Text(
-                text = profileState.user.firstName
-            )*/
         } else {
             Column (
                 modifier = Modifier
@@ -144,7 +126,7 @@ fun AuthenticateScreen(
                 EmailTextField(
                     value = state.email,
                     label = "Email",
-                    onValueChange = { //email = it
+                    onValueChange = {
                         viewModel.onEvent(AuthenticationEvent.EmailChanged(it))
                     },
                     onDone = {},
@@ -214,7 +196,6 @@ fun AuthenticateScreen(
                 ) {
                     TextButton(
                         onClick = {
-                            //viewModel.onEvent(AuthenticationEvent.ForgotPasswordButtonClicked)
                             viewModel.onEvent(AuthenticationEvent.ForgotPwChangeMode)
                         }
                     ) {

@@ -158,18 +158,6 @@ fun ProfileScreen(
                                 )
                             }
                         },
-                        /*actions = {
-                            IconButton(
-                                onClick = {
-                                    onLogout()
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.Logout,
-                                    contentDescription = "Logout"
-                                )
-                            }
-                        }*/
                         actions = {
                             IconButton(
                                 onClick = {
@@ -289,39 +277,9 @@ fun ProfileScreen(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
-                    //.verticalScroll(rememberScrollState()),
                     .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-//                if (painterState is AsyncImagePainter.State.Success){
-//                    Box(
-//                        contentAlignment = Alignment.Center,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .clickable{
-//                                when {
-//                                    permissionState.status.isGranted -> {
-//                                        launcher.launch("image/*")
-//                                    }
-//                                    permissionState.status.shouldShowRationale -> {
-//                                        permissionState.launchPermissionRequest()
-//                                    }
-//                                    else -> {
-//                                        permissionState.launchPermissionRequest()
-//                                    }
-//                                }
-//                            }
-//                    ) {
-//                        Image(
-//                            painter = painter,
-//                            contentDescription = "Profile Image",
-//                            modifier = Modifier
-//                                .size(100.dp)
-//                                .clip(CircleShape),
-//                            contentScale = ContentScale.Crop
-//                        )
-//                    }
-//                }
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -844,7 +802,6 @@ fun ProfileScreenTrainee(
                 .fillMaxWidth(),
         ) {
             SegmentedButton(
-                //selected = state.unit == 1,
                 selected = profileState.editUser?.trainee?.unit == 1,
                 onClick = {
                     profileViewModel.onEvent(
@@ -1111,30 +1068,6 @@ fun ProfileScreenTrainee(
                     )
                 },
             )
-            /*NormalTextField(
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable(onClick = {}),
-                label = "Training / Week",
-                onValueChange = {},
-                value = profileState.user?.trainee?.trainings?.toString() ?: "",
-                singleLine = true,
-                enabled = false,
-                readOnly = true,
-                onDone = {},
-                leadingIcon = null,
-                trailingIcon = null,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    disabledContainerColor = MaterialTheme.colorScheme.surface,
-                ),
-                textStyle = TextStyle.Default.copy(
-                    fontSize = 20.sp,
-                    color = Color.Black,
-                    fontWeight = Bold
-                )
-            )*/
         }
         val fitnessGoalList = context.resources.getStringArray(R.array.fitness_goal).toList()
         LargeDropdownMenu(
@@ -1167,7 +1100,6 @@ fun ProfileScreenTrainee(
         )
         val currentFitnessLevelList = context.resources.getStringArray(R.array.current_fitness_level).toList()
         LargeDropdownMenu(
-            //TODO: Nincs kész rossz a paraméter
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth(),
@@ -1186,7 +1118,6 @@ fun ProfileScreenTrainee(
                         )!!
                     )
                 )
-
             },
         )
         Text(
@@ -1346,7 +1277,6 @@ fun ProfileScreenTrainee(
                 }
             },
         )
-
     }
 }
 

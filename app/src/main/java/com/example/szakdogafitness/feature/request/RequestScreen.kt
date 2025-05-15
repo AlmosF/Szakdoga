@@ -46,7 +46,6 @@ fun RequestScreen(
     traineesViewModel: TraineesViewModel = hiltViewModel(),
     appBarViewModel: AppBarViewModel = hiltViewModel(),
     onClick: (String) -> Unit = {}
-    //VMs
 ) {
 
     val traineesState by traineesViewModel.state.collectAsStateWithLifecycle()
@@ -67,20 +66,6 @@ fun RequestScreen(
     }
     LaunchedEffect(traineesState.pendingRequests) {
         Log.d("RequestScreen", "PendingRequests: ${traineesState.pendingRequests}")
-    }
-
-    val testRequestList = List(10) { index: Int ->
-        User(
-            firstName = "John",
-            lastName = "Doe $index",
-            profileImageUrl = "https://www.mariefranceasia.com/wp-content/uploads/sites/7/2018/02/breakfast.jpg",
-            email = "johnDoe$index@asd.com",
-            phoneNumber = "123456789",
-            dateOfBirth = Timestamp.now(),
-            trainee = Trainee(
-                fitnessGoals = listOf(1, 2, 3, 4)
-            )
-        )
     }
 
     var search by remember { mutableStateOf("") }
@@ -158,28 +143,10 @@ fun RequestScreen(
                     modifier = Modifier
                         .fillMaxWidth(0.95f),
                 ) {
-                    //items(traineesState.pendingRequests.size) {
                     items(filtered.size) {
-                        /*TraineeRequestCard( // With REQUEST only
-                            data = User(
-                                userId = traineesState.pendingRequests[it].traineeId),
-                        ) {
-                            traineesViewModel.onEvent(
-                                TraineesEvent.DeclineRequest(
-                                    userId = traineesState.pendingRequests[it].traineeId
-                                )
-                            )
-                        }*/
-                        TraineeRequestCard( // With PAIR
-                            //data = traineesState.pendingRequests[it].second,
+                        TraineeRequestCard(
                             data = filtered[it].second,
                         ) {
-                            /*traineesViewModel.onEvent(
-                                TraineesEvent.DeclineRequest(
-                                    userId = traineesState.pendingRequests[it].first.traineeId
-                                )
-                            )*/
-                            //val request = traineesState.pendingRequests[it]
                             val request = filtered[it]
                             onClick(
                                 request.first.traineeId
@@ -189,6 +156,5 @@ fun RequestScreen(
                 }
             }
         }
-
     }
 }

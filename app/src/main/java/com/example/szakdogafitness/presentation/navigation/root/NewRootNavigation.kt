@@ -48,10 +48,6 @@ import com.example.szakdogafitness.feature.trainee.TraineeDetailScreen
 import com.example.szakdogafitness.feature.trainee.TraineesScreen
 import com.example.szakdogafitness.feature.trainer.TrainerDetailsScreen
 import com.example.szakdogafitness.feature.trainer.TrainerScreen
-import com.example.szakdogafitness.presentation.navigation.root.BottomNavigationItems
-import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
-import com.example.szakdogafitness.ui.common.appbars.LifeStyleTitle
-import com.example.szakdogafitness.ui.common.appbars.TopBar
 import com.example.szakdogafitness.util.UiEvent
 import com.example.szakdogafitness.feature.CameraScan.CameraViewModel
 import com.example.szakdogafitness.feature.lifestyle.DailyDatasEvent
@@ -156,11 +152,6 @@ fun NewRootNavigation(
         appBarViewModel.onEvent(AppBarEvent.CurrentNavControllerChanged(navController))
     }
 
-
-    /*val startDestination = when {
-        authState.isLoggedIn -> RootScreenRoute.Loading.route
-        else -> RootScreenRoute.Authentication.route
-    }*/
 
     val startDestination = when { //Changed to the top one at 2025.04.06 - Changed again.
         authState.isLoggedIn && authState.isOnline -> RootScreenRoute.Loading.route
@@ -350,7 +341,6 @@ fun NewRootNavigation(
                     trainersViewModel = trainersViewModel,
                     currentUser = profileState.user ?: User(), // FIXME: WONT BE NULL ANYWAYS
                     appBarViewModel = appBarViewModel,
-                    //mainViewModel = mainViewModel, //With MainVM
                 ) { userId ->
                     navController.navigate(RootScreenRoute.SearchDetail.createRoute(userId))
                 }
@@ -411,19 +401,7 @@ fun NewRootNavigation(
             }
 
             composable(RootScreenRoute.TraineeDetail.route) { entry ->
-                /*appBarViewModel.onEvent(
-                    AppBarEvent.TopBarComposableChanged(
-                        {
-                            BackNavWithTitle("Trainee Details") {
-                                navController.popBackStack()
-                            }
-                        }
-                    )
-                )*/
                 val id = entry.arguments?.getString("id")
-                //Text(text = "TraineeDetail: ${
-                //    traineesViewModel.state.collectAsStateWithLifecycle().value.acceptedRequests.find { it.second.userId == id }
-                //}")
                 TraineeDetailScreen(
                     traineesViewModel = traineesViewModel,
                     appBarViewModel = appBarViewModel,
@@ -458,18 +436,6 @@ fun NewRootNavigation(
                 ) {
                     navController.popBackStack()
                 }
-                /*Text(
-                    text = "RequestDetail: $id",
-                    modifier = Modifier
-                        .clickable{
-                            traineesViewModel.onEvent(
-                                TraineesEvent.AcceptRequest(
-                                    userId = id!!
-                                )
-                            )
-                            navController.popBackStack()
-                        }
-                )*/
             }
 
             //Menu - Deprecated

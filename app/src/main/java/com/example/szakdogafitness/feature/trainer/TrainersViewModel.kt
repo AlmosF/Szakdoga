@@ -174,26 +174,6 @@ class TrainersViewModel @Inject constructor(
         }
     }
 
-    /*//FIXME: DEPRECATED - NOT USED
-    private fun fetchRequestedAppointments(trainerId: String) {
-        Log.d("TrainersViewModel", "fetchRequestedAppointments: $trainerId")
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
-            try {
-                fetchRequestedAppointmentsUseCase.invoke(trainerId).collect { requestedAppointments ->
-                    _state.update { it.copy(
-                        requestedAppointments = requestedAppointments,
-                        isLoading = false
-                    ) }
-                    Log.d("TrainersViewModel", "fetchRequestedAppointments: $requestedAppointments")
-                }
-            } catch (e: Exception){
-                _state.update { it.copy(isLoading = false) }
-                Log.e("TrainersViewModel", "fetchRequestedAppointments: ${e.message}")
-            }
-        }
-    }*/
-
     private fun fetchTrainersRequests(trainerId: String) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }

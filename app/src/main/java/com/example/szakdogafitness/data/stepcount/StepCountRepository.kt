@@ -37,7 +37,6 @@ class StepCountRepository @Inject constructor(
             firestore.syncSteps(userId, date, steps)
             resetSteps()
             dataStore.setLastSyncDate(date)
-            // Reset initial steps after sync
             dataStore.saveInitialSensorSteps(-1)
         }
     }

@@ -58,21 +58,9 @@ fun SetupScreen(
         .fillMaxWidth(0.9f)
         .padding(top = 8.dp, bottom = 8.dp)
 
-    //var firstName by remember { mutableStateOf("") }
-    //var lastName by remember { mutableStateOf("") }
-    //var dateOfBirth by remember { mutableStateOf("") }
-    //var dateOfBirthDialog by remember { mutableStateOf("") }
     var isDateOfBirthVisible by remember { mutableStateOf(false) }
-    //var gender by remember {mutableStateOf(0)}
-    //var role by remember {mutableStateOf(0)}
-    //var phoneNumber by remember { mutableStateOf("") }
+
     val state by setupViewModel.state.collectAsState()
-
-    /*var user by mutableStateOf(
-        User(
-
-        )
-    )*/
 
 
 
@@ -80,7 +68,6 @@ fun SetupScreen(
     ConstraintLayout (
         modifier = modifier
             .padding(paddingValues)
-            //.fillMaxSize()
             .verticalScroll(rememberScrollState())
     ){
         var (bar, label, fName, lName, dob, gend, label2, label3, label4, label5, ro, phone, button) = createRefs()
@@ -90,31 +77,9 @@ fun SetupScreen(
         val endGuideline75 = createGuidelineFromStart(0.75f)
         val endGuideline95 = createGuidelineFromStart(0.95f)
 
-        /*ProgressBar(
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .constrainAs(bar) {
-                    top.linkTo(parent.top)
-                    start.linkTo(startGuideline5)
-                    end.linkTo(endGuideline95)
-                },
-            progress = 0.12f
-        )*/
-        /*Text(
-            text = "Who are you?",
-            fontSize = 24.sp,
-            modifier = Modifier
-                .constrainAs(label) {
-                    //top.linkTo(bar.bottom)
-                    top.linkTo(parent.top)
-                    start.linkTo(startGuideline5)
-                },
-            fontWeight = Bold
-        )*/
         NormalTextField(
             modifier = textFieldModifier
                 .constrainAs(fName) {
-                    //top.linkTo(label.bottom)
                     top.linkTo(parent.top)
                     start.linkTo(startGuideline5)
                     end.linkTo(endGuideline95)
@@ -123,9 +88,7 @@ fun SetupScreen(
             label = "First name",
             onValueChange = {
                 setupViewModel.onEvent(SetupEvent.FirstNameChanged(it))
-                //firstname = it
             },
-            //value = state.firstName,
             value = state.user.firstName,
             singleLine = true,
             onDone = {},
@@ -148,7 +111,6 @@ fun SetupScreen(
             onValueChange = {
                 setupViewModel.onEvent(SetupEvent.LastNameChanged(it))
             },
-            //value = state.lastName,
             value = state.user.lastName,
             singleLine = true,
             onDone = {},
@@ -173,15 +135,12 @@ fun SetupScreen(
             onValueChange = {
                 if (it.length <= 8) testDOB = it
             },
-            //value = state.dateOfBirth?.toTriple().toString(),
             value = state.user.dateOfBirth?.toTriple()?.let { (first, second, third) ->
                 "$first / $second / $third"
             } ?: "",
-            //value = testDOB,
             singleLine = true,
             enabled = false,
             readOnly = true,
-            //visualTransformation = DateTransformation(),
             onDone = {},
             leadingIcon = null,
             trailingIcon = null,
@@ -205,10 +164,8 @@ fun SetupScreen(
                 }
         ) {
             SegmentedButton(
-                //selected = state.gender == 1,
                 selected = state.user.gender == 1,
                 onClick = {
-                    //gender = 1
                     setupViewModel.onEvent(SetupEvent.GenderChanged(1))
                 },
                 shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
@@ -227,10 +184,8 @@ fun SetupScreen(
             }
             Spacer(modifier = Modifier.width(48.dp))
             SegmentedButton(
-                //selected = state.gender == 2,
                 selected = state.user.gender == 2,
                 onClick = {
-                    //gender = 2
                     setupViewModel.onEvent(SetupEvent.GenderChanged(2))
                 },
                 shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
@@ -248,13 +203,11 @@ fun SetupScreen(
                 Text(text = "Female")
             }
         }
-        //val countryCode = extractRegionCode(state.phoneNumber)
         val countryCode = extractRegionCode(state.user.phoneNumber)
         val flagEmoji = countryCode?.let { countryCodeToFlagEmoji(it) }
         NormalTextField(
             label = "Phone number",
             singleLine = true,
-            //value = state.phoneNumber,
             value = state.user.phoneNumber,
             onValueChange = {
                 setupViewModel.onEvent(SetupEvent.PhoneNumberChanged(it))
@@ -298,10 +251,8 @@ fun SetupScreen(
                 }
         ) {
             SegmentedButton(
-                //selected = state.role == 1,
                 selected = state.user.role == 1,
                 onClick = {
-                    //role = 1
                     setupViewModel.onEvent(SetupEvent.RoleChanged(1))
                 },
                 shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
@@ -314,10 +265,8 @@ fun SetupScreen(
             }
             Spacer(modifier = Modifier.width(48.dp))
             SegmentedButton(
-                //selected = state.role == 2,
                 selected = state.user.role == 2,
                 onClick = {
-                    //role = 2
                     setupViewModel.onEvent(SetupEvent.RoleChanged(2))
                 },
                 shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
@@ -331,7 +280,6 @@ fun SetupScreen(
         }
         if (isDateOfBirthVisible){
             DatePick(
-                //date = state.dateOfBirth?.toMillis() ?: System.currentTimeMillis(),
                 date = state.user.dateOfBirth?.toMillis() ?: System.currentTimeMillis(),
                 selectRange = Timestamp.now().toMillis(),
                 onDateSelected = {
@@ -340,49 +288,7 @@ fun SetupScreen(
             ) {
                 isDateOfBirthVisible = false
             }
-            /*Dialog(
-                onDismissRequest = { isDateOfBirthVisible = false },
-            ) {
-                Column (
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color.White)
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    DateSelector(
-                        width = 75.dp,
-                        itemHeight = 50.dp,
-                        textStyle = MaterialTheme.typography.bodyLarge,
-                        textColor = Color.Gray,
-                        selectedTextColor = Color.Black,
-                        date = state.dateOfBirth?.toMillis() ?: System.currentTimeMillis()
-                    ) { day, month, year ->
-                        val timestamp = Triple(day, month, year).toTimestamp()
-                        setupViewModel.onEvent(SetupEvent.DateOfBirthChanged(timestamp))
-                    }
-                }
-            }*/
         }
-        /*OutlinedButton(
-            onClick = {},
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .constrainAs(button) {
-                    bottom.linkTo(parent.bottom, margin = 16.dp)
-                    start.linkTo(startGuideline25)
-                    end.linkTo(endGuideline75)
-                },
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                text = "Next",
-                modifier = Modifier
-                    .padding(8.dp),
-                fontSize = 20.sp
-            )
-        }*/
 
         val (v1, v2) = createRefs()
         VerticalDivider(
@@ -407,245 +313,6 @@ fun SetupScreen(
         )
 
     }
-
-    /*Column (
-        modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        ProgressBar(
-            progress = 0.12f
-        )
-        Text(
-            text = "Who are you?",
-            fontSize = 24.sp,
-            modifier = Modifier.padding(8.dp),
-            fontWeight = Bold
-        )
-        NormalTextField(
-            modifier = textFieldModifier,
-            label = "First name",
-            onValueChange = {},
-            value = "",
-            singleLine = true,
-            onDone = {},
-            leadingIcon = null,
-            trailingIcon = null,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                disabledContainerColor = MaterialTheme.colorScheme.surface,
-            ),
-        )
-        NormalTextField(
-            modifier = textFieldModifier,
-            label = "Last name",
-            onValueChange = {},
-            value = "",
-            singleLine = true,
-            onDone = {},
-            leadingIcon = null,
-            trailingIcon = null,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                disabledContainerColor = MaterialTheme.colorScheme.surface,
-            ),
-        )
-        NormalTextField(
-            modifier = textFieldModifier.clickable(onClick = { isDateOfBirthVisible = true }),
-            label = "Date of Birth",
-            onValueChange = {},
-            value = dateOfBirth,
-            singleLine = true,
-            enabled = false,
-            readOnly = true,
-            onDone = {},
-            leadingIcon = null,
-            trailingIcon = null,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                disabledContainerColor = MaterialTheme.colorScheme.surface,
-            ),
-            textStyle = TextStyle.Default.copy(
-                fontSize = 20.sp,
-                color = Color.Black,
-                fontWeight = Bold
-            )
-        )
-        SingleChoiceSegmentedButtonRow (
-            modifier = textFieldModifier
-        ) {
-            SegmentedButton(
-                selected = gender == 1,
-                onClick = {
-                    gender = 1
-                },
-                shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Male,
-                        contentDescription = null
-                    )
-                },
-                colors = SegmentedButtonDefaults.colors(
-                    activeContainerColor = Color(0xFF0040FF),
-                    activeContentColor = Color.White
-                )
-            ) {
-                Text(text = "Male")
-            }
-            Spacer(modifier = Modifier.width(48.dp))
-            SegmentedButton(
-                selected = gender == 2,
-                onClick = {
-                    gender = 2
-                },
-                shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Female,
-                        contentDescription = null
-                    )
-                },
-                colors = SegmentedButtonDefaults.colors(
-                    activeContainerColor = Color(0xFFEB00FF),
-                    activeContentColor = Color.White
-                )
-            ) {
-                Text(text = "Female")
-            }
-        }
-        val countryCode = extractRegionCode(phoneNumber)
-        val flagEmoji = countryCode?.let { countryCodeToFlagEmoji(it) }
-        NormalTextField(
-            label = "Phone number",
-            singleLine = true,
-            value = phoneNumber,
-            onValueChange = {
-                phoneNumber = it
-            },
-            visualTransformation = PhoneNumberVisualTransformation(),
-            modifier = textFieldModifier,
-            trailingIcon = {
-                Text(text = flagEmoji ?: "")
-            },
-            keyboardType = KeyboardType.Phone,
-            onDone = {},
-            leadingIcon = null,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                disabledContainerColor = MaterialTheme.colorScheme.surface,
-            ),
-        )
-        Text(
-            "Who are you?",
-            fontSize = 24.sp,
-            modifier = Modifier.padding(8.dp),
-            fontWeight = Bold
-        )
-        SingleChoiceSegmentedButtonRow (
-            modifier = textFieldModifier
-        ) {
-            SegmentedButton(
-                selected = role == 1,
-                onClick = {
-                    role = 1
-                },
-                shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
-                icon = {},
-                colors = SegmentedButtonDefaults.colors(
-                    activeContainerColor = Color(0xFF00FF00)
-                )
-            ) {
-                Text(text = "Trainer")
-            }
-            Spacer(modifier = Modifier.width(48.dp))
-            SegmentedButton(
-                selected = role == 2,
-                onClick = {
-                    role = 2
-                },
-                shape = SegmentedButtonDefaults.itemShape(index = 1, count = 1),
-                icon = {},
-                colors = SegmentedButtonDefaults.colors(
-                    activeContainerColor = Color(0xFF00FF00)
-                )
-            ) {
-                Text(text = "Trainee")
-            }
-        }
-        Spacer(modifier = Modifier.height(48.dp))
-        Button(
-            onClick = {}
-        ) {
-            Text("Next")
-        }
-
-        if (isDateOfBirthVisible){
-            Dialog(
-                onDismissRequest = { isDateOfBirthVisible = false },
-            ) {
-                Column (
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color.White)
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    DateSelector(
-                        width = 70.dp,
-                        itemHeight = 50.dp,
-                        textStyle = MaterialTheme.typography.bodyLarge,
-                        textColor = Color.Gray,
-                        selectedTextColor = Color.Black,
-                        onDateSelected = { day, month, year ->
-                            dateOfBirthDialog = "$day/$month/$year"
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                    )
-                    Row (
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        TextButton(
-                            onClick = {
-                                isDateOfBirthVisible = false
-                            }
-                        ) {
-                            Text("Cancel")
-                        }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        TextButton(
-                            onClick = {
-                                dateOfBirth = dateOfBirthDialog
-                                isDateOfBirthVisible = false
-                            }
-                        ) {
-                            Text("Ok")
-                        }
-                    }
-                }
-            }
-        }
-    }*/
-}
-
-@Composable
-@Preview
-fun SetupScreenPreview(){
-   /* SetupScreen(
-        paddingValues = PaddingValues(0.dp),
-        setupViewModel = SetupViewModel(
-
-        )
-    )*/
 }
 
 fun Long.toTimestamp(): Timestamp {

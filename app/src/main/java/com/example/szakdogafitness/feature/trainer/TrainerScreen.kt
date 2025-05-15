@@ -46,7 +46,6 @@ fun TrainerScreen(
     appBarViewModel: AppBarViewModel = hiltViewModel(),
     trainersViewModel: TrainersViewModel = hiltViewModel(),
     onTrainerClick: (String) -> Unit = {},
-    //VMs
 ) {
 
     val trainersState by trainersViewModel.state.collectAsStateWithLifecycle()
@@ -65,9 +64,6 @@ fun TrainerScreen(
             )
         )
         trainersViewModel.onEvent(TrainersEvent.LoadAcceptedTrainers)
-        //if (trainersState.allTrainersAllRating.isEmpty()) {
-        //    trainersViewModel.onEvent(TrainersEvent.LoadAllTrainersAllRating)
-        //} //removed same for same reason as SearchTrainerScreen line 74
     }
 
     Column (
@@ -153,34 +149,6 @@ fun TrainerScreen(
                     modifier = Modifier
                         .fillMaxWidth(0.95f),
                 ) {
-                    /*items(trainersState.acceptedTrainers.size) {
-                        val currentTrainer = trainersState.acceptedTrainers[it]
-                        val rating = trainersState.allTrainersAllRating.find { rating ->
-                            Log.d("TAG", "TrainerScreen: ${currentTrainer.second.userId}")
-                            rating?.first == currentTrainer.second.userId
-                        }?.second?.sumOf {
-                            Log.d("TAG", "TrainerScreen: ${it.rating}")
-                            it.rating
-                        }?.div(
-                            trainersState.allTrainersAllRating.find { rating ->
-                                rating?.first == currentTrainer.second.userId
-                            }?.second?.size ?: 1
-                        )
-                        val distance = currentTrainer.second.location?.calculateDistance(
-                            currentUser.location ?: GeoPoint(0.0, 0.0)
-                        )
-
-                        TrainerCard(
-                            currentTrainer = currentTrainer.second,
-                            ratingData = rating ?: 0,
-                            rateSize = trainersState.allTrainersAllRating.find { rating ->
-                                rating?.first == currentTrainer.second.userId
-                            }?.second?.size ?: 0,
-                            locationDistance = distance
-                        ) { userId ->
-                            onTrainerClick(userId)
-                        }
-                    }*/
                     items(filteredList.size) {
                         val currentTrainer = filteredList[it]
                         val rating = trainersState.allTrainersAllRating.find { rating ->
@@ -217,17 +185,4 @@ fun TrainerScreen(
 
         }
     }
-}
-
-val testList = List(3) { id ->
-    TrainerDemo(
-        Fname = "Johnny",
-        Lname = "Depp $id",
-        image = "https://wepublishnews.com/wp-content/uploads/2021/05/Johnny-Depp-Net-Worth.jpg",
-        rating = id%11,
-        price = 50,
-        distance = 5.0f,
-        gender = "male",
-        specializations = listOf("cardio", "yoga", "pilates", "weightlifting", "crossfit")
-    )
 }

@@ -77,13 +77,6 @@ fun AddNutrientsBlock(
             ) {
                 onSearchNavigate()
             }
-            /*NutritionIcons(
-                modifier = Modifier.Companion,
-                icon = Icons.Default.QrCode,
-                title = "Barcode"
-            ) {
-                onBarcodeNavigate()
-            }*/
 
         }
     }

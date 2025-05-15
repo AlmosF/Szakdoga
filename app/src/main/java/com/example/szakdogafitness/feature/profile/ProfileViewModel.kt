@@ -143,7 +143,6 @@ class ProfileViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             try {
                allProfileUseCases.fetchUser.invoke().collect { user ->
-                    //_state.update { it.copy(user = user, isLoading = false, editUser = user) }
                     _state.update { it.copy(user = user, isLoading = false) }
 
                     if(!_state.value.switchEdit) {
@@ -163,9 +162,6 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    /*fun checkIfUserIsNewP(): Boolean{
-        return state.value.user == null
-    }*/
     fun checkIfUserIsNewP(): Boolean{
         return state.value.user?.userId?.isBlank() ?: true
     }

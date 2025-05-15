@@ -49,21 +49,6 @@ class SetupViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     fun incrementBarStatus() {
-        /*val doneFieldsTrainer = listOf( // 13 for trainer, 15 for trainee
-            _state.value.firstName,
-            _state.value.lastName,
-            _state.value.dateOfBirth,
-            _state.value.gender,
-            _state.value.phoneNumber,
-            _state.value.role,
-            _state.value.certifications,
-            _state.value.areasOfExperties,
-            _state.value.trainingStyles,
-            _state.value.availability,
-            _state.value.experience,
-            _state.value.pricing,
-            _state.value.bio,
-        ).count { it != null && it != "" && it != emptyList<Any>() && it != emptyMap<Any, Any>() && it != 0 }*/
 
         val doneFieldsTrainer = listOf( // 13 for trainer, 15 for trainee
             _state.value.user.firstName,
@@ -81,23 +66,6 @@ class SetupViewModel @Inject constructor(
             _state.value.user.bio,
         ).count { it != null && it != "" && it != emptyList<Any>() && it != emptyMap<Any, Any>() && it != 0 }
 
-        /*val doneFieldsTrainee = listOf( // 13 for trainer, 15 for trainee
-            _state.value.firstName,
-            _state.value.lastName,
-            _state.value.dateOfBirth,
-            _state.value.gender,
-            _state.value.phoneNumber,
-            _state.value.role,
-            _state.value.unit,
-            _state.value.height,
-            _state.value.weight,
-            _state.value.trainings,
-            _state.value.fitnessGoals,
-            _state.value.currentFitnessLevel,
-            _state.value.healthInformation,
-            _state.value.dietaryPreferences,
-            _state.value.bio,
-        ).count { it != null && it != "" && it != emptyList<Any>() && it != emptyMap<Any, Any>() && it != 0 }*/
         val doneFieldsTrainee = listOf( // 13 for trainer, 15 for trainee
             _state.value.user.firstName,
             _state.value.user.lastName,
@@ -116,17 +84,14 @@ class SetupViewModel @Inject constructor(
             _state.value.user.bio,
         ).count { it != null && it != "" && it != emptyList<Any>() && it != emptyMap<Any, Any>() && it != 0 }
 
-        //if (_state.value.role == 1) _state.value = _state.value.copy(barStatus = doneFieldsTrainer / 13.0)
+
         if (_state.value.user.role == 1) _state.value = _state.value.copy(barStatus = doneFieldsTrainer / 13.0)
         else _state.value = _state.value.copy(barStatus = doneFieldsTrainee / 15.0)
-
-        //_state.value = _state.value.copy(barStatus = doneFieldsTrainer / 12.0)
     }
 
-    fun onEvent(event: SetupEvent/*, navHostController: NavHostController*/) {
+    fun onEvent(event: SetupEvent) {
         when(event){
             is SetupEvent.AreasOfExpertiesChanged ->{
-                //_state.value = _state.value.copy(areasOfExperties = event.areasOfExperties)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainer = _state.value.user.trainer.copy(
@@ -136,7 +101,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.AvailabilityChanged -> {
-                //_state.value = _state.value.copy(availability = event.availability)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainer = _state.value.user.trainer.copy(
@@ -146,7 +110,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.AvailableEquipmentChanged -> {
-                //_state.value = _state.value.copy(availableEquipment = event.availableEquipment)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainee = _state.value.user.trainee.copy(
@@ -156,7 +119,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.BioChanged -> {
-                //_state.value = _state.value.copy(bio = event.bio)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         bio = event.bio
@@ -164,7 +126,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.CertificationsChanged -> {
-                //_state.value = _state.value.copy(certifications = event.certifications)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainer = _state.value.user.trainer.copy(
@@ -174,7 +135,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.CurrentFitnessLevelChanged -> {
-                //_state.value = _state.value.copy(currentFitnessLevel = event.currentFitnessLevel)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainee = _state.value.user.trainee.copy(
@@ -184,13 +144,11 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.CurrentScreenChanged -> {
-                //_state.value = _state.value.copy(currentScreen = event.currentScreen)
                 _state.value = _state.value.copy(
                     currentScreen = event.currentScreen
                 )
             }
             is SetupEvent.DateOfBirthChanged -> {
-                //_state.value = _state.value.copy(dateOfBirth = event.dateOfBirth)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         dateOfBirth = event.dateOfBirth
@@ -198,7 +156,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.DietaryPreferencesChanged -> {
-                //_state.value = _state.value.copy(dietaryPreferences = event.dietaryPreferences)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainee = _state.value.user.trainee.copy(
@@ -208,7 +165,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.ExperienceChanged -> {
-                //_state.value = _state.value.copy(experience = event.experience)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainer = _state.value.user.trainer.copy(
@@ -218,7 +174,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.FirstNameChanged -> {
-                //_state.value = _state.value.copy(firstName = event.firstName)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         firstName = event.firstName
@@ -226,7 +181,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.FitnessGoalsChanged -> {
-                //_state.value = _state.value.copy(fitnessGoals = event.fitnessGoals)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainee = _state.value.user.trainee.copy(
@@ -236,7 +190,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.GenderChanged -> {
-                //_state.value = _state.value.copy(gender = event.gender)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         gender = event.gender
@@ -244,7 +197,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.HealthInformationChanged -> {
-                //_state.value = _state.value.copy(healthInformation = event.healthInformation)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainee = _state.value.user.trainee.copy(
@@ -254,7 +206,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.HeightChanged -> {
-                //_state.value = _state.value.copy(height = event.height)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainee = _state.value.user.trainee.copy(
@@ -264,7 +215,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.LastNameChanged -> {
-                //_state.value = _state.value.copy(lastName = event.lastName)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         lastName = event.lastName
@@ -272,7 +222,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.LocationChanged -> {
-                //_state.value = _state.value.copy(location = event.location)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         location = event.location
@@ -280,7 +229,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.PhoneNumberChanged -> {
-                //_state.value = _state.value.copy(phoneNumber = event.phoneNumber)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         phoneNumber = event.phoneNumber
@@ -288,7 +236,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.PricingChanged -> {
-                //_state.value = _state.value.copy(pricing = event.pricing)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainer = _state.value.user.trainer.copy(
@@ -298,7 +245,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.ProfileImageUrlChanged -> {
-                //_state.value = _state.value.copy(profileImageUrl = event.profileImageUrl)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         profileImageUrl = event.profileImageUrl
@@ -306,7 +252,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.RoleChanged -> {
-                //_state.value = _state.value.copy(role = event.role)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         role = event.role
@@ -314,7 +259,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.SocialMediaLinksChanged -> {
-                //_state.value = _state.value.copy(socialMediaLinks = event.socialMediaLinks)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainer = _state.value.user.trainer.copy(
@@ -324,7 +268,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.SpecializationsChanged -> {
-                //_state.value = _state.value.copy(specializations = event.specializations)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainer = _state.value.user.trainer.copy(
@@ -334,7 +277,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.TrainingPreferenceChanged -> {
-                //_state.value = _state.value.copy(trainingPreference = event.trainingPreference)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainee = _state.value.user.trainee.copy(
@@ -344,7 +286,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.TrainingStylesChanged -> {
-                //_state.value = _state.value.copy(trainingStyles = event.trainingStyles)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainer = _state.value.user.trainer.copy(
@@ -354,7 +295,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.TrainingsChanged -> {
-                //_state.value = _state.value.copy(trainings = event.trainings)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainee = _state.value.user.trainee.copy(
@@ -364,7 +304,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.UnitChanged -> {
-                //_state.value = _state.value.copy(unit = event.unit)
                 val newWeight = when(event.unit){
                     1 -> _state.value.user.trainee.weight / 2.20462
                     2 -> _state.value.user.trainee.weight * 2.20462
@@ -380,7 +319,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
             is SetupEvent.WeightChanged -> {
-                //_state.value = _state.value.copy(weight = event.weight)
                 _state.value = _state.value.copy(
                     user = _state.value.user.copy(
                         trainee = _state.value.user.trainee.copy(
@@ -393,10 +331,6 @@ class SetupViewModel @Inject constructor(
                 _state.value = _state.value.copy(barStatus = event.barStatus)
             }
             SetupEvent.BackButtonClicked -> {
-                /*navigationUseCase.navigateBack(
-                    navHostController = navHostController,
-                    currentScreen = _state.value.currentScreen
-                )*/
                 setupUseCase.previousScreen(
                     currentScreen = _state.value.currentScreen,
                     //role = _state.value.role,
@@ -404,28 +338,15 @@ class SetupViewModel @Inject constructor(
                     navHostController = navHostController
                 )
                 _state.value = _state.value.copy(currentScreen = _state.value.currentScreen - 1)
-                /*navigateBack(
-                    navHostController = navHostController
-                )*/
             }
 
             SetupEvent.NextButtonClicked -> {
-                //Log.d("SetupViewModel", "NextButtonClicked")
-                /*navigationUseCase.navigateNext(
-                    navHostController = navHostController,
-                    currentScreen = _state.value.currentScreen,
-                    role = _state.value.role
-                )*/
                 setupUseCase.nextScreen(
                     currentScreen = _state.value.currentScreen,
-                    //role = _state.value.role,
                     role = _state.value.user.role,
                     navHostController = navHostController
                 )
                 _state.value = _state.value.copy(currentScreen = _state.value.currentScreen + 1)
-                /*navigateNext(
-                    navHostController = navHostController
-                )*/
             }
             SetupEvent.FinishButtonClicked -> {
                 onFinishButton(_state.value)
@@ -434,8 +355,6 @@ class SetupViewModel @Inject constructor(
         }
         incrementBarStatus()
         updateButtonsState()
-        //Log.d("SetupViewModel", "State: ${_state.value.availability}")
-        //Log.d("SetupViewModel", "State: ${_state.value.user.trainer.availability}")
     }
 
     private fun onFinishButton(state: SetupProfileState) {
@@ -531,39 +450,6 @@ sealed class SetupEvent{
 
 //based on User.kt
 data class SetupProfileState(
-    /*var userId: String = "",
-    var firstName: String = "",
-    var lastName: String = "",
-    var dateOfBirth: Timestamp? = null,
-    var gender: Int = 0,
-    var phoneNumber: String = "",
-    var role: Int = 0,
-    var email: String = "",
-    var bio: String = "",
-    var fcmToken: String = "",
-    var profileImageUrl: String = "",
-    var location: GeoPoint? = null,
-    //trainer
-    var certifications: List<Int> = emptyList(),
-    var areasOfExperties: List<Int> = emptyList(),
-    var trainingStyles: List<Int> = emptyList(),
-    var experience: Int = 0,
-    var availability: Map<String, List<Int>> = emptyMap(),
-    var pricing: Int = 0,
-    var rating: Float = 0f,
-    var specializations: List<Int> = emptyList(),
-    var socialMediaLinks: Map<String, String> = emptyMap(),
-    //trainee
-    var unit: Int = 0,
-    var height: Int = 0,
-    var weight: Double = 0.0,
-    var trainings: Int = 0,
-    var fitnessGoals: List<Int> = emptyList(),
-    var currentFitnessLevel: Int = 0, //Vagy int?
-    var trainingPreference: Int = 0,
-    var healthInformation: List<String> = emptyList(),
-    var dietaryPreferences: List<String> = emptyList(),
-    var availableEquipment: List<String> = emptyList(),*/
     var isLoading: Boolean = false,
     var user: User = User(),
     //screen

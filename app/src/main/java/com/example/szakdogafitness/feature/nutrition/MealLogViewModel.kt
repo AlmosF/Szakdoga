@@ -14,26 +14,12 @@ import javax.inject.Inject
 class MealLogViewModel @Inject constructor(
     private val mealLog: AllMealLogUseCases
 ) : ViewModel() {
-    //private val _currentBlockState = MutableStateFlow(BlockState.Closed)
-    //private val _currentBlockState = MutableStateFlow(MealLogState())
-    //val currentBlockState = _currentBlockState.asStateFlow()
-//
-    //private val _consumedMeals = MutableStateFlow(mapOf<String, List<Nutrition>>())
-    //val consumedMeals = _consumedMeals.asStateFlow()
-
     private val _state = MutableStateFlow(MealLogState())
     val state = _state.asStateFlow()
 
     fun onEvent(event: MealLogEvent){
         when(event){
             is MealLogEvent.BlockStateChanged -> {
-                /*_currentBlockState.update {
-                    it.copy(currentBlockState = if (it.currentBlockState == event.blockState)
-                        BlockState.Closed
-                    else
-                        event.blockState
-                    )
-                }*/
                 _state.update {
                     it.copy(
                         currentBlockState = if (it.currentBlockState == event.blockState)
@@ -55,21 +41,7 @@ class MealLogViewModel @Inject constructor(
         }
     }
 
-    /*private fun consumeMeal(mealType: String, meal: Nutrition){ //fixme("Workingone")
-        /*val newConsumedMeals = mealLog.mealConsumedUseCase(mealType, meal, _consumedMeals.value)
-        _consumedMeals.value = newConsumedMeals*/
-        val newConsumedMeals = mealLog.mealConsumedUseCase(mealType, meal, _state.value.consumedMeals)
-        _state.update {
-            it.copy(consumedMeals = newConsumedMeals)
-        }
-    }*/
 
-    /*private fun setupDemoMeals(mealMap: Map<String, List<Nutrition>>){ //fixme("Workingone")
-        //_consumedMeals.value = mealMap
-        _state.update {
-            it.copy(consumedMeals = mealMap)
-        }
-    }*/
     private fun setupDemoMeals(mealMap: Map<String, List<Int>>){
         //_consumedMeals.value = mealMap
         _state.update {
@@ -77,24 +49,10 @@ class MealLogViewModel @Inject constructor(
         }
     }
 
-
-    /*private fun removeMeal(mealType: String, index: Int){ //fixme("Workingone")
-        /*val newConsumedMeals = mealLog.mealRemovedUseCase(mealType, index, _consumedMeals.value)
-        _consumedMeals.value = newConsumedMeals*/
-        val newConsumedMeals = mealLog.mealRemovedUseCase(mealType, index, _state.value.consumedMeals)
-        _state.update {
-            it.copy(consumedMeals = newConsumedMeals)
-        }
-    }*/
-
-
-
-
 }
 
 data class MealLogState(
     val currentBlockState: BlockState = BlockState.Closed,
-    //val consumedMeals: Map<String, List<Nutrition>> = emptyMap() //fixme("Workingone")
     val consumedMeals: Map<String, List<Int>> = emptyMap()
 )
 
@@ -102,6 +60,5 @@ sealed class MealLogEvent{
     data class BlockStateChanged(val blockState: BlockState): MealLogEvent()
     data class MealConsumed(val mealType: String, val meal: Nutrition): MealLogEvent()
     data class MealRemoved(val mealType: String, val index: Int): MealLogEvent()
-    //data class SetupDemoMeal(val mealMap: Map<String, List<Nutrition>>): MealLogEvent() //fixme("Workingone")
     data class SetupDemoMeal(val mealMap: Map<String, List<Int>>): MealLogEvent()
 }

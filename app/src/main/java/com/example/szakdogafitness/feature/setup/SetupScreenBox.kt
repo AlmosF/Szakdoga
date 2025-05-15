@@ -42,16 +42,11 @@ import com.example.szakdogafitness.ui.common.ProgressBar
 @Composable
 fun SetupScreenBox(
     paddingValues: PaddingValues = PaddingValues(0.dp),
-    //profileViewModel: ProfileViewModel = hiltViewModel(),
     setupViewModel: SetupViewModel = hiltViewModel(),
     onMainNavigate: () -> Unit
 ) {
-    //val navHostController = rememberNavController()
-    //val setupViewModel: SetupViewModel = viewModel() //Needed while it was called only from the mainscreen
     val state = setupViewModel.state.collectAsState()
 
-
-    //val profileState = profileViewModel.state.collectAsStateWithLifecycle()
 
     val previousButtonVisible = setupViewModel.isPreviousButtonVisible.collectAsState()
     val nextButtonEnabled = setupViewModel.isNextButtonEnabled.collectAsState()
@@ -60,17 +55,6 @@ fun SetupScreenBox(
     setupViewModel.setNavController(navHostController)
 
     var isLoading by remember { mutableStateOf(false) }
-
-    //LaunchedEffect(Unit, profileState, profileState.value.user?.isSetupDone) {
-    //    Log.d("SetupScreenBoxLE", "SetupScreenBox: ${profileState.value.user}")
-    //    profileViewModel.onEvent(ProfileEvent.GetUser)
-    //}
-
-    /*LaunchedEffect(Unit) {
-        isLoading = true
-        delay(1000)
-        isLoading = false
-    }*/
 
     LaunchedEffect(
         state.value.currentScreen
@@ -85,9 +69,6 @@ fun SetupScreenBox(
         }
     }
 
-    /*LaunchedEffect(profileState.value.user.isSetupDone == true, Unit) {
-        onMainNavigate()
-    }*/
 
     ConstraintLayout (
         modifier = Modifier
@@ -116,7 +97,6 @@ fun SetupScreenBox(
             color = Color.Black,
             thickness = 1.dp
         )
-        //if (!profileState.value.user.isSetupDone) { // Only for DEBUG
         if (!isLoading) { // Only for DEBUG
             Column(
                 modifier = Modifier
@@ -140,15 +120,6 @@ fun SetupScreenBox(
 
             }
 
-            /*SetupScreen(
-            modifier = Modifier
-                .constrainAs(setupScreen) {
-                    top.linkTo(startTopGuideline10)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-                .fillMaxSize()
-        )*/
             SetupNavGraph(
                 modifier = Modifier
                     .constrainAs(setupScreen) {
@@ -159,16 +130,6 @@ fun SetupScreenBox(
                 navController = navHostController,
                 setupViewModel = setupViewModel
             )
-            /*TrainerOne(
-            paddingValues = paddingValues,
-            modifier = Modifier
-                .constrainAs(setupScreen) {
-                    top.linkTo(startTopGuideline10)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-                .fillMaxSize()
-        )*/
 
             Row(
                 modifier = Modifier
@@ -186,15 +147,12 @@ fun SetupScreenBox(
                 AnimatedVisibility(
                     modifier = Modifier
                         .weight(1f),
-                    visible = previousButtonVisible.value//state.value.currentScreen != 0*/,
+                    visible = previousButtonVisible.value
                 ) {
                     OutlinedButton(
                         onClick = {
                             Log.d("SetupScreenBox", "SetupScreenBox: Back")
                             Log.d("SetupScreenBox", "SetupScreenBox: ${setupViewModel.state.value}")
-                            //setupViewModel.onEvent(SetupEvent.BackButtonClicked)
-                            //setupViewModel.onEvent(SetupEvent.CurrentScreenChanged(state.value.currentScreen - 1))
-                            //navHostController.popBackStack()
                             setupViewModel.onEvent(SetupEvent.BackButtonClicked)
                         },
                         shape = RoundedCornerShape(8.dp),
@@ -208,35 +166,13 @@ fun SetupScreenBox(
                         )
                     }
                 }
-                /*if (state.value.currentScreen != 0){
-                OutlinedButton(
-                    onClick = {
-                        Log.d("SetupScreenBox", "SetupScreenBox: Back")
-                        Log.d("SetupScreenBox", "SetupScreenBox: ${setupViewModel.state.value}")
-                        //setupViewModel.onEvent(SetupEvent.BackButtonClicked)
-                        //setupViewModel.onEvent(SetupEvent.CurrentScreenChanged(state.value.currentScreen - 1))
-                        //navHostController.popBackStack()
-                        setupViewModel.onEvent(SetupEvent.BackButtonClicked)
-                    },
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = "Back",
-                        modifier = Modifier.padding(8.dp),
-                        fontSize = 20.sp
-                    )
-                }
-            }*/
                 OutlinedButton(
                     onClick = {
                         Log.d("SetupScreenBox", "SetupScreenBox: Next")
                         Log.d("SetupScreenBox", "SetupScreenBox: ${setupViewModel.state.value}")
-                        //setupViewModel.onEvent(SetupEvent.NextButtonClicked)
                         when (nextButtonLabel.value) {
                             "Finish" -> {
                                 setupViewModel.onEvent(SetupEvent.FinishButtonClicked)
-                                //onMainNavigate()
                                 finishClicked = true
                             }
 
@@ -244,26 +180,6 @@ fun SetupScreenBox(
                                 setupViewModel.onEvent(SetupEvent.NextButtonClicked)
                             }
                         }
-                        /*when (setupViewModel.state.value.currentScreen){
-                        0 -> {
-                            setupViewModel.onEvent(SetupEvent.CurrentScreenChanged(state.value.currentScreen + 1))
-                            when (setupViewModel.state.value.role) {
-                                1 -> navHostController.navigate(SetupScreenRoute.TrainerOne.route)
-                                2 -> navHostController.navigate(SetupScreenRoute.TraineeOne.route)
-                            }
-                        }
-                        1 -> {
-                            setupViewModel.onEvent(SetupEvent.CurrentScreenChanged(state.value.currentScreen + 1))
-                            when (setupViewModel.state.value.role) {
-                                1 -> navHostController.navigate(SetupScreenRoute.TrainerTwo.route)
-                                2 -> navHostController.navigate(SetupScreenRoute.TraineeTwo.route)
-                            }
-                        }
-                        2 -> {
-                            setupViewModel.onEvent(SetupEvent.CurrentScreenChanged(state.value.currentScreen + 1))
-                            //FINISH
-                        }
-                    }*/
                     },
                     enabled = nextButtonEnabled.value,
                     shape = RoundedCornerShape(8.dp),
@@ -282,27 +198,6 @@ fun SetupScreenBox(
             CircularProgressIndicator(
                 color = Color.Green
             )
-            /*Column (
-                modifier = Modifier
-                    .fillMaxSize()
-                    .constrainAs(setupScreen){
-                        top.linkTo(startTopGuideline10)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
-            ) {
-                Text(
-                    text = "Setup is done",
-                )
-                Text(
-                    text = profileState.value.user.firstName
-                )
-                Button(
-                    onClick = {onProfileNavigate()}
-                ) {
-                    Text("Go to profile")
-                }
-            }*/
         }
 
     }

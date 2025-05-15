@@ -256,8 +256,6 @@ fun ManageNutritionItemScreen(
     val context = LocalContext.current
     val painterState by painter.state.collectAsState()
     LaunchedEffect(Unit) {
-        //mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritionDetail(id))
-        //mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
         appBarVIewModel.onEvent(
             AppBarEvent.TopBarComposableChanged(
                 {
@@ -727,7 +725,6 @@ fun ManageScreen(
                             .trimEnd(',')
                     )
                 } else {
-                    //data = data.copy(mealType = if (data.mealType.isEmpty()) it else "${data.mealType}, $it")
                     data = data.copy(
                         mealType = listOf(data.mealType, it)
                             .filter { type -> type.isNotEmpty() }

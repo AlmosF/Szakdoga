@@ -70,118 +70,6 @@ import com.example.szakdogafitness.presentation.navigation.AppBarViewModel_Facto
 import com.example.szakdogafitness.ui.common.appbars.BackNavWithTitle
 import kotlinx.coroutines.launch
 
-
-/*@Composable
-fun SearchNutritionScreen(
-    modifier: Modifier = Modifier
-) {
-
-    //val listState = rememberLazyListState()
-    val listState = rememberLazyGridState()
-    val isCollapsed: Boolean by remember {
-        derivedStateOf { listState.firstVisibleItemIndex > 0 }
-    }
-    Scaffold(
-        topBar = {
-            if (isCollapsed){
-                CollapsedTopBar(
-                    isCollapsed = isCollapsed
-                )
-            }
-        },
-        modifier = Modifier
-            .fillMaxSize()
-    ) { padding ->
-        Column (
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = modifier
-                    .fillMaxWidth(0.95f),
-                state = listState,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Row (
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        ExpandedTopBar()
-                    }
-                }
-                items(list.size) {
-                    SearchNutritionCard(
-                        data = list[it],
-
-                        ) {
-
-                    }
-                }
-            }
-        }
-    }
-
-    *//*Column ( //Constraint Layouttal rossz, mert az utolso elemet nem lehet látni (?)
-        modifier = modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-
-    ) {
-        var selectedLabel by remember { mutableStateOf("Breakfast") }
-
-        SearchNutritionLabels (
-            modifier = Modifier
-                .fillMaxWidth(0.95f)
-                .clip(shape = ButtonDefaults.shape),
-            selectedLabel = selectedLabel,
-        ) {
-            selectedLabel = it
-        }
-
-        NormalTextField(
-            modifier = Modifier
-                .fillMaxWidth(0.95f),
-            value = "",
-            onValueChange = {},
-            onDone = {},
-            label = "Search",
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = "Search",
-                    modifier = Modifier
-                        .size(32.dp)
-                )
-            },
-            trailingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.FilterAlt,
-                    contentDescription = "Filter",
-                    modifier = Modifier
-                        .size(32.dp)
-                )
-            },
-            singleLine = true,
-            shape = RoundedCornerShape(32.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                disabledContainerColor = MaterialTheme.colorScheme.surface,
-            )
-        )
-        SearchNutritionList(
-            modifier = Modifier
-                .fillMaxWidth(0.95f),
-            list = list
-        ) { }
-    }*//*
-
-}*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchNutritionScreen(
@@ -208,8 +96,6 @@ fun SearchNutritionScreen(
             )
         )
         mealTypesViewModel.onEvent(MealTypesEvent.MealTypeSelected("bf"))
-        //mealTypesViewModel.onEvent(MealTypesEvent.LoadMealTypes)
-        //mealTypesViewModel.onEvent(MealTypesEvent.FetchNutritions)
     }
     val labelsMap = mapOf(
         "bf" to "Breakfast",
@@ -264,18 +150,6 @@ fun SearchNutritionScreen(
                                 NutritionSorter(
                                     mealTypesViewModel = mealTypesViewModel
                                 )
-                                /*IconButton(
-                                    onClick = {
-                                        mealTypesViewModel.onEvent(MealTypesEvent.SortByCaloriesDesc)
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.FilterAlt,
-                                        contentDescription = "Filter",
-                                        modifier = Modifier
-                                            .size(32.dp)
-                                    )
-                                }*/
                             },
                             singleLine = true,
                             shape = RoundedCornerShape(32.dp),
@@ -320,15 +194,6 @@ fun SearchNutritionScreen(
                         .fillMaxWidth(0.95f),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    /*items(mealTypesState.selectedMealType.size) { index ->
-                        val mealType = mealTypesState.selectedMealType[index]
-                        SearchNutritionCard(
-                            data = mealType,
-                        ) {
-                            mealTypesViewModel.onEvent(MealTypesEvent.NutritionSelected(mealType))
-                            mealTypesViewModel.onEvent(MealTypesEvent.ChangeDialogState)
-                        }
-                    }*/
                     Log.d("SearchNutritionScreen", "selectedMealType: ${mealTypesState.selectedMealType}")
                     items(mealTypesState.selectedMealType.size) { index ->
                         val mealType = mealTypesState.selectedMealType[index]

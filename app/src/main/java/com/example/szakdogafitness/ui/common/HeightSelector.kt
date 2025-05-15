@@ -30,87 +30,6 @@ import androidx.compose.ui.unit.sp
  * @param width: width of the list
  * @param modifier: modifier for the list
  */
-/*@Composable
-fun HeightSelector(
-    modifier: Modifier = Modifier,
-    width: Dp,
-    itemHeight: Dp,
-    textStyle: TextStyle,
-    textColor: Color,
-    selectedTextColor: Color,
-    unit : Boolean = true,
-    height: Int = 120,
-    onHeightSelected: (cm: Int) -> Unit = { _ -> }
-) {
-    val selectedHeight = remember { mutableIntStateOf(height) }
-
-    if (unit){
-        InfiniteCircularList(
-            width = width,
-            itemHeight = itemHeight,
-            items = (100..250).toList(),
-            initialItem = selectedHeight.intValue,
-            textStyle = textStyle,
-            textColor = textColor,
-            selectedTextColor = selectedTextColor,
-            onItemSelected = { _, item ->
-                selectedHeight.intValue = item
-                onHeightSelected(selectedHeight.intValue)
-            }
-        )
-    } else {
-        // Convert CM to Feet and Inches
-        val totalInches = (selectedHeight.intValue / 2.54).toInt()  // Convert CM to total inches
-        val feet = totalInches / 12  // Calculate feet from total inches
-        val inches = totalInches % 12  // Calculate inches from the remaining total inches
-
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(200.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Feet Selector
-            InfiniteCircularList(
-                width = width,
-                itemHeight = itemHeight,
-                items = (3..8).toList(),  // Feet range
-                initialItem = feet,  // Correctly initialize the feet value
-                textStyle = textStyle,
-                textColor = textColor,
-                selectedTextColor = selectedTextColor,
-                onItemSelected = { _, item ->
-                    // Calculate total inches based on the selected feet and current inches
-                    val newInches = (item * 12) + inches
-                    val newCm = newInches * 2.54  // Convert back to CM
-                    selectedHeight.intValue = newCm.toInt()  // Update stored CM value
-                    onHeightSelected(selectedHeight.intValue)
-                }
-            )
-            Text(" ft ", fontSize = 30.sp)
-
-            // Inches Selector
-            InfiniteCircularList(
-                width = width,
-                itemHeight = itemHeight,
-                items = (0..11).toList(),  // Inches range
-                initialItem = inches+1,  // Correctly initialize the inches value
-                textStyle = textStyle,
-                textColor = textColor,
-                selectedTextColor = selectedTextColor,
-                onItemSelected = { _, item ->
-                    // Calculate total inches based on the selected feet and current inches
-                    val newInches = (feet * 12) + item
-                    val newCm = newInches * 2.54  // Convert back to CM
-                    selectedHeight.intValue = newCm.toInt()  // Update stored CM value
-                    onHeightSelected(selectedHeight.intValue)
-                }
-            )
-            Text(" in", fontSize = 30.sp)
-        }
-    }
-}*/
 
 @Composable
 fun HeightSelector(
@@ -128,19 +47,15 @@ fun HeightSelector(
     Log.d("HeightSelector", "selectedHeight: ${selectedHeight.value}, unit: $unit")
 
     if (unit) {
-        // Metric (cm)
         InfiniteCircularList(
             width = width,
             itemHeight = itemHeight,
             items = (100..250).toList(),
-            //initialItem = selectedHeight.intValue,
             initialItem = heightCm,
             textStyle = textStyle,
             textColor = textColor,
             selectedTextColor = selectedTextColor,
             onItemSelected = { _, item ->
-                /*selectedHeight.intValue = item
-                onHeightSelected(item)*/
                 onHeightSelected(item)
             }
         )
@@ -169,10 +84,7 @@ fun HeightSelector(
                 textColor = textColor,
                 selectedTextColor = selectedTextColor,
                 onItemSelected = { _, item ->
-                    /*selectedHeight.intValue = (item * 12) + inches
-                    onHeightSelected(selectedHeight.intValue)*/
                     selectedFeet = item
-                    //onHeightSelected((selectedFeet * 2.54).toInt())
                     onHeightSelected(
                         (((selectedFeet * 12) + selectedInches) * 2.54).toInt()
                     )
@@ -190,8 +102,6 @@ fun HeightSelector(
                 textColor = textColor,
                 selectedTextColor = selectedTextColor,
                 onItemSelected = { _, item ->
-                    /*selectedHeight.intValue = (feet * 12) + item
-                    onHeightSelected(selectedHeight.intValue)*/
                     selectedInches = item
                     onHeightSelected(
                         (((selectedFeet * 12) + selectedInches) * 2.54).toInt()

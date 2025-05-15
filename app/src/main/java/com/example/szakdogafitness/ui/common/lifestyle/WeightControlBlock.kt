@@ -32,8 +32,6 @@ fun WeightControlBlock(
     Column (
         modifier = modifier
             .padding(top = 16.dp, bottom = 16.dp)
-            //.fillMaxWidth()
-            //.padding(8.dp)
             .background(Color.LightGray, shape = RoundedCornerShape(16.dp))
             .fillMaxWidth(),
     ) {
