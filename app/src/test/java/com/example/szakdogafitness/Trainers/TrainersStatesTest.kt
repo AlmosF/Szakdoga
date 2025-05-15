@@ -17,7 +17,6 @@ import com.example.szakdogafitness.domain.usecases.trainers.LoadTrainersRateUseC
 import com.example.szakdogafitness.domain.usecases.trainers.RateTrainerUseCase
 import com.example.szakdogafitness.feature.trainer.TrainersEvent
 import com.example.szakdogafitness.feature.trainer.TrainersViewModel
-import com.example.szakdogafitness.feature.trainer.testList
 import com.google.firebase.Timestamp
 import io.mockk.coEvery
 import io.mockk.mockk
